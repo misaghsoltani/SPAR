@@ -1,0 +1,75 @@
+{
+  "grid_size": 10,
+  "now": 0,
+  "source": "local-style-source",
+  "style_ids": [
+    "retro-pixel",
+    "isometric-blueprint",
+    "zen-garden",
+    "neon-arcade",
+    "storybook-sketch",
+    "lunar-outpost",
+    "circuit-foundry",
+    "botanical-glasshouse",
+    "volcanic-forge",
+    "arctic-expedition"
+  ],
+  "styles": {
+    "arctic-expedition": {
+      "cell_size": 56,
+      "file": "arctic-expedition.png",
+      "sha256": "ee9497f79f86ec5e0a6fa09c8c983a49ec943b322e3976623361af28b3e1fb6e"
+    },
+    "botanical-glasshouse": {
+      "cell_size": 56,
+      "file": "botanical-glasshouse.png",
+      "sha256": "9348bdec893221e617d946fc80ea911b0c84cf996b5a7f3057adad2b4e007256"
+    },
+    "circuit-foundry": {
+      "cell_size": 56,
+      "file": "circuit-foundry.png",
+      "sha256": "3e26846d282fa0d1bebd9b24581fada6bb7e0ed8eed677dceb28dfbf8670a673"
+    },
+    "isometric-blueprint": {
+      "cell_size": 58,
+      "file": "isometric-blueprint.png",
+      "sha256": "8499e19c3399674bd1830ac8421ad16d9eeb0cf24c6b9e7144a7a5dc204fae77"
+    },
+    "lunar-outpost": {
+      "cell_size": 56,
+      "file": "lunar-outpost.png",
+      "sha256": "b831b9b77c0136aeb581bdad7f63c323430fe1b86d326e2eaeb1b408ae185b41"
+    },
+    "neon-arcade": {
+      "cell_size": 58,
+      "file": "neon-arcade.png",
+      "sha256": "aa5706f65b74a8277e1f4943bd6d1e929a9da3fc0add7ca93cf1ac10159fff28"
+    },
+    "retro-pixel": {
+      "cell_size": 48,
+      "file": "retro-pixel.png",
+      "sha256": "ba9c67ebd8b39b5ed0c60165fd4ee5ddc9568beccf64ef4b5021969910ad3b73"
+    },
+    "storybook-sketch": {
+      "cell_size": 58,
+      "file": "storybook-sketch.png",
+      "sha256": "ac9b3dc0bcbc7a5d65e0c850b9f5455c75d99b24ac4f0e6e4e1388a37785f296"
+    },
+    "volcanic-forge": {
+      "cell_size": 56,
+      "file": "volcanic-forge.png",
+      "sha256": "673fef521d3e90c7d368e52eab4434147d1ac619a33d3fd85c3eb1c53711fdd6"
+    },
+    "zen-garden": {
+      "cell_size": 60,
+      "file": "zen-garden.png",
+      "sha256": "d4e9c8cc05f3a552af3b770573a3fd5b310e9743cc6d608be7bc9da95c4fd55d"
+    }
+  },
+  "type_order": [
+    "FLOOR",
+    "WALL",
+    "PLAYER",
+    "BOX"
+  ]
+}

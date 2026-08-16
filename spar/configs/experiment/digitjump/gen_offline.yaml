@@ -1,0 +1,83 @@
+# @package _global_
+# DigitJump-specific configuration for generating offline data
+
+defaults:
+  - default/gen_offline
+  - override /env: digitjump
+  - _self_
+
+data:
+  num_cpus: 8
+  compression: false
+  use_variations: true
+  batch_size_per_worker: 0 # Auto-calculate
+  variation_sharing_group_size: 1
+  save_dir: "spar/offline_data/${env.name}"
+
+  datasets:
+    # - name: train_no_vars
+    #   num_eps: 9000
+    #   num_steps: 20
+    #   start_seed: null
+    #   num_seeds: null
+    #   use_variations: false
+    #   file_name: "train_${.num_eps}eps_${.num_steps}steps_no_vars"
+    #   batch_size_per_worker: 0 # Auto-calculate
+
+    # - name: val_no_vars
+    #   num_eps: 1000
+    #   num_steps: 20
+    #   start_seed: null
+    #   num_seeds: null
+    #   use_variations: false
+    #   file_name: "val_${.num_eps}eps_${.num_steps}steps_no_vars"
+    #   batch_size_per_worker: 0 # Auto-calculate
+
+    # - name: test_no_vars
+    #   num_eps: 100
+    #   num_steps: 10000
+    #   start_seed: null
+    #   num_seeds: null
+    #   use_variations: false
+    #   file_name: "test_${.num_eps}eps_${.num_steps}steps_no_vars"
+    #   batch_size_per_worker: 0 # Auto-calculate
+
+    - name: train_with_vars
+      num_eps: 9000
+      num_steps: 30
+      start_seed: null
+      num_seeds: null
+      use_variations: true
+      variations_first_state_only: false
+      file_name: "train_${.num_eps}eps_${.num_steps}steps_with_vars"
+      batch_size_per_worker: 0
+      variation_sharing_group_size: 2
+
+    - name: val_with_vars
+      num_eps: 1000
+      num_steps: 30
+      start_seed: null
+      num_seeds: null
+      use_variations: true
+      variations_first_state_only: false
+      file_name: "val_${.num_eps}eps_${.num_steps}steps_with_vars"
+      batch_size_per_worker: 0
+      variation_sharing_group_size: 2
+
+    - name: test_with_vars
+      num_eps: 100
+      num_steps: 10000
+      start_seed: null
+      num_seeds: null
+      use_variations: true
+      variations_first_state_only: true
+      file_name: "test_${.num_eps}eps_${.num_steps}steps_with_vars"
+      batch_size_per_worker: 0
+      variation_sharing_group_size: 2
+
+wandb:
+  mode: disabled
+
+hydra:
+  run:
+    dir: outputs/experiments/${env.name}/gen_offline/${now:%Y-%m-%d_%H-%M-%S}

@@ -1,0 +1,71 @@
+# @package wandb
+# Weights & Biases settings shared by runtime stages.
+
+defaults:
+  - settings
+  - _self_
+  - profile: training
+
+# Parameters forwarded to wandb.init().
+project: SPAR
+entity: ${oc.env:WANDB_ENTITY,null} # Use environment variable or null if not set
+dir: "${hydra:runtime.output_dir}" # Hydra's output directory for this run
+id: null # Unique identifier for this run
+name: "${env.name}_${stage}_${now:%Y-%m-%d_%H-%M-%S}" # Run name based on environment and stage
+notes: null # Detailed description of the run
+tags:
+  - ${env.name}
+  - ${stage}
+  - ${now:%Y-%m-%d}
+
+# Run configuration.
+log_config: true # Whether to log configuration to wandb
+config_exclude_keys: null # List of keys to exclude from wandb.config
+config_include_keys: null # List of keys to include in wandb.config
+allow_val_change: null # Whether config values can be modified after initial set
+
+# Run grouping.
+group: ${env.name} # Group runs by environment
+job_type: null # Type of run (e.g., "train", "eval")
+
+# Synchronization behavior.
+mode: offline # Accepted values are online, offline, and disabled.
+force: null # Whether W&B login is required
+anonymous: null # 'never', 'allow', or 'must'
+profile: training
+distributed_logging: rank_zero
+resume_strategy: deterministic_allow
+step_metric: global_step
+
+# Resume and fork settings.
+reinit: null # Behavior when wandb.init() is called with active run
+resume: null # Controls resuming behavior: 'allow', 'never', 'must', 'auto'
+resume_from: null # Resume from specific run and step: "{run_id}?_step={step}"
+fork_from: null # Fork from specific run and step: "{run_id}?_step={step}"
+
+# Code and logging capture.
+save_code: null # Save code snapshot - if null, uses wandb default (False)
+sync_tensorboard: null # Sync TensorBoard logs
+monitor_gym: null # Monitor Gym/Gymnasium environments
+
+# SPAR logging intervals.
+log_model: true # Log model checkpoints as artifacts
+log_freq: 100
+log_level: "INFO"
+media_log_every_n_steps: 0
+table_log_every_n_steps: 0
+histogram_log_every_n_steps: 0
+max_metrics_per_log: 512
+max_metric_key_length: 128
+
+wandb_osh:
+  enabled: false
+  command_dir: null
+  trigger_every_seconds: 300
+  trigger_on_phase_end: true
+  timeout_seconds: 300
+
+settings_dict:
+  run_id: ${..id} # Use the run ID for W&B settings
+  x_stats_gpu_device_ids:
+    - ${oc.env:CUDA_VISIBLE_DEVICES,null}

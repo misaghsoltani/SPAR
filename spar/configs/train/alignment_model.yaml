@@ -1,0 +1,48 @@
+# @package train
+# Alignment model training configuration
+
+defaults:
+  - default
+  - _self_
+
+device: cuda
+
+dataloader:
+  batch_size: 100
+  num_batches_per_epoch: null
+  replacement: true
+  transform: null
+  dtype: float32
+  num_workers: 0
+  pin_memory: false
+  persistent_workers: false
+  pin_memory_device: ""
+  infinite: true
+  base_only: false # Use variations for alignment training
+  variations_to_use: null
+  variations_to_ignore: null
+
+ddp: null
+
+scheduler:
+  type: ExponentialLR
+  params:
+    gamma: 0.9999993
+
+phases:
+  - max_itrs: 40000
+    lr: 0.001
+  - max_itrs: 60000
+    lr: 0.001
+  - max_itrs: 80000
+    lr: 0.001
+  - max_itrs: 100000
+    lr: 0.001
+  - max_itrs: 120000
+    lr: 0.001
+  - max_itrs: 140000
+    lr: 0.0001
+  - max_itrs: 160000
+    lr: 0.00001
+  - max_itrs: 180000
+    lr: 0.000001

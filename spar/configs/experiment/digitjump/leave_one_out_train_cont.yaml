@@ -1,0 +1,55 @@
+# @package _global_
+# Leave-One-Out Cross-Validation Training for DigitJump Alignment Model (continuous)
+
+defaults:
+  - override /env: digitjump
+  - override /stage: train_alignment_cont
+  - override /hydra/sweeper: basic
+  - _self_
+
+stage: train_alignment_model
+alignment_model_type: continuous
+end_to_end: false
+freeze_pretrained_models: true
+precompute_targets: true
+
+hydra:
+  mode: MULTIRUN
+  sweeper:
+    params:
+      train.dataloader.variations_to_ignore: choice([ambient_light],[color_temperature],[hsv_shift],[contrast_brightness],[rotate_image],[zoom_effect],[spatial_perturbation],[gaussian_noise],[salt_pepper_noise],[gaussian_blur],[edge_cropping],[background_randomization],[background_image])
+  job:
+    name: digitjump_loo_train_${train.dataloader.variations_to_ignore[0]}
+    chdir: false
+  run:
+    dir: ${save_dir}/experiments/${env.name}/leave_one_out_validation/train/hold_out_${train.dataloader.variations_to_ignore[0]}
+  sweep:
+    dir: ${save_dir}/experiments/${env.name}/leave_one_out_validation/train
+    subdir: hold_out_${train.dataloader.variations_to_ignore[0]}
+
+# Data paths
+
+data_paths:
+  train_data: spar/offline_data/${env.name}/train_1000eps_30steps_with_vars.h5
+  val_data: spar/offline_data/${env.name}/val_500eps_30steps_with_vars.h5
+  test_data: spar/offline_data/${env.name}/test_100eps_10000steps_with_vars.h5
+
+save_paths:
+  model_dir: spar/saved_models/alignment_models/${env.name}_alignment_model_cont_loo_${train.dataloader.variations_to_ignore[0]}
+
+pretrained_model_paths:
+  encoder_path: spar/saved_models/world_models/${env.name}_world_model_cont/world_model_checkpoint_encoder.pt
+  transition_model_path: spar/saved_models/world_models/${env.name}_world_model_cont/world_model_checkpoint_transition_model.pt
+  decoder_path: spar/saved_models/world_models/${env.name}_world_model_cont/world_model_checkpoint_decoder.pt
+
+train:
+  dataloader:
+    batch_size: 100
+    variations_to_use: null
+
+wandb:
+  mode: offline
+  job_type: train
+  group: ${env.name}_leave_one_out_train
+  tags: ["leave_one_out","${env.name}","alignment_model","continuous","train","holdout_${train.dataloader.variations_to_ignore[0]}"]
+  name: loo_train_holdout_${train.dataloader.variations_to_ignore[0]}

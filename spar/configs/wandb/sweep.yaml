@@ -1,0 +1,20 @@
+# W&B Sweep configuration for hyperparameter optimization
+
+# Sweep settings
+type: "heuristic" # Options: "heuristic", "world_model"
+method: "bayes" # Options: "bayes", "grid", "random"
+metric_name: "val_loss"
+metric_goal: "minimize"
+count: 10 # Number of runs the agent should perform
+create_agent_script: true # Whether to create a Python script to run the agent
+
+# For custom parameters, uncomment and modify this section:
+# parameters:
+#   train.learning_rate:
+#     distribution: "log_uniform"
+#     min: 1e-5
+#     max: 1e-2
+#   train.batch_size:
+#     values: [64, 128, 256, 512]
+#   model.heuristic.hidden_size:
+#     values: [64, 128, 256, 512]

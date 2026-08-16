@@ -1,0 +1,229 @@
+{
+  // ========== PYTHON CONFIGURATION ==========
+  "python.defaultInterpreterPath": "${workspaceFolder}/.pixi/envs/dev/bin/python",
+  // "python.envFile": "${workspaceFolder}/.env",
+  "pixi-vscode.defaultChannels": ["conda-forge"],
+  "pixi-vscode.defaultProjectType": "pixi",
+  "pixi-code.pixiExecutable": "pixi",
+  "python-envs.defaultEnvManager": "ms-python.python:system",
+  "python.pixiToolPath": "pixi",
+  "latex-workshop.latex.tools": [
+    {
+      "name": "spar-latexmk",
+      "command": "pixi",
+      "args": [
+        "run",
+        "-e",
+        "dev",
+        "latexmk",
+        "-pdf",
+        "-synctex=1",
+        "-interaction=nonstopmode",
+        "-file-line-error",
+        "-halt-on-error",
+        "%DOC%"
+      ]
+    }
+  ],
+  "latex-workshop.latex.recipes": [
+    {
+      "name": "SPAR: compile paper",
+      "tools": ["spar-latexmk"]
+    },
+    {
+      "name": "SPAR: compile standalone TikZ figure",
+      "tools": ["spar-latexmk"]
+    }
+  ],
+  // ========== TESTING CONFIGURATION ==========
+  // "python.testing.pytestPath": "${workspaceFolder}/.pixi/envs/test/bin/pytest",
+  // "python.testing.pytestEnabled": true,
+  // "python.testing.unittestEnabled": true,
+  // "python.testing.pytestArgs": [
+  //     "tests",
+  //     "--maxfail=1",
+  //     "--disable-warnings",
+  //     "-q",
+  //     "--cov=spar",
+  //     "--cov-report=term-missing"
+  // ],
+  // "python.testing.autoTestDiscoverOnSaveEnabled": true,
+  // "python.testing.cwd": "${workspaceFolder}",
+  // ========== LINTING & FORMATTING ==========
+  "ruff.configurationPreference": "filesystemFirst",
+  "ruff.lint.enable": true,
+  "ruff.fixAll": true,
+  "ruff.importStrategy": "fromEnvironment",
+  "ruffRulesExplainer.showDecorations": true,
+  "ruff.lineLength": 120,
+  "ruff.exclude": [
+    "**/.pixi/",
+    "**/outputs/",
+    "**/logs/",
+    "**/checkpoints/",
+    "**/slurm_run_outputs/",
+    "spar/offline_data/",
+    "**/.git/",
+    "**/.venv/",
+    "**/node_modules/",
+    "**/bower_components/",
+    "**/.mypy_cache/",
+    "**/.pytest_cache/",
+    "**/.DS_Store/",
+    "**/.ruff_cache/",
+    "**/*.egg-info/",
+    "**/build/",
+    "**/dist/"
+  ],
+  // "ruff.nativeServer": "on",
+  // // MyPy Configuration
+  // "mypy-type-checker.args": [
+  //   "--config-file=${workspaceFolder}/mypy.ini",
+  //   "--use-fine-grained-cache",
+  //   "--follow-imports=skip"
+  // ],
+  // "mypy-type-checker.importStrategy": "fromEnvironment",
+  // // "mypy-type-checker.interpreter": [
+  // //     "${workspaceFolder}/.pixi/envs/dev/bin/python"
+  // // ],
+  // "mypy-type-checker.daemonStatusFile": "${workspaceFolder}/.mypy_cache/mypy-daemon.json",
+  // "mypy-type-checker.preferDaemon": true,
+  // "mypy-type-checker.reportingScope": "workspace",
+  // "mypy-type-checker.cwd": "${workspaceFolder}",
+  // "mypy-type-checker.ignorePatterns": [
+  //   "**/site-packages/**",
+  //   ".vscode/**",
+  //   "**/.pixi/**",
+  //   "**/outputs/**",
+  //   "**/logs/**",
+  //   "**/checkpoints/**",
+  //   "**/slurm_run_outputs/**",
+  //   "**/.git/**",
+  //   "**/.venv/**",
+  //   "**/.mypy_cache/**",
+  //   "**/.pytest_cache/**",
+  //   "**/.DS_Store/**",
+  //   "**/.ruff_cache/**"
+  // ],
+  "shellcheck.enable": true,
+  "shellcheck.enableQuickFix": true,
+  "shellcheck.run": "onType",
+  "shellcheck.executablePath": "${workspaceFolder}/.pixi/envs/dev/bin/shellcheck", // Priority: user defined > bundled binary > shellcheck in PATH
+  "shellcheck.exclude": [],
+  "shellcheck.customArgs": ["-x"],
+  // ========== EDITOR CONFIGURATION ==========
+  // "editor.formatOnSave": false,
+  "editor.rulers": [120],
+  // "editor.wordWrap": "off",
+  // "editor.wordWrapColumn": 120,
+  "editor.insertSpaces": true,
+  "editor.tabSize": 4,
+  "editor.detectIndentation": true,
+  // "editor.autoIndentOnPaste": true,
+  "editor.bracketPairColorization.enabled": true,
+  // "editor.experimentalGpuAcceleration": "on",
+  "editor.showDeprecated": true,
+  "editor.showUnused": true,
+  "editor.matchBrackets": "always",
+  // ========== TERMINAL CONFIGURATION ==========
+  "direnv.restart.automatic": true,
+  "terminal.integrated.env.linux": {
+    "PYTHONPATH": "${workspaceFolder}",
+    "PIXI_PROJECT_ROOT": "${workspaceFolder}"
+  },
+  "terminal.integrated.env.osx": {
+    "PYTHONPATH": "${workspaceFolder}",
+    "PIXI_PROJECT_ROOT": "${workspaceFolder}"
+  },
+  "terminal.integrated.env.windows": {
+    "PYTHONPATH": "${workspaceFolder}",
+    "PIXI_PROJECT_ROOT": "${workspaceFolder}"
+  },
+  // ========== FILE ASSOCIATIONS ==========
+  "files.associations": {
+    "*.toml": "toml",
+    "pixi.lock": "yaml",
+    "*.yaml": "yaml",
+    "*.yml": "yaml",
+    "*.py": "python",
+    "*.pyx": "python",
+    "*.pyi": "python",
+    "*.ipynb": "jupyter",
+    "*.md": "markdown",
+    "*.txt": "plaintext",
+    "*.log": "log",
+    "*.conf": "ini",
+    "*.cfg": "ini",
+    "*.env": "properties"
+  },
+  "evenBetterToml.schema.associations": {
+    "pyproject.toml": "https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/pyproject.json",
+    "ruff.toml": "https://raw.githubusercontent.com/astral-sh/ruff/main/ruff.schema.json"
+  },
+  "yaml.schemaStore.enable": true,
+  "json.schemaDownload.enable": true,
+  "yaml.schemaStore.url": "https://www.schemastore.org/api/json/catalog.json",
+  "yaml.completion": true,
+  // ========== SEARCH & EXCLUDE CONFIGURATION ==========
+  // "search.exclude": {
+  //   "**/.pixi": true,
+  //   "**/__pycache__": true,
+  //   "**/.pytest_cache": true,
+  //   "**/.mypy_cache": true,
+  //   "**/.ruff_cache": true,
+  //   "**/*.egg-info": true,
+  //   "**/build": true,
+  //   "**/dist": true,
+  //   "**/spar/offline_data": true
+  // },
+  // "files.exclude": {
+  //   "**/.pixi": true,
+  //   "**/__pycache__": true,
+  //   "**/.pytest_cache": true,
+  //   "**/.mypy_cache": true,
+  //   "**/.ruff_cache": true,
+  //   "**/*.egg-info": true
+  // },
+  // "files.watcherExclude": {
+  //   "**/.pixi/**": true,
+  //   "**/__pycache__/**": true,
+  //   "**/.pytest_cache/**": true,
+  //   "**/.mypy_cache/**": true,
+  //   "**/.ruff_cache/**": true,
+  //   "**/*.egg-info/**": true,
+  //   "**/build/**": true,
+  //   "**/dist/**": true,
+  //   "**/spar/offline_data/**": true,
+  //   "**/.git/**": true,
+  //   "**/.venv/**": true,
+  //   "**/node_modules/**": true,
+  //   "**/bower_components/**": true,
+  //   "**/logs/**": true,
+  //   "**/outputs/**": true,
+  //   "**/checkpoints/**": true,
+  //   "spar/offline_data/**": true,
+  //   ".git": true
+  // },
+  // ========== WORKSPACE SPECIFIC ==========
+  "explorer.compactFolders": false,
+  // "explorer.fileNesting.enabled": true,
+  // "explorer.fileNesting.expand": true,
+  // "explorer.fileNesting.patterns": {
+  //   "*.py": "$(capture).pyi",
+  //   "*.toml": "$(capture).lock",
+  //   "requirements.txt": "requirements*.txt, requirements*.in"
+  // },
+  "terminal.integrated.enableImages": true,
+  "yaml.schemas": {
+    "https://www.schemastore.org/github-action.json": [
+      "${workspaceFolder}/.github/workflows/publish_to_pypi.yml",
+      "${workspaceFolder}/.github/workflows/build_dist.yml"
+    ],
+    "https://raw.githubusercontent.com/astral-sh/ruff/main/ruff.schema.json": [
+      "${workspaceFolder}/ruff.toml"
+    ],
+    "https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/pyproject.json": [
+      "${workspaceFolder}/pyproject.toml"
+    ]
+  }
+}

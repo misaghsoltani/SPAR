@@ -1,0 +1,81 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "spar-datadash"
+dynamic = ["version"]
+description = "SPAR Data Dashboard: interactive effect exploration and config sweeps for SPAR environments"
+authors = [{ name = "Misagh Soltani", email = "msoltani@email.sc.edu" }]
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+keywords = [
+    "SPAR",
+    "Data Dashboard",
+    "Data Visualization",
+    "Data Variation",
+    "Rubik's Cube",
+    "Sokoban",
+]
+# The dashboard renders real SPAR states and effects, so it depends on the core
+# 'spar' distribution. 'spar[datadash]' -> 'spar-datadash' -> 'spar' is a diamond
+# that pip/uv resolve without cycles.
+dependencies = ["spar", "flask", "pillow", "numpy", "rich"]
+
+[project.urls]
+GitHub = "https://github.com/misaghsoltani/SPAR/"
+
+[project.scripts]
+spar-datadash = "spar_datadash.react_cli:main"
+
+[project.optional-dependencies]
+test = ["pytest", "pytest-cov", "pytest-mock"]
+dev = ["ruff", "mypy", "pyright"]
+
+[tool.hatch.version]
+path = "spar_datadash/__init__.py"
+
+[tool.hatch.build]
+skip-excluded-dirs = true
+reproducible = true
+# The compiled frontend is a build artifact ignored by VCS. 'artifacts' re-includes
+# it so every built wheel/sdist ships the ready-to-serve bundle and end users never
+# need Node.js at install time.
+artifacts = ["spar_datadash/_frontend/**"]
+
+# Build the React frontend into 'spar_datadash/_frontend' before the wheel/sdist is
+# cut. The hook is a no-op when Node.js/pnpm are unavailable or the bundle already
+# exists, so installing a pre-built wheel stays node-free.
+[tool.hatch.build.hooks.custom]
+path = "hatch_build.py"
+
+[tool.hatch.build.targets.wheel]
+only-packages = false
+packages = ["spar_datadash"]
+artifacts = ["spar_datadash/_frontend/**"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "spar_datadash/**",
+    "spar-datadash-react/**",
+    "hatch_build.py",
+    "README.md",
+]
+artifacts = ["spar_datadash/_frontend/**"]
+exclude = [
+    "*.py[cod]",
+    "__pycache__/**",
+    ".DS_Store",
+    "**/node_modules/**",
+    "**/.parcel-cache/**",
+    "**/.vite/**",
+    "spar-datadash-react/dist/**",
+]

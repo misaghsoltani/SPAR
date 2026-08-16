@@ -1,0 +1,81 @@
+# @package _global_
+# DigitJump-specific configuration for generating offline data (sim2real-style effects)
+
+defaults:
+  - default/gen_offline
+  - override /env: digitjump
+  - override /data: null
+  - _self_
+
+data:
+  num_cpus: 16
+  compression: false
+  use_variations: true
+  batch_size_per_worker: 0
+  variation_sharing_group_size: 1
+  save_dir: "spar/offline_data/${env.name}/sim2real"
+
+  datasets:
+    - name: train_with_vars
+      num_eps: 1000
+      num_steps: 30
+      start_seed: null
+      num_seeds: null
+      use_variations: true
+      variations_first_state_only: false
+      file_name: "train_${.num_eps}eps_${.num_steps}steps_with_vars"
+      batch_size_per_worker: 0
+      variation_sharing_group_size: 1
+
+    - name: val_with_vars
+      num_eps: 500
+      num_steps: 30
+      start_seed: null
+      num_seeds: null
+      use_variations: true
+      variations_first_state_only: false
+      file_name: "val_${.num_eps}eps_${.num_steps}steps_with_vars"
+      batch_size_per_worker: 0
+      variation_sharing_group_size: 1
+
+    - name: test_with_vars
+      num_eps: 100
+      num_steps: 10000
+      start_seed: null
+      num_seeds: null
+      use_variations: true
+      variations_first_state_only: true
+      file_name: "test_${.num_eps}eps_${.num_steps}steps_with_vars"
+      batch_size_per_worker: 0
+      variation_sharing_group_size: 1
+
+  effects:
+    camera_and_image:
+      enabled: true
+      background_image:
+        alpha: ${range:0.3,1.0}
+        resize_mode: ${choice:[fill]}
+      hsv_shift:
+        hue_shift: ${range:-0.02,0.02}
+        sat_scale: ${range:0.9,1.1}
+        val_scale: ${range:0.9,1.1}
+      contrast_brightness:
+        contrast: ${range:0.7,1.3}
+        brightness: ${range:-0.2,0.2}
+      zoom_effect:
+        factor: ${range:0.9,1.1}
+        interpolation: 1
+        border_mode: 4
+
+    minimal:
+      enabled: true
+      background_image:
+        alpha: ${range:0.2,0.9}
+        resize_mode: ${choice:[fill,contain,cover,center]}
+      ambient_light:
+        alpha: 0.4
+        color: "#ffd1a4"
+
+hydra:
+  run:
+    dir: outputs/experiments/${env.name}/gen_offline_sim2real/${now:%Y-%m-%d_%H-%M-%S}

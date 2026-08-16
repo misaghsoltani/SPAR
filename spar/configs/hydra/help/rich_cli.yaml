@@ -1,0 +1,21 @@
+app_name: "SPAR CLI"
+header: "${spar_help_header:${hydra.help.app_name}}"
+footer: "${spar_help_footer:}"
+template: |-
+  ${hydra.help.header}
+
+  ${spar_help_context:${oc.select:stage,""},${oc.select:env.name,""},${oc.select:hydra.runtime.choices.stage,""},${oc.select:hydra.runtime.choices.env,""}}
+
+  ${spar_help_usage:${oc.select:stage,""},${oc.select:env.name,""},${oc.select:hydra.runtime.choices.stage,""},${oc.select:hydra.runtime.choices.env,""}}
+
+  ${spar_help_examples:${oc.select:stage,""},${oc.select:env.name,""},${oc.select:hydra.runtime.choices.stage,""},${oc.select:hydra.runtime.choices.env,""}}
+
+  ${spar_help_tree:${oc.select:stage,""},${oc.select:env.name,""},${oc.select:hydra.runtime.choices.stage,""},${oc.select:hydra.runtime.choices.env,""}}
+
+  ${spar_help_experiments:${oc.select:env.name,""},${oc.select:hydra.runtime.choices.env,""}}
+
+  ${spar_help_resolved_defaults:${oc.select:save_dir,null},${oc.select:debug,null},${oc.select:hydra.runtime.choices.stage,""},${oc.select:env,null}}
+
+  ${spar_help_common_flags:}
+
+  ${hydra.help.footer}

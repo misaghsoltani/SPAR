@@ -1,0 +1,81 @@
+# @package train
+# Base configuration for DQN heuristic training
+
+# DQN-specific training configuration
+dqn:
+  # Core DQN training parameters
+  lr: 0.001
+  lr_d: 0.9999993
+  max_itrs: 100000
+  batch_size: 1000
+
+  # Target network update parameters
+  loss_thresh: 0.05
+  update_itrs: null # Use loss_thresh instead of fixed iterations
+  states_per_update: 50000
+  update_nnet_batch_size: 1000
+
+  # GBFS and exploration parameters
+  max_solve_steps: 1
+  eps_max: 0.1
+  per_eq_tol: 90.0
+
+  # Data generation parameters
+  start_steps: 10
+  goal_steps: 10
+  rb_itrs: 1
+
+  # Testing parameters
+  num_test: 1000
+
+  # GPU configuration
+  single_gpu_training: false
+
+  # Data paths (should be overridden in specific configs)
+  train_data_path: "data/offline_data_train.pkl"
+  val_data_path: "data/offline_data_val.pkl"
+  env_model_path: "saved_models/env_model"
+
+  # Save configuration
+  nnet_name: "heuristic_model"
+  save_dir: "saved_heur_models"
+
+  # FSDP configuration for distributed training
+  fsdp:
+    enabled: true
+    mixed_precision: true
+    cpu_offload: false
+    sharding_strategy: "FULL_SHARD"
+    auto_wrap_policy: "default"
+    sync_module_states: true
+    param_dtype: "float16"
+    reduce_dtype: "float16"
+    buffer_dtype: "float16"
+
+  # NCCL settings for GPU collectives
+  nccl:
+    ib_hca: "mlx5"
+    p2p_level: "NVL"
+    net_gdr_level: "PHB"
+    tree_threshold: "0"
+    debug_level: "INFO"
+    timeout_seconds: 300
+
+  # Memory management
+  memory:
+    pin_memory: true
+    shared_memory: true
+    memory_mapping: false
+    persistent_workers: true
+    prefetch_factor: 2
+    max_workers: 4
+
+  # PyTorch compilation and execution settings
+  optimization:
+    torch_compile: true
+    compile_mode: "reduce-overhead"
+    compile_fullgraph: true
+    cuda_graphs: true
+    fused_optimizer: true
+    gradient_clipping: 1.0
+    gradient_accumulation_steps: 1

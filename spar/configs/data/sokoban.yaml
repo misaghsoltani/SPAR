@@ -1,0 +1,495 @@
+# @package data
+# Sokoban-specific data configuration
+
+defaults:
+  - /data: default
+  - _self_
+
+# Default dataset configurations that can be used in experiment configs
+datasets:
+  - name: train
+    num_eps: 10
+    num_steps: 10
+    batch_size_per_worker: 2
+    file_name: "${env.name}_${.name}_${.num_eps}eps_${.num_steps}steps"
+    use_variations: true
+    variations_first_state_only: false
+    num_cpus: 10
+    compression: true
+
+effects:
+  # ambient_light:
+  #   enabled: true
+  #   alpha: ${range:0.2,0.95}
+  #   color: "#ffd1a4"
+
+  # directional_light:
+  #   enabled: true
+  #   gamma: ${range:0.3,2.5}
+  #   angle: ${range:0,360}
+  #   intensity: ${range:0.2,4.0}
+  #   ambient: ${range:0.01,0.9}
+  #   apply_vignette: true
+  #   vignette_strength: ${range:0.0,1.0}
+
+  # color_temperature:
+  #   enabled: true
+  #   shift: ${range:-0.5,0.5}
+
+  sokoban_style:
+    enabled: true
+    style: ${choice:["spar-default","retro-pixel","isometric-blueprint","zen-garden","neon-arcade","storybook-sketch","lunar-outpost","circuit-foundry","botanical-glasshouse","volcanic-forge","arctic-expedition"]}
+    image_dim: 40
+  hsv_shift:
+    enabled: true
+    hue_shift: ${range:-0.02,0.02}
+    sat_scale: ${range:0.2,2}
+    val_scale: ${range:0.1,1.4}
+  # contrast_brightness:
+  #   enabled: true
+  #   contrast: ${range:0.6,1.5}
+  #   brightness: ${range:-0.3,0.3}
+  # exposure_variation:
+  #   enabled: true
+  #   gamma: ${range:0.5,1.5}
+  rotate_image:
+    enabled: true
+    angle: ${range:-30,30}
+  # perspective_transform:
+  #   enabled: true
+  #   delta: ${range:0.03,0.2}
+  # zoom_effect:
+  #   enabled: true
+  #   factor: ${range:0.98,1.2}
+  #   interpolation: 1 # cv2.INTER_LINEAR
+  #   border_mode: 4 # cv2.BORDER_REFLECT_101
+  lens_glare:
+    enabled: true
+    intensity: ${range:0.02,0.65}
+    threshold: ${range:0.6,0.95}
+    bloom_strength: ${range:0.05,0.85}
+    bloom_radius: ${range:0.012,0.12}
+    halo_strength: ${range:0.02,0.55}
+    halo_radius: ${range:0.12,0.75}
+    ghost_strength: ${range:0.0,0.3}
+    num_ghosts: ${choice:[0,1,2,3,4,5]}
+    streak_strength: ${range:0.0,0.35}
+    streak_length: ${range:0.25,1.4}
+    streak_width: ${range:0.004,0.035}
+    angle: ${range:0,180}
+    source_x: ${range:-0.15,1.15}
+    source_y: ${range:-0.15,1.15}
+    chromatic: ${range:0.0,0.3}
+    glare_size: ${range:0.35,2.8}
+  reflections:
+    enabled: true
+    intensity: ${range:0.03,0.35}
+    num_reflections: ${choice:[1,2,3,4,5,6,7]}
+    size_min: ${range:0.01,0.06}
+    size_max: ${range:0.08,0.28}
+    sharpness: ${range:0.35,0.9}
+    elongation: ${range:0.8,3.5}
+    angle: ${range:-60,60}
+    color_temperature: ${range:0.2,0.8}
+    surface_gloss: ${range:0.45,0.95}
+    chromatic: ${range:0.0,0.35}
+    source_x: ${range:-0.15,1.15}
+    source_y: ${range:-0.15,1.15}
+    source_threshold: ${range:0.55,0.9}
+    reflection_x: ${range:0.0,1.0}
+    reflection_y: ${range:0.0,1.0}
+    position_spread: ${range:0.0,0.35}
+  resize_degradation:
+    enabled: true
+    strength: ${range:0.25,1.0}
+    resize_scale: ${range:0.25,0.95}
+    interpolation: bilinear
+    save_format: ${choice:[png,jpeg]}
+    jpeg_quality: ${range:35,95}
+    jpeg_subsampling: ${choice:[0,1,2]}
+    png_compress_level: ${range:0,9}
+    roundtrips: ${choice:[1,2]}
+  zoom_bg_rotate:
+    factor: ${range:0.4,0.98}
+    angle: ${range:-20,20}
+    translate_x: ${range:-0.25,0.25}
+    translate_y: ${range:-0.25,0.25}
+    background_mode: ${choice:[auto,color,image]}
+    background_color: ${choice:["#d8d4ca","#c5c2b8","#b8c4b2","#c2ccd6","#d6c6bd", "#e0e0e0", "#f0f0f0", "#ffffff", "#000000", "#4da3ff", "#9ecbff"]}
+    background_alpha: ${range:0.65,1.0}
+    background_blur: ${range:0.0,1.3}
+    background_noise: ${range:0.0,0.25}
+    image_probability: ${range:0.35,0.75}
+    interpolation: 1 # cv2.INTER_LINEAR
+  # Styled zoom-out capture rendered as a black-and-white print.
+  styled_zoom_black_and_white_print:
+    enabled: true
+    sokoban_style:
+      style: ${choice:["spar-default","retro-pixel","isometric-blueprint","zen-garden","neon-arcade","storybook-sketch","lunar-outpost","circuit-foundry","botanical-glasshouse","volcanic-forge","arctic-expedition"]}
+      image_dim: 40
+    zoom_bg_rotate:
+      factor: ${range:0.4,0.98}
+      angle: ${range:-20,20}
+      translate_x: ${range:-0.25,0.25}
+      translate_y: ${range:-0.25,0.25}
+      background_mode: ${choice:[auto,color,image]}
+      background_color: ${choice:["#d8d4ca","#c5c2b8","#b8c4b2","#c2ccd6","#d6c6bd", "#e0e0e0", "#f0f0f0", "#ffffff", "#000000", "#4da3ff", "#9ecbff"]}
+      background_alpha: ${range:0.65,1.0}
+      background_blur: ${range:0.0,1.3}
+      background_noise: ${range:0.0,0.25}
+      image_probability: ${range:0.35,0.75}
+      interpolation: 1 # cv2.INTER_LINEAR
+    black_and_white_print:
+      contrast: ${range:0.95,1.35}
+      edge_strength: ${range:0.04,0.2}
+      levels: ${choice:[8,12,16]}
+      dot_gain: ${range:0.1,0.28}
+      toner_density: ${range:0.9,0.98}
+      paper_gray: ${range:0.9,0.97}
+      yule_nielsen_n: ${range:1.4,2.4}
+      paper_texture: ${range:0.006,0.03}
+  # Phone capture zoom-out with real background visible in exposed gaps.
+  # Kept disabled in the default data config to avoid increasing baseline
+  # variation count. Sim-to-real experiments enable it explicitly.
+  phone_zoom_background:
+    enabled: true
+    zoom_bg_rotate:
+      factor: ${range:0.4,0.98}
+      angle: ${range:-20,20}
+      translate_x: ${range:-0.25,0.25}
+      translate_y: ${range:-0.25,0.25}
+      background_mode: ${choice:[auto,color,image]}
+      background_color: ${choice:["#d8d4ca","#c5c2b8","#b8c4b2","#c2ccd6","#d6c6bd", "#e0e0e0", "#f0f0f0", "#ffffff", "#000000", "#4da3ff", "#9ecbff"]}
+      background_alpha: ${range:0.65,1.0}
+      background_blur: ${range:0.0,1.3}
+      background_noise: ${range:0.0,0.25}
+      image_probability: ${range:0.35,0.75}
+      interpolation: 1 # cv2.INTER_LINEAR
+    lens_glare:
+      intensity: ${range:0.02,0.65}
+      threshold: ${range:0.6,0.95}
+      bloom_strength: ${range:0.05,0.85}
+      bloom_radius: ${range:0.012,0.12}
+      halo_strength: ${range:0.02,0.55}
+      halo_radius: ${range:0.12,0.75}
+      ghost_strength: ${range:0.0,2.0}
+      num_ghosts: ${choice:[0,1,2,3,4,5,6,7,8,9,10]}
+      streak_strength: ${range:0.0,0.35}
+      streak_length: ${range:0.25,1.4}
+      streak_width: ${range:0.004,0.035}
+      angle: ${range:0,180}
+      source_x: ${range:-0.15,1.15}
+      source_y: ${range:-0.15,1.15}
+      chromatic: ${range:0.0,0.3}
+      glare_size: ${range:0.35,2.8}
+    reflections:
+      intensity: ${range:0.03,0.6}
+      num_reflections: ${choice:[1,2,3,4,5,6,7,8,9,10]}
+      size_min: ${range:0.01,0.06}
+      size_max: ${range:0.08,0.28}
+      sharpness: ${range:0.35,0.9}
+      elongation: ${range:0.8,3.5}
+      angle: ${range:-60,60}
+      color_temperature: ${range:0.2,0.8}
+      surface_gloss: ${range:0.45,0.95}
+      chromatic: ${range:0.0,0.35}
+      source_x: ${range:-0.15,1.15}
+      source_y: ${range:-0.15,1.15}
+      source_threshold: ${range:0.55,0.9}
+      reflection_x: ${range:0.0,1.0}
+      reflection_y: ${range:0.0,1.0}
+      position_spread: ${range:0.0,0.35}
+    resize_degradation:
+      strength: ${range:0.25,1.0}
+      resize_scale: ${range:0.25,0.95}
+      interpolation: bilinear
+      save_format: ${choice:[png,jpeg]}
+      jpeg_quality: ${range:35,95}
+      jpeg_subsampling: ${choice:[0,1,2]}
+      png_compress_level: ${range:0,9}
+      roundtrips: ${choice:[1,2]}
+  # Styled phone capture combines categorical Sokoban styles with camera-like
+  # zoom, glare, reflection, and resize/compression effects.
+  styled_phone_zoom_background:
+    enabled: true
+    sokoban_style:
+      style: ${choice:["spar-default","retro-pixel","isometric-blueprint","zen-garden","neon-arcade","storybook-sketch","lunar-outpost","circuit-foundry","botanical-glasshouse","volcanic-forge","arctic-expedition"]}
+      image_dim: 40
+    zoom_bg_rotate:
+      factor: ${range:0.4,0.98}
+      angle: ${range:-20,20}
+      translate_x: ${range:-0.25,0.25}
+      translate_y: ${range:-0.25,0.25}
+      background_mode: ${choice:[auto,color,image]}
+      background_color: ${choice:["#d8d4ca","#c5c2b8","#b8c4b2","#c2ccd6","#d6c6bd", "#e0e0e0", "#f0f0f0", "#ffffff", "#000000", "#4da3ff", "#9ecbff"]}
+      background_alpha: ${range:0.65,1.0}
+      background_blur: ${range:0.0,1.3}
+      background_noise: ${range:0.0,0.25}
+      image_probability: ${range:0.35,0.75}
+      interpolation: 1 # cv2.INTER_LINEAR
+    lens_glare:
+      intensity: ${range:0.02,0.65}
+      threshold: ${range:0.6,0.95}
+      bloom_strength: ${range:0.05,0.85}
+      bloom_radius: ${range:0.012,0.12}
+      halo_strength: ${range:0.02,0.55}
+      halo_radius: ${range:0.12,0.75}
+      ghost_strength: ${range:0.0,2.0}
+      num_ghosts: ${choice:[0,1,2,3,4,5,6,7,8,9,10]}
+      streak_strength: ${range:0.0,0.35}
+      streak_length: ${range:0.25,1.4}
+      streak_width: ${range:0.004,0.035}
+      angle: ${range:0,180}
+      source_x: ${range:-0.15,1.15}
+      source_y: ${range:-0.15,1.15}
+      chromatic: ${range:0.0,0.3}
+      glare_size: ${range:0.35,2.8}
+    reflections:
+      intensity: ${range:0.03,0.6}
+      num_reflections: ${choice:[1,2,3,4,5,6,7,8,9,10]}
+      size_min: ${range:0.01,0.06}
+      size_max: ${range:0.08,0.28}
+      sharpness: ${range:0.35,0.9}
+      elongation: ${range:0.8,3.5}
+      angle: ${range:-60,60}
+      color_temperature: ${range:0.2,0.8}
+      surface_gloss: ${range:0.45,0.95}
+      chromatic: ${range:0.0,0.35}
+      source_x: ${range:-0.15,1.15}
+      source_y: ${range:-0.15,1.15}
+      source_threshold: ${range:0.55,0.9}
+      reflection_x: ${range:0.0,1.0}
+      reflection_y: ${range:0.0,1.0}
+      position_spread: ${range:0.0,0.35}
+    resize_degradation:
+      strength: ${range:0.25,1.0}
+      resize_scale: ${range:0.25,0.95}
+      interpolation: bilinear
+      save_format: ${choice:[png,jpeg]}
+      jpeg_quality: ${range:35,95}
+      jpeg_subsampling: ${choice:[0,1,2]}
+      png_compress_level: ${range:0,9}
+      roundtrips: ${choice:[1,2]}
+  # spatial_perturbation:
+  #   enabled: true
+  #   max_translation: ${range:0.01,0.1}
+  #   max_rotation: ${range:1.0,20.0}
+  #   max_scale: ${range:0.01,0.2}
+  adversarial_noise:
+    enabled: true
+    frequency: ${range:3,28}
+    amplitude: ${range:0.03,0.18}
+  # Noise effects
+  gaussian_noise:
+    enabled: true
+  #   noise_level: ${range:0.01,0.2}
+  # salt_pepper_noise:
+  #   enabled: true
+  #   amount: ${range:0.001,0.05}
+  #   salt_vs_pepper: ${range:0.0,1.0}
+  # poisson_noise:
+  #   enabled: true
+  # speckle_noise:
+  #   enabled: true
+  # color_banding:
+  #   enabled: true
+  #   levels: ${choice:[2,4,8,16,32]}
+  gaussian_blur:
+    enabled: true
+    sigma: ${range:0.3,2.5}
+  # motion_blur:
+  #   enabled: true
+  #   kernel_size: ${choice:[3,5,7,9,11,13,15]}
+  defocus_blur:
+    enabled: true
+    sigma: ${range:0.2,3.0}
+  radial_blur:
+    enabled: true
+    num_rotations: ${range:2,15}
+    max_angle: ${range:5.0,10.0}
+
+  # Occlusion and weather effects
+  # random_occluders:
+  #   enabled: true
+  #   num_shapes: ${range:1,5}
+  # edge_cropping:
+  #   enabled: true
+  #   crop_fraction: ${range:0.01,0.1}
+  fog_haze:
+    enabled: true
+    spread: ${range:0.15,1.5}
+    intensity: ${range:0.3,0.85}
+  rain_effect:
+    enabled: true
+    num_streaks: ${range:5,50}
+    thickness: 1
+  # sensor_inaccuracy:
+  #   enabled: true
+  #   noise_level: ${range:0.01,0.1}
+  #   sp_amount: ${range:0.001,0.02}
+  #   sp_ratio: ${range:0.0,1.0}
+
+  # Effect combinations - predefined combinations for specific use cases
+  # Lighting focused combination
+  lighting_only:
+    enabled: true
+    ambient_light:
+      alpha: ${range:0.001,0.6}
+    directional_light:
+      gamma: ${range:0.4,2.0}
+      angle: ${range:0,360}
+      intensity: ${range:0.1,2.5}
+      ambient: ${range:0.1,0.8}
+      apply_vignette: true
+      vignette_strength: ${range:0.0,0.6}
+    color_temperature:
+      shift: ${range:-0.5,0.5}
+
+  # Noise and distortion combination
+  noise_and_distortion:
+    enabled: true
+    gaussian_noise:
+      noise_level: ${range:0.05,0.3}
+    salt_pepper_noise:
+      amount: ${range:0.001,0.006}
+    motion_blur:
+      kernel_size: ${choice:[3,5]}
+    perspective_transform:
+      delta: ${range:0.03,0.045}
+
+  # # Heavy augmentation for stress testing
+  # stress_test:
+  #   enabled: true
+  #   gaussian_noise:
+  #     noise_level: 0.2
+  #   motion_blur:
+  #     kernel_size: 7
+  #   rotate_image:
+  #     angle: ${range:-15,15}
+  #   zoom_effect:
+  #     factor: ${range:1.05,1.3}
+  #   hsv_shift:
+  #     hue_shift: ${range:-0.4,0.5}
+  #     sat_scale: ${range:0.2,2}
+  #     val_scale: ${range:0.1,1.4}
+
+  # Indoor/artificial lighting conditions
+  indoor_lighting:
+    enabled: true
+    ambient_light:
+      alpha: ${range:0.3,0.7}
+      color: "#ffe5cc" # Warm indoor lighting
+    color_temperature:
+      shift: ${range:0.1,0.3} # Warmer bias
+    contrast_brightness:
+      contrast: ${range:0.7,1.2}
+      brightness: ${range:-0.1,0.2}
+    gaussian_noise:
+      noise_level: ${range:0.01,0.05} # Minimal sensor noise
+
+  # Outdoor/natural lighting with weather
+  outdoor:
+    enabled: true
+    directional_light:
+      gamma: ${range:0.3,2.0}
+      angle: ${range:0,360}
+      intensity: ${range:0.1,3.0}
+      ambient: ${range:0.0,0.8}
+      apply_vignette: true
+      vignette_strength: ${range:0.0,0.8}
+    fog_haze:
+      spread: ${range:0.3,1.4}
+      intensity: ${range:0.2,0.5}
+    rain_effect:
+      num_streaks: ${range:8,15}
+      thickness: ${choice:[1]}
+    gaussian_blur:
+      sigma: ${range:0.5,1.5} # Atmospheric blur
+    exposure_variation:
+      gamma: ${range:0.7,1.2}
+
+  # Camera shake and motion simulation
+  motion_conditions:
+    enabled: true
+    motion_blur:
+      kernel_size: ${choice:[5,7]}
+    spatial_perturbation:
+      max_translation: ${range:0.05,0.1}
+      max_rotation: ${range:0.5,1.5}
+      max_scale: ${range:0.05,0.2}
+    gaussian_noise:
+      noise_level: ${range:0.02,0.08}
+    perspective_transform:
+      delta: ${range:0.02,0.08}
+
+  # # Underwater/aquatic environment simulation
+  # underwater:
+  #   enabled: true
+  #   color_temperature:
+  #     shift: ${range:-0.3,-0.1} # Blue-green tint
+  #   fog_haze:
+  #     spread: ${range:0.5,2.0}
+  #     intensity: ${range:0.3,0.7}
+  #   gaussian_blur:
+  #     sigma: ${range:1.0,2.7} # Water distortion
+  #   hsv_shift:
+  #     hue_shift: ${range:-0.2,0.1} # Blue-green bias
+  #     sat_scale: ${range:0.6,1.2}
+  #     val_scale: ${range:0.5,0.9} # Darker overall
+  # barrel_distortion:
+  #   strength: ${range:0.000001,0.0001} # Water lens effect
+
+  # Surveillance/security camera simulation
+  surveillance:
+    enabled: true
+    gaussian_noise:
+      noise_level: ${range:0.05,0.15} # Typical camera noise
+    salt_pepper_noise:
+      amount: ${range:0.01,0.05}
+      salt_vs_pepper: ${range:0.3,0.6}
+    motion_blur:
+      kernel_size: ${choice:[3,5]} # Compression artifacts
+    contrast_brightness:
+      contrast: ${range:0.7,1.1}
+      brightness: ${range:-0.15,0.1}
+    color_banding:
+      levels: ${choice:[8,16]} # Compression effects
+    edge_cropping:
+      crop_fraction: ${range:0.02,0.1} # Lens vignetting
+
+  # # Vintage/old camera simulation
+  # vintage_camera:
+  #   enabled: true
+  #   color_banding:
+  #     levels: ${choice:[2,4,8,16]} # Low bit depth
+  #   # barrel_distortion:
+  #   #   strength: ${range:0.000001,0.00005} # Lens distortion
+  #   gaussian_noise:
+  #     noise_level: ${range:0.1,0.15} # Film grain
+  #   salt_pepper_noise:
+  #     amount: ${range:0.02,0.08} # Dust and scratches
+  #   exposure_variation:
+  #     gamma: ${range:0.6,1.2} # Inconsistent exposure
+  #   color_temperature:
+  #     shift: ${range:-0.2,0.3} # Color cast variations
+  #   edge_cropping:
+  #     crop_fraction: ${range:0.05,0.08}
+
+  # Microscopy/close-up imaging
+  microscopy:
+    enabled: true
+    gaussian_blur:
+      sigma: ${range:0.5,1.5} # Depth of field limitations
+    defocus_blur:
+      sigma: ${range:1.0,1.5}
+    gaussian_noise:
+      noise_level: ${range:0.03,0.12} # Sensor noise at high magnification
+    contrast_brightness:
+      contrast: ${range:1.1,1.3} # Contrast above 1.0 keeps tiles distinct
+      brightness: ${range:-0.05,0.05}
+    ambient_light:
+      alpha: ${range:0.2,0.5}
+      color: "#ffffff" # Bright illumination
+    adversarial_noise:
+      frequency: ${range:20,30} # High-frequency artifacts
+      amplitude: ${range:0.02,0.08}

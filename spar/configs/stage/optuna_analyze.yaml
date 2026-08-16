@@ -1,0 +1,14 @@
+# @package _global_
+# Optuna study analysis stage
+
+defaults:
+  - /schema/optuna_analyze_schema@_here_
+  - /optuna: default
+  - /wandb: default
+  - _self_
+
+stage: optuna_analyze
+
+wandb:
+  mode: disabled
+  job_type: optuna_analyze

@@ -1,0 +1,119 @@
+# @package _global_
+# Leave-One-Out Cross-Validation Testing for IceSlider Alignment Model
+# This sweep configuration tests alignment models trained with leave-one-out validation
+# Must be run after the training sweep: experiment=iceslider/leave_one_out_train
+# Usage: python -m spar +experiment=iceslider/leave_one_out_test
+
+defaults:
+  - override /env: iceslider
+  - override /stage: test_model_disc
+  - override /hydra/sweeper: basic
+  - _self_
+
+# Hydra sweep configuration for leave-one-out testing
+hydra:
+  mode: MULTIRUN
+  sweeper:
+    params:
+      test.dataloader.variations_to_use: choice(
+        [background_image],
+        [background_texture],
+        [background_randomization],
+        [cube_color_calibration],
+        [cube_sticker_wear],
+        [cube_material_finish],
+        [cube_sticker_imperfections],
+        [ambient_light],
+        [directional_light],
+        [color_temperature],
+        [hsv_shift],
+        [contrast_brightness],
+        [exposure_variation],
+        [rotate_image],
+        [perspective_transform],
+        [zoom_effect],
+        [spatial_perturbation],
+        [adversarial_noise],
+        [barrel_distortion],
+        [gaussian_noise],
+        [salt_pepper_noise],
+        [poisson_noise],
+        [speckle_noise],
+        [color_banding],
+        [motion_blur],
+        [defocus_blur],
+        [radial_blur],
+        [occluders],
+        [edge_cropping],
+        [fog_haze],
+        [rain_effect],
+        [sensor_inaccuracy],
+        [camera_variation]
+        )
+
+  job:
+    name: iceslider_loo_test_${test.dataloader.variations_to_use[0]}
+    chdir: false
+  run:
+    dir: ${hydra:runtime.sweep} # ${save_dir}/experiments/iceslider/leave_one_out_validation/test/hold_out_${test.dataloader.variations_to_use[0]}
+  sweep:
+    dir: ${save_dir}/experiments/iceslider/leave_one_out_validation/test/${now:%Y-%m-%d_%H-%M-%S}
+    subdir: hold_out_${test.dataloader.variations_to_use[0]} # ${hydra.job.num}
+
+# Data paths
+data_paths:
+  test_data: /<absolute path to project root>/DeepCubeAI_Modified/spar/data/offline_data/iceslider/variations/var_test_100eps_10000steps.h5
+
+# Save paths for test results
+save_paths:
+  images_dir: ${hydra:runtime.output_dir}/model_tests/images/discrete
+  plots_dir: ${hydra:runtime.output_dir}/model_tests/plots/discrete
+  metrics_dir: ${hydra:runtime.output_dir}/model_tests/metrics/discrete
+
+# Pretrained model paths
+pretrained_model_paths:
+  encoder_path: spar/saved_models/world_models/iceslider_world_model_disc/world_model_checkpoint_encoder.pt
+  transition_model_path: spar/saved_models/world_models/iceslider_world_model_disc/world_model_checkpoint_transition_model.pt
+  decoder_path: spar/saved_models/world_models/iceslider_world_model_disc/world_model_checkpoint_decoder.pt
+  alignment_model_path: spar/saved_models/alignment_models/iceslider_alignment_model_disc_loo_${test.dataloader.variations_to_use[0]}/alignment_model_checkpoint_alignment_model.pt
+
+# Testing configuration - test only on the holdout variation
+test:
+  end_to_end: false
+  use_alignment_model: true
+  precompute_targets: true
+  use_variation_for_all_states: false
+  log_interval: 1000
+  save_interval: 2000
+  visualization_format: png
+  visualization_episode_index: 0
+  visualization_steps: [1, 5, 30, 100]
+
+  dataloader:
+    batch_size: 100
+    # enable_memory_optimization: false
+    variations_to_ignore: null
+
+# W&B configuration
+wandb:
+  mode: offline
+  job_type: test
+  group: iceslider_leave_one_out_test
+  tags:
+    - leave_one_out
+    - iceslider
+    - alignment_model
+    - discrete
+    - test
+    - holdout_${test.dataloader.variations_to_use[0]}
+  name: loo_test_holdout_${test.dataloader.variations_to_use[0]}
+# # Sweep metadata for reference
+# sweep_metadata:
+#   description: "Leave-One-Out Cross-Validation Testing for IceSlider Alignment Model"
+#   total_variations: 35
+#   validation_type: "leave_one_out"
+#   stage: "test_model"
+#   model_type: "discrete"
+#   environment: "iceslider"
+#   test.dataloader.variations_to_use[0]: "${test.dataloader.variations_to_use[0]}"
+#   note: "This tests models trained with: experiment=iceslider/leave_one_out_validation"

@@ -1,0 +1,127 @@
+# @package _global_
+# Optuna HPO for Sokoban discrete alignment model.
+
+defaults:
+  - override /env: sokoban
+  - override /stage: optuna_study
+  - _self_
+
+stage: optuna_study
+
+optuna:
+  study:
+    study_name: sokoban_alignment_disc_hpo
+    n_trials: 24
+    timeout_sec: null
+    n_jobs: 1
+    seed: 20260620
+    load_if_exists: true
+    gc_after_trial: true
+    show_progress_bar: false
+    catch_exceptions: true
+    recoverable_error_action: prune
+    base_overrides:
+      - train.device=cuda
+      - wandb.mode=disabled
+    workflow:
+      - name: train_alignment
+        role: objective
+        stage: train_alignment_disc
+        experiment: sokoban/train_alignment_disc
+        overrides:
+          # Multi-fidelity proxy budget for HPO. Full-budget replay/final training
+          # uses the default 100k/140k/180k/200k phase endpoints.
+          - train.phases.0.max_itrs=20000
+          - train.phases.1.max_itrs=40000
+          - train.phases.2.max_itrs=60000
+          - train.phases.3.max_itrs=80000
+          - train.checkpoint_interval=2000
+          # HPO uses the existing compact sim2real proxy dataset to avoid
+          # eager-loading the 100GB+ full Sokoban train file in every trial.
+          # Replay/materialized final configs keep the full train/val/test data.
+          - data_paths.train_data=spar/offline_data/sokoban/sim2real/train_1000eps_30steps_with_vars.h5
+          - data_paths.val_data=spar/offline_data/sokoban/sim2real/val_500eps_30steps_with_vars.h5
+          - data_paths.test_data=spar/offline_data/sokoban/sim2real/test_100eps_10000steps_with_vars.h5
+        objective:
+          name: val_loss
+          step: train_alignment
+          goal: minimize
+    objective:
+      name: val_loss
+      step: train_alignment
+      goal: minimize
+
+  storage:
+    kind: journal
+
+  sampler:
+    kind: tpe
+    seed: 20260620
+    n_startup_trials: 8
+    multivariate: false
+    group: false
+    constant_liar: false
+
+  pruner:
+    kind: median
+    n_startup_trials: 6
+    n_warmup_steps: 20000
+    interval_steps: 20000
+    n_min_trials: 2
+
+  runtime:
+    output_root: outputs/optuna
+    device_policy: explicit
+    device: cuda
+    disable_wandb: true
+    copy_resolved_configs: true
+    fail_on_missing_artifacts: true
+    prune_on_invalid_config: true
+    abort_on_unexpected_errors: false
+
+  analysis:
+    top_k: 8
+    export_csv: true
+    compute_param_importances: true
+
+  parameters:
+    - name: batch_size
+      path: train.dataloader.batch_size
+      step: train_alignment
+      kind: categorical
+      choices: [64, 100, 128]
+
+    - name: lr_phase0
+      path: train.phases[0].lr
+      step: train_alignment
+      kind: categorical
+      choices: [0.0005, 0.001, 0.002]
+    - name: lr_phase1
+      path: train.phases[1].lr
+      step: train_alignment
+      kind: categorical
+      choices: [0.00005, 0.0001, 0.0002]
+    - name: lr_phase2
+      path: train.phases[2].lr
+      step: train_alignment
+      kind: categorical
+      choices: [0.000005, 0.00001, 0.00002]
+    - name: lr_phase3
+      path: train.phases[3].lr
+      step: train_alignment
+      kind: categorical
+      choices: [0.0000005, 0.000001, 0.000002]
+
+    # Architecture choices are constrained to shapes already represented by
+    # local Sokoban alignment checkpoints: disc_2 uses 32 channels/6 blocks,
+    # disc_3 and the current model config use 64 channels/8 blocks.
+    - name: resnet_chan
+      path: model.discrete.alignment_model.resnet_chan
+      step: train_alignment
+      kind: categorical
+      choices: [32, 64]
+    - name: num_resnet_blocks
+      path: model.discrete.alignment_model.num_resnet_blocks
+      step: train_alignment
+      kind: categorical
+      choices: [6, 8]

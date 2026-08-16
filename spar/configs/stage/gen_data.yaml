@@ -1,0 +1,34 @@
+# @package _global_
+# Unified configuration for all types of data generation with distributed W&B support
+
+# Hydra stage and defaults for data generation
+defaults:
+  - /schema/gen_data_schema@_here_
+  - /data: ${env}
+  - /wandb: distributed_shared
+  - _self_
+
+stage: gen_data
+
+# W&B settings for distributed data generation
+wandb:
+  job_type: gen-data
+  save_code: true
+  log_freq: 100
+  log_model: false
+  group: "${env.name}"
+  notes: "SPAR Data Generation Pipeline"
+  id: "${env.name}_${stage}_${now:%Y-%m-%d_%H-%M-%S}"
+
+  settings_dict:
+    run_id: ${..id}
+    x_stats_cpu_count: ${data.num_cpus}
+    x_stats_cpu_logical_count: ${data.num_cpus}
+    x_stats_gpu_count: 0
+    x_primary: true
+
+  tags:
+    - ${env.name}
+    - ${stage}
+    - ${now:%Y-%m-%d}
+    - data_generation

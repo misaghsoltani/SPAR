@@ -1,0 +1,16 @@
+# @package _global_
+# Settings for the MSE plotter stage
+
+defaults:
+  - /schema/mse_plotter_schema@_here_
+  - /plotter: mse_plotter
+  - /wandb: default
+  - _self_
+
+stage: mse_plotter
+
+# W&B configuration for MSE plotter
+wandb:
+  mode: disabled
+  job_type: mse_plotter
+  name: mse-plotter-${now:%Y-%m-%d_%H-%M-%S}

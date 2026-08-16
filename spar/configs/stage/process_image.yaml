@@ -1,0 +1,60 @@
+# @package _global_
+# Configuration for image processing stage
+
+defaults:
+  - /schema/process_image_schema@_here_
+  - /model: ${env}
+  - /wandb: default
+  - _self_
+
+stage: process_image
+alignment_model_type: discrete
+device: "cuda"
+
+paths:
+  input_image: /Users/misagh/Downloads/IMG_4348.png #spar/offline_data/${env.name}/sim2real/left5.png
+  input_image2: /Users/misagh/Downloads/IMG_4347.png #spar/offline_data/${env.name}/sim2real/right5.png
+  output_dir: outputs/image_processing_${env.name}
+  # Explicit output filenames (include extension). These override default names when set.
+  processed_image: outputs/image_processing_${env.name}/resized_input_DISCRETE_2.png
+  reconstruction_image: outputs/image_processing_${env.name}/reconstruction_DISCRETE_2.png
+  encoding_info: outputs/image_processing_${env.name}/discrete_encoding_info_DISCRETE.txt
+  final_viz: outputs/image_processing_${env.name}/final_viz_DISCRETE_2.pdf
+
+pretrained_model_paths:
+  # encoder_path: MISSING                    # Path to trained encoder checkpoint
+  decoder_path: spar/saved_models/world_models/${env.name}_world_model_disc/world_model_checkpoint_decoder.pt
+  alignment_model_path: spar/saved_models/alignment_models/${env.name}_alignment_model_disc_sim2real/alignment_model_checkpoint_alignment_model.pt
+
+processing:
+  target_height: 32
+  target_width: 32
+  concatenate: true # Whether to concatenate two images
+  quality_interpolation: LANCZOS # NEAREST, LINEAR, CUBIC, LANCZOS
+  processing_method: matplotlib # opencv, matplotlib
+
+  # Visualization titles and labels (can be empty strings to hide)
+  main_title: "" #"SPAR Alignment Model's Result on Real-World Images"
+  original_title: "Original Input"
+  processed_title: "Resized Input"
+  reconstructed_title: "Reconstructed Result"
+  subtitle_template: "" #"Original Dimensions: {orig_w}×{orig_h}×{orig_c} | Resized Dimensions: {proc_w}×{proc_h}×{proc_c} | Reconstruction Dimensions: {recon_w}×{recon_h}×{recon_c}"
+
+model:
+  # continuous: null
+  dqn: null
+
+wandb:
+  mode: disabled
+  job_type: process_image
+  save_code: false
+  log_freq: 1
+  log_model: false
+  group: "${env.name}"
+  notes: "SPAR Image Processing Pipeline"
+  id: "${env.name}-process_image_${now:%Y-%m-%d_%H-%M-%S}"
+
+  tags:
+    - ${env.name}
+    - ${stage}
+    - image_processing

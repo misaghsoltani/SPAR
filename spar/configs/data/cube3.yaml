@@ -1,0 +1,426 @@
+# @package data
+# Cube3-specific data configuration
+
+defaults:
+  - /data: default
+  - _self_
+
+# Default dataset configurations that can be used in experiment configs
+datasets:
+  - name: train
+    num_eps: 10
+    num_steps: 10
+    batch_size_per_worker: 0 # Auto-calculate based on num_cpus
+    file_name: "${env.name}_${.name}_${.num_eps}eps_${.num_steps}steps"
+    use_variations: true
+    variations_first_state_only: false
+    num_cpus: 10
+    compression: true
+
+  - name: val
+    num_eps: 8
+    num_steps: 8
+    batch_size_per_worker: 0 # Auto-calculate based on num_cpus
+    file_name: "${env.name}_${.name}_${.num_eps}eps_${.num_steps}steps"
+    use_variations: false
+    variations_first_state_only: false
+    num_cpus: 10
+    compression: true
+
+  - name: test
+    num_eps: 6
+    num_steps: 6
+    batch_size_per_worker: 0 # Auto-calculate based on num_cpus
+    file_name: "${env.name}_${.name}_${.num_eps}eps_${.num_steps}steps"
+    use_variations: true
+    variations_first_state_only: true
+    num_cpus: 10
+    compression: true
+
+effects:
+  # Background effects
+  # background_color_shift:
+  #   enabled: true
+  #   color: "#cccccc"
+  # background_image:
+  #   enabled: true
+  #   alpha: ${range:0.3,1.0}
+  #   resize_mode: ${choice:[fill]} #fill,contain,cover,center]}
+  # background_texture:
+  #   enabled: true
+  #   texture_type: ${choice:[grid,dots,stripes,noise,crosshatch,waves]}
+  #   color: ${choice:[gray, red, blue, green, yellow, black, white, orange, purple]}
+  #   density: ${range:0.1,0.7}
+  #   alpha: ${range:0.3,1.0}
+  # background_randomization:
+  #   enabled: true
+
+  cube_in_love:
+    enabled: true
+    camera_variation:
+      yaw: ${range:-10,10}
+      pitch: ${range:-10,10}
+      roll: ${range:-10,10}
+    cube_in_love:
+      heart_count: ${irange:10,25}
+      color: ${choice:["#ffcccc","#ff9999","#ff6666","#ff3333","#ff0000","#cc0000","#990000","#660000","#330000"]}
+      size_range: [0.5, 2]
+      alpha: ${range:0.5,0.9}
+
+  # Cube-specific effects
+  # cube_color_shift:
+  #   enabled: true
+  #   r: ${range:-0.15,0.15}
+  #   g: ${range:-0.15,0.15}
+  #   b: ${range:-0.15,0.15}
+  # cube_color_calibration:
+  #   enabled: true
+  #   r_scale: ${range:0.0,1.5}
+  #   g_scale: ${range:0.0,1.5}
+  #   b_scale: ${range:0.0,1.5}
+  # cube_sticker_wear:
+  #   enabled: true
+  #   fade_factor: ${range:0.0,0.8}
+  # cube_texture_scratches:
+  #   enabled: true
+  #   noise_level: ${range:0.0,0.35}
+  # cube_material_finish:
+  #   enabled: true
+  #   finish: ${choice:[matte,glossy]}
+  # cube_sticker_imperfections:
+  #   enabled: true
+  #   jitter: ${range:0.0,0.2}
+
+  # Camera effects
+  camera_variation:
+    enabled: true
+    yaw: ${range:-20,20}
+    pitch: ${range:-10,10}
+    roll: ${range:-8,8}
+  # camera_left_angle:
+  #   enabled: true
+  #   yaw: ${range:-180,180}
+  #   pitch: ${range:-90,90}
+  #   roll: ${range:-180,180}
+  # camera_preset:
+  #   enabled: true
+  #   preset: ${choice:[default,top,side,corner,low,high]}
+
+  # Color variation combination
+  color_variations:
+    enabled: true
+    hsv_shift:
+      hue_shift: ${range:-0.01,0.01}
+      sat_scale: ${range:0.95,1.05}
+      val_scale: ${range:0.95,1.05}
+    cube_color_shift:
+      r: ${range:-0.08,0.08}
+      g: ${range:-0.08,0.08}
+      b: ${range:-0.08,0.08}
+    contrast_brightness:
+      contrast: ${range:0.3,1.2}
+      brightness: ${range:-0.2,0.2}
+
+  # Minimal effects for clean training
+  minimal:
+    enabled: true
+    background_color_shift:
+      color: ${choice:["#f0f0f0", "#e0e0e0", "#ffffff", "#dddddd"]}
+    ambient_light:
+      alpha: 0.4
+      color: ${choice:["#ffd1a4", "#ffffff", "#ffe5cc", "#fff5e6"]}
+
+  # # Heavy augmentation for stress testing
+  # stress_test:
+  #   enabled: true
+  #   gaussian_noise:
+  #     noise_level: 0.2
+  #   motion_blur:
+  #     kernel_size: 15
+  #   rotate_image:
+  #     angle: ${range:-30,30}
+  #   zoom_effect:
+  #     factor: ${range:1.05,1.5}
+  #     interpolation: 1  # cv2.INTER_LINEAR
+  #     border_mode: 4    # cv2.BORDER_REFLECT_101
+  #   hsv_shift:
+  #     hue_shift: ${range:-0.35,0.35}
+  #     sat_scale: ${range:0.0,1.5}
+  #     val_scale: ${range:0.0,1.5}
+
+  # Competition cube under indoor lighting
+  indoor_glossy:
+    enabled: true
+    # Cube-specific effects for competition appearance
+    cube_material_finish:
+      finish: "glossy" # Competition cubes are typically glossy
+    cube_sticker_imperfections:
+      jitter: ${range:0.0,0.05} # Minimal imperfections for competition cubes
+    cube_color_calibration:
+      r_scale: ${range:0.9,1.1}
+      g_scale: ${range:0.9,1.1}
+      b_scale: ${range:0.9,1.1}
+    # Indoor lighting conditions
+    ambient_light:
+      alpha: ${range:0.3,0.6}
+      color: "#ffe5cc" # Warm indoor lighting
+    color_temperature:
+      shift: ${range:0.05,0.25} # Slight warm bias
+    camera_variation:
+      yaw: ${range:-15,15}
+      pitch: ${range:-8,8}
+      roll: ${range:-5,5}
+
+  # # Old/worn cube simulation
+  # vintage_cube:
+  #   enabled: true
+  #   # Cube wear and aging effects
+  #   cube_sticker_wear:
+  #     fade_factor: ${range:0.3,0.4}
+  #   cube_texture_scratches:
+  #     noise_level: ${range:0.1,0.3}
+  #   cube_sticker_imperfections:
+  #     jitter: ${range:0.05,0.1}
+  #   cube_color_shift:
+  #     r: ${range:-0.1,0.1}
+  #     g: ${range:-0.1,0.1}
+  #     b: ${range:-0.1,0.1}
+  #   # Vintage camera effects
+  #   color_banding:
+  #     levels: ${choice:[4,8,16]}
+  #   gaussian_noise:
+  #     noise_level: ${range:0.05,0.15}
+  #   salt_pepper_noise:
+  #     amount: ${range:0.008,0.01}
+  #   exposure_variation:
+  #     gamma: ${range:0.7,1.0}
+  #   edge_cropping:
+  #     crop_fraction: ${range:0.02,0.08}
+
+  # # Speedcubing
+  # speedcube:
+  #   enabled: true
+  #   # Fast motion effects
+  #   motion_blur:
+  #     kernel_size: ${choice:[5,7,9]}
+  #   spatial_perturbation:
+  #     max_translation: ${range:0.02,0.1}
+  #     max_rotation: ${range:1.0,5.0}
+  #     max_scale: ${range:0.02,0.15}
+  # Camera shake from fast movements
+  # camera_variation:
+  #   yaw: ${range:-25,25}
+  #   pitch: ${range:-12,12}
+  #   roll: ${range:-10,10}
+  # cube_material_finish:
+  #   finish: ${choice:[matte,glossy]}
+  # cube_sticker_imperfections:
+  #   jitter: ${range:0.02,0.1}
+  # # Lighting variation
+  # ambient_light:
+  #   alpha: ${range:0.2,0.7}
+  #   color: "#ffd1a4"
+  # gaussian_noise:
+  #   noise_level: ${range:0.01,0.06}
+
+  # # Low light cube solving
+  # cube_low_light:
+  #   enabled: true
+  #   # Cube appearance in low light
+  #   cube_color_shift:
+  #     r: ${range:-0.2,0.1}
+  #     g: ${range:-0.2,0.1}
+  #     b: ${range:-0.1,0.2} # Slight blue shift
+  #   cube_material_finish:
+  #     finish: ${choice:[matte,glossy]}
+  #   # Low light camera effects
+  #   ambient_light:
+  #     alpha: ${range:0.7,1.0}
+  #     color: "#a6b4ff" # Cool night vision tint
+  #   gaussian_noise:
+  #     noise_level: ${range:0.08,0.2}
+  #   sensor_inaccuracy:
+  #     noise_level: ${range:0.03,0.1}
+  #     sp_amount: ${range:0.005,0.02}
+  #   contrast_brightness:
+  #     contrast: ${range:1.1,1.4}
+  #     brightness: ${range:-0.15,-0.05}
+  #   camera_variation:
+  #     yaw: ${range:-10,10}
+  #     pitch: ${range:-5,5}
+  #     roll: ${range:-3,3}
+
+  # Outdoor cube solving
+  outdoor_lighting:
+    enabled: true
+    # Natural lighting variation
+    directional_light:
+      gamma: ${range:0.3,3.0}
+      angle: ${range:0,360}
+      intensity: ${range:0.1,5.0}
+      ambient: ${range:0.0,1.0}
+      apply_vignette: true
+      vignette_strength: ${range:0.0,1.0}
+    color_temperature:
+      shift: ${range:-0.2,0.2}
+    # Weather effects
+    gaussian_blur:
+      sigma: ${range:0.3,1.2} # Atmospheric effects
+    exposure_variation:
+      gamma: ${range:0.8,1.2}
+    # Cube effects in outdoor conditions
+    cube_color_calibration:
+      r_scale: ${range:0.95,1.05}
+      g_scale: ${range:0.95,1.05}
+      b_scale: ${range:0.95,1.05}
+    camera_variation:
+      yaw: ${range:-15,15}
+      pitch: ${range:-15,15}
+      roll: ${range:-10,10}
+    background_randomization:
+      enabled: true
+    gaussian_noise:
+      noise_level: ${range:0.02,0.08}
+
+  # Cube bright setup
+  bright_lighting:
+    enabled: true
+    # Clean, well-lit appearance for tutorials
+    ambient_light:
+      alpha: ${range:0.4,0.6}
+      color: "#ffffff" # Bright white lighting
+    contrast_brightness:
+      contrast: ${range:1.0,1.2}
+      brightness: ${range:0.0,0.15}
+    # Cube colors selected to keep adjacent stickers distinct
+    cube_material_finish:
+      finish: "glossy"
+    cube_color_calibration:
+      r_scale: ${range:1.0,1.2}
+      g_scale: ${range:1.0,1.2}
+      b_scale: ${range:1.0,1.2}
+    # Stable camera position
+    # camera_preset:
+    #   preset: ${choice:[default,corner,side]}
+    camera_variation:
+      yaw: ${range:-5,5}
+      pitch: ${range:-3,3}
+      roll: ${range:-2,2}
+    # Minimal noise for clarity
+    gaussian_noise:
+      noise_level: ${range:0.01,0.02}
+
+  # Surveillance/security camera cube detection
+  noisy_camera:
+    enabled: true
+    # Security camera characteristics
+    gaussian_noise:
+      noise_level: ${range:0.06,0.12}
+    salt_pepper_noise:
+      amount: ${range:0.008,0.03}
+      salt_vs_pepper: ${range:0.4,0.6}
+    color_banding:
+      levels: ${choice:[16,20,24]}
+    contrast_brightness:
+      contrast: ${range:0.8,1.1}
+      brightness: ${range:-0.1,0.05}
+    edge_cropping:
+      crop_fraction: ${range:0.01,0.06}
+    # Cube effects under surveillance conditions
+    cube_material_finish:
+      finish: ${choice:[matte,glossy]}
+    cube_sticker_imperfections:
+      jitter: ${range:0.01,0.08}
+    # Varied camera angles typical of security systems
+    # camera_preset:
+    #   preset: ${choice:[top,corner,side]}
+    camera_variation:
+      yaw: ${range:-15,15}
+      pitch: ${range:-15,15}
+      roll: ${range:-5,5}
+
+  # # Underwater cube
+  # cube_underwater:
+  #   enabled: true
+  #   # Underwater visual effects
+  #   color_temperature:
+  #     shift: ${range:-0.3,-0.2} # Blue-green tint
+  #   fog_haze:
+  #     spread: ${range:0.8,1.5}
+  #     intensity: ${range:0.4,0.7}
+  #   gaussian_blur:
+  #     sigma: ${range:1.5,3.0}
+  #   barrel_distortion:
+  #     strength: ${range:0.000001,0.0001}
+  #   # Cube color shifts underwater
+  #   cube_color_shift:
+  #     r: ${range:-0.35,-0.1} # Reduced red
+  #     g: ${range:-0.2,0.2}
+  #     b: ${range:0.1,0.35} # Positive blue offset
+  #   hsv_shift:
+  #     hue_shift: ${range:-0.3,0.1} # Blue-green bias
+  #     sat_scale: ${range:0.6,1.0}
+  #     val_scale: ${range:0.4,0.8}
+  #   cube_material_finish:
+  #     finish: "glossy" # Water makes surfaces appear glossy
+  #   camera_variation:
+  #     yaw: ${range:-15,15}
+  #     pitch: ${range:-10,10}
+  #     roll: ${range:-8,8}
+
+  # Cube photography studio setup
+  studio_lighting:
+    enabled: true
+    ambient_light:
+      alpha: ${range:0.2,0.35}
+      color: "#ffffff"
+    directional_light:
+      gamma: ${range:0.3,3.0}
+      angle: ${range:0,360}
+      intensity: ${range:0.1,5.0}
+      ambient: ${range:0.0,1.0}
+      apply_vignette: true
+      vignette_strength: ${range:0.0,1.0}
+    cube_material_finish:
+      finish: "glossy"
+    cube_color_calibration:
+      r_scale: ${range:1.05,1.15}
+      g_scale: ${range:1.05,1.15}
+      b_scale: ${range:1.05,1.15}
+    cube_sticker_imperfections:
+      jitter: ${range:0.0,0.02} # Minimal imperfections
+    # Camera settings
+    # camera_preset:
+    #   preset: ${choice:[default,corner,side]}
+    camera_variation:
+      yaw: ${range:-10,10}
+      pitch: ${range:-10,10}
+      roll: ${range:-10,10}
+    # Output image settings
+    gaussian_noise:
+      noise_level: ${range:0.01,0.01}
+    contrast_brightness:
+      contrast: ${range:1.1,1.3}
+      brightness: ${range:0.02,0.1}
+
+  camera_image_background:
+    enabled: true
+    camera_variation:
+      yaw: ${range:-20,20}
+      pitch: ${range:-10,10}
+      roll: ${range:-20,20}
+    background_image:
+      enabled: true
+      alpha: ${range:0.3,0.9}
+      resize_mode: ${choice:[fill,contain,cover,center]}
+    zoom_effect:
+      enabled: true
+      factor: ${range:1.0,1.3}
+      interpolation: 1 # cv2.INTER_LINEAR
+      border_mode: 4 # cv2.BORDER_REFLECT_101
+    # background_texture:
+    #   enabled: true
+    #   texture_type: ${choice:[grid,dots,stripes,noise,crosshatch,waves]}
+    #   color: ${choice:[gray, red, blue, green, yellow, black, white, orange, purple]}
+    #   density: ${range:0.1,0.7}
+    #   alpha: ${range:0.3,1.0}

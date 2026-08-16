@@ -1,0 +1,32 @@
+# W&B Sweep configuration for Sokoban
+
+defaults:
+  - sweep
+
+type: "heuristic"
+method: "bayes"
+metric_name: "val_loss"
+metric_goal: "minimize"
+count: 10
+
+parameters:
+  train.learning_rate:
+    distribution: "log_uniform"
+    min: 5e-5
+    max: 1e-2
+  train.batch_size:
+    values: [128, 256, 512]
+  train.weight_decay:
+    distribution: "log_uniform"
+    min: 1e-6
+    max: 1e-4
+  model.heuristic.hidden_size:
+    values: [128, 256, 512]
+  model.heuristic.num_layers:
+    values: [2, 3, 4]
+  model.heuristic.activation:
+    values: ["relu", "gelu"]
+  model.heuristic.dropout:
+    distribution: "uniform"
+    min: 0.1
+    max: 0.5

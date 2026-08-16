@@ -1,0 +1,18 @@
+# @package _global_
+
+defaults:
+  - /schema/encode_offline_data_schema@_here_
+  - /wandb: base
+  - _self_
+
+stage: encode_offline_data
+input_path: ???
+output_path: ???
+batch_size: 100
+
+wandb:
+  job_type: encode-offline-data
+  log_model: false
+  tags:
+    - ${env.name}
+    - ${stage}

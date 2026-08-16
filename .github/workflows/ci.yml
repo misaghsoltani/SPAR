@@ -1,0 +1,79 @@
+name: CI
+
+on:
+  push:
+    tags: ["v*"]
+    # branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    name: Python and package checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Pixi
+        uses: prefix-dev/setup-pixi@v0.9.6
+        with:
+          cache: true
+          environments: >-
+            ci
+            build
+          frozen: true
+
+      - name: Check Python imports and CLI
+        run: pixi run -e ci check-ci
+
+      - name: Run focused tests
+        run: pixi run -e ci test-ci
+
+      - name: Build Python distributions
+        run: pixi run -e build buildpy-clean
+
+      - name: Check wheel contents
+        run: |
+          pixi run -e build python - <<'PY'
+          from pathlib import Path
+          from zipfile import ZipFile
+
+          wheels = list(Path("dist").glob("*.whl"))
+          if len(wheels) != 1:
+              raise SystemExit(f"Expected one wheel, found {len(wheels)}")
+
+          wheel = wheels[0]
+          with ZipFile(wheel) as archive:
+              names = archive.namelist()
+
+          required = {
+              "spar/configs/config.yaml",
+              "spar/utils/env_utils/sokoban_data/goal_states.zip",
+          }
+          missing = sorted(required.difference(names))
+          forbidden = sorted(
+              name
+              for name in names
+              if "/node_modules/" in name
+              or name.startswith("spar/offline_data/")
+              or name.startswith("spar/saved_models/")
+              or name.endswith((".ckpt", ".h5", ".hdf5", ".npy", ".npz", ".pkl", ".pt", ".pth"))
+          )
+          if missing or forbidden:
+              raise SystemExit(f"Wheel policy failure. Missing: {missing}. Forbidden: {forbidden[:20]}")
+
+          print(f"Checked {wheel} with {len(names)} entries and {wheel.stat().st_size} bytes")
+          PY
+
+      - name: Upload distributions
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-distributions
+          path: dist/
+          if-no-files-found: error

@@ -1,0 +1,12 @@
+# @package wandb
+# Rich observability profile for local debugging.
+
+profile: debug
+media_log_every_n_steps: 0
+table_log_every_n_steps: 0
+histogram_log_every_n_steps: 0
+
+settings_dict:
+  console: auto
+  disable_git: false
+  disable_code: false

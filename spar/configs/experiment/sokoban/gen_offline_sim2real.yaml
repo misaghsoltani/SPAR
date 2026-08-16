@@ -1,0 +1,132 @@
+# @package _global_
+# Sokoban configuration for generating offline data (sim2real-style effects)
+
+defaults:
+  - default/gen_offline
+  - override /env: sokoban
+  - override /data: null
+  - _self_
+
+data:
+  num_cpus: 16
+  compression: false
+  use_variations: true
+  batch_size_per_worker: 0
+  variation_sharing_group_size: 1
+  save_dir: "spar/offline_data/${env.name}/sim2real"
+
+  datasets:
+    - name: train_with_vars
+      num_eps: 1000
+      num_steps: 30
+      start_seed: null
+      num_seeds: null
+      use_variations: true
+      variations_first_state_only: false
+      file_name: "train_${.num_eps}eps_${.num_steps}steps_with_vars"
+      batch_size_per_worker: 0
+      variation_sharing_group_size: 1
+
+    - name: val_with_vars
+      num_eps: 500
+      num_steps: 30
+      start_seed: null
+      num_seeds: null
+      use_variations: true
+      variations_first_state_only: false
+      file_name: "val_${.num_eps}eps_${.num_steps}steps_with_vars"
+      batch_size_per_worker: 0
+      variation_sharing_group_size: 1
+
+    - name: test_with_vars
+      num_eps: 100
+      num_steps: 10000
+      start_seed: null
+      num_seeds: null
+      use_variations: true
+      variations_first_state_only: true
+      file_name: "test_${.num_eps}eps_${.num_steps}steps_with_vars"
+      batch_size_per_worker: 0
+      variation_sharing_group_size: 1
+
+  effects:
+    camera_and_image:
+      enabled: true
+      background_image:
+        alpha: ${range:0.3,1.0}
+        resize_mode: ${choice:[fill]}
+      hsv_shift:
+        hue_shift: ${range:-0.02,0.02}
+        sat_scale: ${range:0.9,1.1}
+        val_scale: ${range:0.9,1.1}
+      contrast_brightness:
+        contrast: ${range:0.7,1.3}
+        brightness: ${range:-0.2,0.2}
+      zoom_bg_rotate:
+        factor: ${range:0.82,0.98}
+        angle: ${range:-3.5,3.5}
+        translate_x: ${range:-0.025,0.025}
+        translate_y: ${range:-0.025,0.025}
+        background_mode: ${choice:[auto,color,image]}
+        background_color: ${choice:["#d8d4ca","#c5c2b8","#b8c4b2","#c2ccd6","#d6c6bd"]}
+        background_alpha: ${range:0.65,1.0}
+        background_blur: ${range:0.0,1.2}
+        background_noise: ${range:0.0,0.025}
+        image_probability: ${range:0.35,0.75}
+        interpolation: 1
+      lens_glare:
+        intensity: ${range:0.02,0.65}
+        threshold: ${range:0.6,0.95}
+        bloom_strength: ${range:0.05,0.85}
+        bloom_radius: ${range:0.012,0.12}
+        halo_strength: ${range:0.02,0.55}
+        halo_radius: ${range:0.12,0.75}
+        ghost_strength: ${range:0.0,0.3}
+        num_ghosts: ${choice:[0,1,2,3,4,5]}
+        streak_strength: ${range:0.0,0.35}
+        streak_length: ${range:0.25,1.4}
+        streak_width: ${range:0.004,0.035}
+        angle: ${range:0,180}
+        source_x: ${range:-0.15,1.15}
+        source_y: ${range:-0.15,1.15}
+        chromatic: ${range:0.0,0.3}
+        glare_size: ${range:0.35,2.8}
+      reflections:
+        intensity: ${range:0.03,0.35}
+        num_reflections: ${choice:[1,2,3,4,5,6,7]}
+        size_min: ${range:0.01,0.06}
+        size_max: ${range:0.08,0.28}
+        sharpness: ${range:0.35,0.9}
+        elongation: ${range:0.8,3.5}
+        angle: ${range:-60,60}
+        color_temperature: ${range:0.2,0.8}
+        surface_gloss: ${range:0.45,0.95}
+        chromatic: ${range:0.0,0.35}
+        source_x: ${range:-0.15,1.15}
+        source_y: ${range:-0.15,1.15}
+        source_threshold: ${range:0.55,0.9}
+        reflection_x: ${range:0.0,1.0}
+        reflection_y: ${range:0.0,1.0}
+        position_spread: ${range:0.0,0.35}
+      resize_degradation:
+        strength: ${range:0.25,1.0}
+        resize_scale: ${range:0.25,0.95}
+        interpolation: bilinear
+        save_format: ${choice:[png,jpeg]}
+        jpeg_quality: ${range:35,95}
+        jpeg_subsampling: ${choice:[0,1,2]}
+        png_compress_level: ${range:0,9}
+        roundtrips: ${choice:[1,2]}
+
+    minimal:
+      enabled: true
+      background_image:
+        alpha: ${range:0.2,0.9}
+        resize_mode: ${choice:[fill,contain,cover,center]}
+      ambient_light:
+        alpha: 0.4
+        color: "#ffd1a4"
+
+hydra:
+  run:
+    dir: outputs/experiments/${env.name}/gen_offline_sim2real/${now:%Y-%m-%d_%H-%M-%S}

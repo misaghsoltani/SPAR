@@ -1,0 +1,64 @@
+# @package _global_
+# Configuration for DQN heuristic training stage
+
+defaults:
+  - /schema/train_heuristic_schema@_here_
+  - /model: ${env}
+  - /train: heuristic
+  - /wandb: default
+  - _self_
+
+stage: train_heuristic
+
+pretrained_model_paths:
+  encoder_path: spar/saved_models/world_models/${env.name}_world_model_disc/world_model_checkpoint_encoder.pt
+  transition_model_path: spar/saved_models/world_models/${env.name}_world_model_disc/world_model_checkpoint_transition_model.pt
+  decoder_path: spar/saved_models/world_models/${env.name}_world_model_disc/world_model_checkpoint_decoder.pt
+
+train:
+  batch_size: 1000
+  device: "cuda"
+  distributed: false
+
+  dqn:
+    # Core DQN training parameters
+    lr: 0.001
+    lr_d: 0.9999993
+    max_itrs: 1000000
+    batch_size: 1000
+
+    # Target network update parameters
+    loss_thresh: 0.05
+    update_itrs: null
+    states_per_update: 100000
+    update_nnet_batch_size: 1000
+
+    # GBFS and exploration parameters
+    max_solve_steps: 1
+    eps_max: 0.1
+    per_eq_tol: 90.0
+
+    # Data generation parameters
+    start_steps: 10
+    goal_steps: 10
+    rb_itrs: 1
+
+    # Testing parameters
+    num_test: 1000
+
+    # GPU configuration
+    single_gpu_training: false
+
+    # Data paths
+    train_data_path: spar/offline_data/${env.name}/train_9000eps_30steps_no_vars.h5
+    val_data_path: spar/offline_data/${env.name}/val_1000eps_30steps_no_vars.h5
+    env_model_path: spar/saved_models/world_models/${env.name}_world_model_disc/world_model_checkpoint_transition_model.pt
+
+    # Save configuration
+    nnet_name: "${env.name}_dqn"
+    save_dir: "spar/saved_heur_models"
+
+wandb:
+  mode: offline
+  project: "spar-heuristic-training"
+  group: "dqn"

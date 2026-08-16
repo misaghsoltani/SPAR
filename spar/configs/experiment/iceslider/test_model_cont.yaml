@@ -1,0 +1,45 @@
+# @package _global_
+# Configuration for continuous model testing stage
+
+defaults:
+  - override /env: iceslider
+  - override /stage: test_model_cont
+  - _self_
+
+stage: test_model
+test_model_type: continuous
+
+test:
+  end_to_end: true
+  use_alignment_model: true
+  precompute_targets: true
+  use_variation_for_all_states: false
+  log_interval: 100
+  save_interval: 1000
+  visualization_format: png
+  visualization_episode_index: 0
+  visualization_steps: [1, 5, 15, 30, 75, 100] # Visualize steps in addition to every 1000th step
+
+  dataloader:
+    batch_size: 100
+    enable_memory_optimization: false
+    variations_to_use: null
+    variations_to_ignore: null
+
+data_paths:
+  test_data: spar/data/offline_data/iceslider/variations/var_test_100eps_10000steps.h5
+
+save_paths:
+  images_dir: ${hydra:runtime.output_dir}/model_tests/images/continuous
+  plots_dir: ${hydra:runtime.output_dir}/model_tests/plots/continuous
+  metrics_dir: ${hydra:runtime.output_dir}/model_tests/metrics/continuous
+
+pretrained_model_paths:
+  encoder_path: spar/saved_models/world_models/iceslider_world_model_cont/world_model_checkpoint_encoder.pt
+  transition_model_path: spar/saved_models/world_models/iceslider_world_model_cont/world_model_checkpoint_transition_model.pt
+  decoder_path: spar/saved_models/world_models/iceslider_world_model_cont/world_model_checkpoint_decoder.pt
+  alignment_model_path: spar/saved_models/alignment_models/iceslider_alignment_model_cont/alignment_model_checkpoint_alignment_model.pt
+
+wandb:
+  mode: offline # 'online', 'offline', or 'disabled'
+  job_type: test

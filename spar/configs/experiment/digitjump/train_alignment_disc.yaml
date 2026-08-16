@@ -1,0 +1,57 @@
+# @package _global_
+# DigitJump discrete alignment model training
+
+defaults:
+  - override /env: digitjump
+  - override /stage: train_alignment_disc
+  - _self_
+
+stage: train_alignment_model
+alignment_model_type: discrete
+end_to_end: false
+freeze_pretrained_models: true
+precompute_targets: true
+
+data_paths:
+  train_data: spar/offline_data/${env.name}/train_1000eps_30steps_with_vars.h5
+  val_data: spar/offline_data/${env.name}/val_500eps_30steps_with_vars.h5
+  test_data: spar/offline_data/${env.name}/test_100eps_10000steps_with_vars.h5
+
+save_paths:
+  model_dir: spar/saved_models/alignment_models/${env.name}_alignment_model_disc
+
+pretrained_model_paths:
+  encoder_path: spar/saved_models/world_models/${env.name}_world_model_disc/world_model_checkpoint_encoder.pt
+  transition_model_path: spar/saved_models/world_models/${env.name}_world_model_disc/world_model_checkpoint_transition_model.pt
+  decoder_path: spar/saved_models/world_models/${env.name}_world_model_disc/world_model_checkpoint_decoder.pt
+
+train:
+  compile:
+    fullgraph: true
+    dynamic: false
+    backend: "inductor"
+    disable: true
+
+  dataloader:
+    batch_size: 100
+    enable_memory_optimization: false
+    variations_to_ignore: null
+    variations_to_use: null
+
+  phases:
+    - max_itrs: 100000
+      lr: 0.001
+    - max_itrs: 140000
+      lr: 0.0001
+    - max_itrs: 180000
+      lr: 0.00001
+    - max_itrs: 200000
+      lr: 0.000001
+
+wandb:
+  mode: offline
+  job_type: train
+
+hydra:
+  run:
+    dir: outputs/experiments/${env.name}/train_alignment_model_disc/${now:%Y-%m-%d_%H-%M-%S}

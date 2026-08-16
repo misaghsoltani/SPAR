@@ -1,0 +1,14 @@
+# @package _global_
+# Optuna study orchestration stage
+
+defaults:
+  - /schema/optuna_study_schema@_here_
+  - /optuna: default
+  - /wandb: default
+  - _self_
+
+stage: optuna_study
+
+wandb:
+  mode: disabled
+  job_type: optuna_study

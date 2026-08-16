@@ -1,0 +1,45 @@
+# @package _global_
+# Configuration for discrete model testing stage
+
+defaults:
+  - override /env: ${env}
+  - override /stage: test_model_disc
+  - _self_
+
+stage: test_model
+test_model_type: discrete
+
+test:
+  end_to_end: false
+  use_alignment_model: true
+  precompute_targets: true
+  use_variation_for_all_states: false
+  log_interval: 1000
+  save_interval: 2000
+  visualization_format: png
+  visualization_episode_index: 0
+  visualization_steps: [1, 5, 15, 30, 75, 100] # Visualize steps in addition to every 1000th step
+
+  dataloader:
+    batch_size: 100
+    enable_memory_optimization: false
+    variations_to_use: null
+    variations_to_ignore: null
+
+data_paths:
+  test_data: spar/data/offline_data/${env.name}/variations/var_test_100eps_10000steps.h5
+
+save_paths:
+  images_dir: ${hydra:runtime.output_dir}/model_tests/images/discrete
+  plots_dir: ${hydra:runtime.output_dir}/model_tests/plots/discrete
+  metrics_dir: ${hydra:runtime.output_dir}/model_tests/metrics/discrete
+
+pretrained_model_paths:
+  encoder_path: spar/saved_models/world_models/${env.name}_world_model_disc/world_model_checkpoint_encoder.pt
+  transition_model_path: spar/saved_models/world_models/${env.name}_world_model_disc/world_model_checkpoint_transition_model.pt
+  decoder_path: spar/saved_models/world_models/${env.name}_world_model_disc/world_model_checkpoint_decoder.pt
+  alignment_model_path: spar/saved_models/alignment_models/${env.name}_alignment_model_disc/alignment_model_checkpoint_alignment_model.pt
+
+wandb:
+  mode: offline # 'online', 'offline', or 'disabled'
+  job_type: test

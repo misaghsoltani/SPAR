@@ -1,0 +1,154 @@
+# @package model
+
+defaults:
+  - default
+
+chan_in: ${env.dim.channels}
+chan_out: ${model.chan_in}
+enc_dim: 400
+
+continuous:
+  encoder:
+    architecture: &continuous_encoder_architecture
+      - _target_: torch.nn.Flatten
+      - _target_: torch.nn.BatchNorm1d
+        num_features: ${mul:${mul:${env.dim.width},${env.dim.height}},${model.chan_in}}
+      - _target_: spar.utils.pytorch_utils.pytorch_models.FullyConnectedModel
+        input_dim: ${mul:${mul:${env.dim.width},${env.dim.height}},${model.chan_in}}
+        layer_dims:
+          - ${model.enc_dim}
+        layer_batch_norms:
+          - false
+        layer_acts:
+          - SIGMOID
+
+  env_model:
+    architecture: &continuous_env_model_architecture
+      - _target_: spar.utils.pytorch_utils.pytorch_models.FullyConnectedModel
+        input_dim: ${add:${model.enc_dim},${env.num_actions_max}}
+        layer_dims:
+          - 500
+          - 500
+          - 500
+          - ${model.enc_dim}
+        layer_batch_norms:
+          - true
+          - true
+          - true
+          - false
+        layer_acts:
+          - RELU
+          - RELU
+          - RELU
+          - SIGMOID
+
+  decoder:
+    architecture: &continuous_decoder_architecture
+      - _target_: torch.nn.Flatten
+      - _target_: spar.utils.pytorch_utils.pytorch_models.FullyConnectedModel
+        input_dim: ${model.enc_dim}
+        layer_dims:
+          - ${mul:${mul:${env.dim.width},${env.dim.height}},${model.chan_in}}
+        layer_batch_norms:
+          - false
+        layer_acts:
+          - LINEAR
+
+  alignment_model: &alignment_model
+    resnet_chan: 36
+    num_resnet_blocks: 12
+    fc_in: ${mul:${mul:16,16},${.resnet_chan}}
+    fc_h_dim: 10000
+    chan_in: 6
+    architecture:
+      - _target_: spar.utils.pytorch_utils.pytorch_models.Conv2dModel
+        chan_in: ${...chan_in}
+        channel_sizes:
+          - 64
+          - ${....resnet_chan}
+        kernel_sizes:
+          - 3
+          - 5
+        paddings:
+          - 1
+          - 2
+        layer_batch_norms:
+          - true
+          - true
+        layer_acts:
+          - RELU
+          - RELU
+        strides:
+          - 1
+          - 2
+        group_norms:
+          - 0
+          - 0
+        use_bias_with_norm: true
+      - _target_: spar.utils.pytorch_utils.pytorch_models.ResnetConv2dModel
+        in_channels: ${...resnet_chan}
+        resnet_channels: ${...resnet_chan}
+        out_channels: ${...resnet_chan}
+        kernel_size: 3
+        padding: 1
+        num_resnet_blocks: ${...num_resnet_blocks}
+        batch_norm: true
+        act: RELU
+        group_norm: 0
+        use_bias_with_norm: true
+      - _target_: torch.nn.Flatten
+      - _target_: spar.utils.pytorch_utils.pytorch_models.FullyConnectedModel
+        input_dim: ${...fc_in}
+        layer_dims:
+          - ${....fc_h_dim}
+          - ${model.enc_dim}
+        layer_batch_norms: [true, false]
+        layer_acts:
+          - RELU
+          - SIGMOID
+        use_bias_with_norm: true
+
+discrete:
+  encoder:
+    architecture:
+      - _target_: torch.nn.Flatten
+      - _target_: torch.nn.BatchNorm1d
+        num_features: ${mul:${mul:${env.dim.width},${env.dim.height}},${model.chan_in}}
+      - _target_: spar.utils.pytorch_utils.pytorch_models.FullyConnectedModel
+        input_dim: ${mul:${mul:${env.dim.width},${env.dim.height}},${model.chan_in}}
+        layer_dims:
+          - ${model.enc_dim}
+        layer_batch_norms:
+          - false
+        layer_acts:
+          - SIGMOID
+      - _target_: spar.utils.pytorch_utils.pytorch_models.STEThresh
+        threshold: 0.5
+
+  env_model:
+    architecture: *continuous_env_model_architecture
+
+  decoder:
+    architecture: *continuous_decoder_architecture
+
+  alignment_model:
+    <<: *alignment_model
+
+# DQN models configuration
+# For DigitJump, actions correspond to digits 0-9
+# If using variable action counts, you may want to set out_dim via a helper
+# Here we default to env.num_actions_max
+# cube3.yaml previously referenced env.num_actions_max_max. The corrected field is env.num_actions_max.
+dqn:
+  architecture:
+    - _target_: spar.utils.pytorch_utils.pytorch_models.FullyConnectedModel
+      input_dim: ${mul:${model.enc_dim},2}
+      layer_dims: [2000, 500]
+      layer_batch_norms: [true, true]
+      layer_acts: [RELU, RELU]
+    - _target_: spar.utils.pytorch_utils.pytorch_models.ResnetModel
+      resnet_dim: 500
+      num_resnet_blocks: 2
+      out_dim: ${env.num_actions_max}
+      batch_norm: true
+      act: RELU

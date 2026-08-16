@@ -1,0 +1,56 @@
+# @package hydra.job_logging
+
+# This file configures Python's logging system using Hydra's structured config.
+# It sets up two handlers: one for the console and one for the file.
+
+version: 1
+disable_existing_loggers: false
+
+# Formatters define the structure of the log messages.
+# RichHandler receives the raw message and applies its own formatting.
+formatters:
+  rich_formatter:
+    format: "%(message)s"
+    datefmt: "[%X]" # e.g., [12:34:56]
+
+handlers:
+  # Handler for colorful, rich terminal output
+  console:
+    class: spar.utils.log_utils.console_logger.CustomRichHandler
+    formatter: rich_formatter
+    # level: NOTSET # Log everything to the file for complete archival
+    # The log file will be created in the Hydra output directory for this run.
+    # The filename will be based on the job name (e.g., 'train.log').
+    # We can also configure rich tracebacks for the file log
+    show_level: false
+    show_time: false
+    show_path: false
+    markup: true
+    rich_tracebacks: true
+    tracebacks_show_locals: true
+
+  # Handler for writing identical, colored output to a file
+  file:
+    # This points to our custom handler class in utils/unified_logger.py
+    class: spar.utils.log_utils.console_logger.CustomRichHandler
+    formatter: rich_formatter
+    # level: NOTSET # Log everything to the file for complete archival
+    # The log file will be created in the Hydra output directory for this run.
+    # The filename will be based on the job name (e.g., 'train.log').
+    filename: "${hydra.runtime.output_dir}/${hydra.job.name}.log"
+    # We can also configure rich tracebacks for the file log
+    show_level: false
+    show_time: false
+    show_path: false
+    markup: true
+    rich_tracebacks: true
+    tracebacks_show_locals: true
+    width: 200
+
+# The root logger configuration.
+# Child loggers inherit this configuration.
+root:
+  # level:
+  # NOTSET # Set the lowest level here to capture everything.
+  # Individual handlers will filter based on their own level.
+  handlers: [file, console] # Attach both handlers to the root logger.

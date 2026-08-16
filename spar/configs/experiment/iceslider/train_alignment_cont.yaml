@@ -1,0 +1,71 @@
+# @package _global_
+# IceSlider-specific Configuration for continuous alignment model training stage
+
+defaults:
+  - override /env: iceslider
+  - override /stage: train_alignment_cont
+  - _self_
+
+stage: train_alignment_model
+alignment_model_type: continuous
+end_to_end: true
+freeze_pretrained_models: true
+precompute_targets: true
+
+data_paths:
+  train_data: spar/offline_data/iceslider/train_3000eps_30steps_with_vars.h5
+  val_data: spar/offline_data/iceslider/val_1000eps_30steps_with_vars.h5
+  test_data: spar/offline_data/iceslider/test_100eps_10000steps_with_vars.h5
+
+save_paths:
+  model_dir: spar/saved_models/alignment_models/iceslider_alignment_model_cont
+
+pretrained_model_paths:
+  encoder_path: spar/saved_models/world_models/iceslider_world_model_cont/world_model_checkpoint_encoder.pt
+  transition_model_path: spar/saved_models/world_models/iceslider_world_model_cont/world_model_checkpoint_transition.pt
+  decoder_path: spar/saved_models/world_models/iceslider_world_model_cont/world_model_checkpoint_decoder.pt
+
+train:
+  dataloader:
+    batch_size: 100
+    enable_memory_optimization: false
+    variations_to_ignore: null
+    variations_to_use:
+      - background_color_shift
+      - background_image
+      - background_texture
+      - background_randomization
+      - cube_color_calibration
+      - cube_sticker_wear
+      - cube_material_finish
+      - cube_sticker_imperfections
+      - ambient_light
+      - directional_light
+      - color_temperature
+      - hsv_shift
+      - contrast_brightness
+      - exposure_variation
+      - rotate_image
+      - perspective_transform
+      - zoom_effect
+      - spatial_perturbation
+      - adversarial_noise
+      - barrel_distortion
+      - gaussian_noise
+      - salt_pepper_noise
+      - poisson_noise
+      - speckle_noise
+      - color_banding
+      - motion_blur
+      - defocus_blur
+      - radial_blur
+      - occluders
+      - edge_cropping
+      - fog_haze
+      - rain_effect
+      - sensor_inaccuracy
+      - camera_variation
+
+wandb:
+  mode: online
+  job_type: train

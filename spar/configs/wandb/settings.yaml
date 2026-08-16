@@ -1,0 +1,543 @@
+# @package wandb.settings_dict
+
+# =============================================================================
+# W&B SDK Settings Configuration
+# =============================================================================
+# This file manages configuration settings for the W&B SDK, ensuring type safety
+# and validation of all settings. Settings are organized into three categories:
+# 1. Public settings: Core configuration options that users can safely modify to customize
+#    W&B's behavior for their specific needs.
+# 2. Internal settings: Settings prefixed with 'x_' that handle low-level SDK behavior.
+#    These settings are primarily for internal use and debugging. While they can be modified,
+#    they are not considered part of the public API and may change without notice in future
+#    versions.
+# 3. Computed settings: Read-only settings derived from other settings or
+#    the environment.
+
+# =============================================================================
+# PUBLIC SETTINGS
+# =============================================================================
+
+# Flag to allow table artifacts to be synced in offline mode
+# To revert to the old behavior, set this to False
+allow_offline_artifacts: true
+
+# Flag to allow modification of Config values after they've been set
+allow_val_change: false
+
+# Controls anonymous data logging
+# Options:
+# - "never": requires you to link your W&B account before tracking the run,
+#   so you don't accidentally create an anonymous run
+# - "allow": lets a logged-in user track runs with their account, but lets someone
+#   who is running the script without a W&B account see the charts in the UI
+# - "must": sends the run to an anonymous account instead of to a signed-up user account
+anonymous: null
+
+# The W&B API key
+api_key: null
+
+# Mapping of Azure account URLs to their corresponding access keys for Azure integration
+azure_account_url_to_access_key: null
+
+# The URL of the W&B backend for data synchronization
+base_url: "https://api.wandb.ai"
+
+# Directory containing the code to be tracked by W&B
+code_dir: null
+
+# Paths to files to load configuration from into the Config object
+config_paths: null
+
+# The type of console capture to be applied
+# Options:
+# - "auto": Selects the console capture method from the runtime environment and settings
+# - "off": Disables console capture
+# - "redirect": Redirects low-level file descriptors for capturing output
+# - "wrap": Overrides the write methods of sys.stdout/sys.stderr. Will be mapped to either
+#   "wrap_raw" or "wrap_emu" based on the state of the system
+# - "wrap_raw": Same as "wrap" but captures raw output directly instead of through an emulator.
+#   Derived from the "wrap" setting and should not be set manually
+# - "wrap_emu": Same as "wrap" but captures output through an emulator.
+#   Derived from the "wrap" setting and should not be set manually
+console: "auto"
+
+# Whether to produce multipart console log files
+console_multipart: false
+
+# Path to file for writing temporary access tokens
+# Default is computed from credentials.DEFAULT_WANDB_CREDENTIALS_FILE
+credentials_file: null
+
+# Whether to disable capturing the code
+disable_code: false
+
+# Whether to disable capturing the git state
+disable_git: false
+
+# Whether to disable the creation of a job artifact for W&B Launch
+disable_job_creation: true
+
+# The Docker image used to execute the script
+docker: null
+
+# The email address of the user
+email: null
+
+# The W&B entity, such as a user or a team
+entity: null
+
+# The W&B organization
+organization: null
+
+# Whether to pass the force flag to wandb.login()
+force: false
+
+# Specifies a point in a previous execution of a run to fork from
+# The point is defined by the run ID, a metric, and its value
+# Currently, only the metric '_step' is supported
+fork_from: null
+
+# The git commit hash to associate with the run
+git_commit: null
+
+# The git remote to associate with the run
+git_remote: "origin"
+
+# The URL of the git remote repository
+git_remote_url: null
+
+# Root directory of the git repository
+git_root: null
+
+# Interval in seconds between heartbeat signals sent to the W&B servers
+heartbeat_seconds: 30
+
+# Hostname of the machine running the script
+host: null
+
+# Custom proxy servers for http requests to W&B
+http_proxy: null
+
+# Custom proxy servers for https requests to W&B
+https_proxy: null
+
+# Path to file containing an identity token (JWT) for authentication
+identity_token_file: null
+
+# Unix glob patterns relative to files_dir specifying files to exclude from upload
+ignore_globs: []
+
+# Time in seconds to wait for the wandb.init call to complete before timing out
+init_timeout: 90.0
+
+# Whether to insecurely disable SSL verification
+insecure_disable_ssl: false
+
+# Name of the Launch job running the script
+job_name: null
+
+# Source type for Launch
+# Options: "repo", "artifact", "image"
+job_source: null
+
+# Whether to disable automatic labeling features
+label_disable: false
+
+# Flag to indicate if the run is being launched through W&B Launch
+launch: false
+
+# Path to the launch configuration file
+launch_config_path: null
+
+# Time in seconds to wait for login operations before timing out
+login_timeout: null
+
+# The operating mode for W&B logging and synchronization
+# Options: "online", "offline", "shared", "disabled", "dryrun", "run"
+mode: "online"
+
+# Name of the notebook if running in a Jupyter-like environment
+notebook_name: null
+
+# Path to the script that created the run, if available
+program: null
+
+# The absolute path from the root repository directory to the script that created the run
+# Root repository directory is defined as the directory containing the .git directory,
+# if it exists. Otherwise, it's the current working directory
+program_abspath: null
+
+# The relative path to the script that created the run
+program_relpath: null
+
+# The W&B project ID
+project: null
+
+# Flag to suppress non-essential output
+quiet: false
+
+# What to do when wandb.init() is called while a run is active
+# Options:
+# - "default": Use "finish_previous" in notebooks and "return_previous" otherwise
+# - "return_previous": Return the most recently created run that is not yet finished.
+#   This does not update wandb.run. See the "create_new" option.
+# - "finish_previous": Finish all active runs, then return a new run
+# - "create_new": Create a new run without modifying other active runs. Does not update
+#   wandb.run and top-level functions like wandb.log. Because of this, some older
+#   integrations that rely on the global run will not work
+# Can also be a boolean, but this is deprecated. False is the same as "return_previous",
+# and True is the same as "finish_previous"
+reinit: "default"
+
+# Flag to force a new login attempt
+relogin: false
+
+# Specifies the resume behavior for the run
+# Options:
+# - "must": Resumes from an existing run with the same ID. If no such run exists, it will result in failure
+# - "allow": Attempts to resume from an existing run with the same ID. If none is found, a new run will be created
+# - "never": Always starts a new run. If a run with the same ID already exists, it will result in failure
+# - "auto": Resumes from the most recent failed run on the same machine
+resume: null
+
+# Specifies a point in a previous execution of a run to resume from
+# The point is defined by the run ID, a metric, and its value
+# Currently, only the metric '_step' is supported
+resume_from: null
+
+# Indication from the server about the state of the run
+# This is different from resume, a user provided flag
+resumed: false
+
+# The root directory to use as the base for all run-related paths
+# In particular, this is used to derive the wandb directory and the run directory
+# Default is computed from os.path.abspath(os.getcwd())
+root_dir: null
+
+# Group identifier for related runs
+# Used for grouping runs in the UI
+run_group: null
+
+# The ID of the run
+run_id: null
+
+# Type of job being run (e.g., training, evaluation)
+run_job_type: null
+
+# Human-readable name for the run
+run_name: null
+
+# Additional notes or description for the run
+run_notes: null
+
+# Tags to associate with the run for organization and filtering
+# Should be a tuple of strings
+run_tags: null
+
+# Flag to disable SageMaker-specific functionality
+sagemaker_disable: false
+
+# Whether to save the code associated with the run
+save_code: null
+
+# Path to the system-wide settings file
+settings_system: null
+
+# Whether to use colored output in the console
+show_colors: null
+
+# Whether to show emoji in the console output
+show_emoji: null
+
+# Whether to display error messages
+show_errors: true
+
+# Whether to display informational messages
+show_info: true
+
+# Whether to display warning messages
+show_warnings: true
+
+# Flag to suppress all output
+silent: false
+
+# Method to use for starting subprocesses
+# This is deprecated and will be removed in a future release
+start_method: null
+
+# Whether to enable strict mode for validation and error checking
+strict: null
+
+# Time in seconds to wait for summary operations before timing out
+summary_timeout: 60
+
+# Maximum number of summary warnings to display
+summary_warnings: 5
+
+# Identifier of the sweep this run belongs to
+sweep_id: null
+
+# Path to the sweep parameters configuration
+sweep_param_path: null
+
+# Whether to use symlinks (True by default except on Windows)
+# Default is computed based on platform: False on Windows, True elsewhere
+symlink: null
+
+# Whether to synchronize TensorBoard logs with W&B
+sync_tensorboard: null
+
+# Whether to raise an exception when table row limits are exceeded
+table_raise_on_max_row_limit_exceeded: false
+
+# Username
+username: null
+
+# =============================================================================
+# INTERNAL SETTINGS (Prefixed with 'x_')
+# =============================================================================
+# These are typically not meant to be set by the user and should not be considered
+# a part of the public API as they may change or be removed in future versions.
+
+# Flag to indicate that the SDK is running in CLI-only mode
+x_cli_only_mode: false
+
+# Flag to disable the collection of system metadata
+x_disable_meta: false
+
+# Flag to disable the collection of system metrics
+x_disable_stats: false
+
+# Flag to disable the early viewer query
+x_disable_viewer: false
+
+# Flag to disable automatic machine info collection
+x_disable_machine_info: false
+
+# Path to the Python executable
+x_executable: null
+
+# Additional headers to add to all outgoing HTTP requests
+x_extra_http_headers: null
+
+# An approximate maximum request size for the filestream API
+# Its purpose is to prevent HTTP requests from failing due to containing too much data
+# This number is approximate: requests will be slightly larger
+x_file_stream_max_bytes: null
+
+# Maximum line length for filestream JSONL files
+x_file_stream_max_line_bytes: null
+
+# Interval in seconds between filestream transmissions
+x_file_stream_transmit_interval: null
+
+# =============================================================================
+# Filestream Retry Client Configuration
+# =============================================================================
+
+# Max number of retries for filestream operations
+x_file_stream_retry_max: null
+
+# Minimum wait time between retries for filestream operations
+x_file_stream_retry_wait_min_seconds: null
+
+# Maximum wait time between retries for filestream operations
+x_file_stream_retry_wait_max_seconds: null
+
+# Timeout in seconds for individual filestream HTTP requests
+x_file_stream_timeout_seconds: null
+
+# =============================================================================
+# File Transfer Retry Client Configuration
+# =============================================================================
+
+# Max number of retries for file transfer operations
+x_file_transfer_retry_max: null
+
+# Minimum wait time between retries for file transfer operations
+x_file_transfer_retry_wait_min_seconds: null
+
+# Maximum wait time between retries for file transfer operations
+x_file_transfer_retry_wait_max_seconds: null
+
+# Timeout in seconds for individual file transfer HTTP requests
+x_file_transfer_timeout_seconds: null
+
+# Override setting for the computed files_dir
+x_files_dir: null
+
+# Flag indicating custom flow control for filestream
+x_flow_control_custom: null
+
+# Flag indicating flow control is disabled for filestream
+x_flow_control_disabled: null
+
+# =============================================================================
+# GraphQL Retry Client Configuration
+# =============================================================================
+
+# Max number of retries for GraphQL operations
+x_graphql_retry_max: null
+
+# Minimum wait time between retries for GraphQL operations
+x_graphql_retry_wait_min_seconds: null
+
+# Maximum wait time between retries for GraphQL operations
+x_graphql_retry_wait_max_seconds: null
+
+# Timeout in seconds for individual GraphQL requests
+x_graphql_timeout_seconds: null
+
+# Interval for internal process health checks in seconds
+x_internal_check_process: 8.0
+
+# Name of the Jupyter notebook
+x_jupyter_name: null
+
+# Path to the Jupyter notebook
+x_jupyter_path: null
+
+# Root directory of the Jupyter notebook
+x_jupyter_root: null
+
+# Label to assign to system metrics and console logs collected for the run
+# This is used to group data by on the frontend and can be used to distinguish data
+# from different processes in a distributed training job
+x_label: null
+
+# Rate limit for live policy updates in seconds
+x_live_policy_rate_limit: null
+
+# Wait time between live policy updates in seconds
+x_live_policy_wait_time: null
+
+# Logging level for internal operations (default is logging.INFO)
+x_log_level: 20
+
+# Size of the network buffer used in flow control
+x_network_buffer: null
+
+# Determines whether to save internal wandb files and metadata
+# In a distributed setting, this is useful for avoiding file overwrites
+# from secondary processes when only system metrics and logs are needed,
+# as the primary process handles the main logging
+x_primary: true
+
+# Custom proxy servers for requests to W&B
+# This is deprecated and will be removed in a future release
+# Please use http_proxy and https_proxy instead
+x_proxies: null
+
+# ID of the Launch run queue item being processed
+x_runqueue_item_id: null
+
+# Flag to save the requirements file
+x_save_requirements: true
+
+# Flag to delegate automatic computation of summary from history to the server
+# This does not disable user-provided summary updates
+x_server_side_derived_summary: false
+
+# Flag to delegate glob matching of metrics in define_metric to the server
+# If the server does not support this, the client will perform the glob matching
+x_server_side_expand_glob_metrics: true
+
+# Transport method for communication with the wandb service
+x_service_transport: null
+
+# Time in seconds to wait for the wandb-core internal service to start
+x_service_wait: 30.0
+
+# Whether to skip saving the run events to the transaction log
+# This is only relevant for online runs. Can be used to reduce the amount of
+# data written to disk. Should be used with caution, as it removes the guarantees about
+# recoverability
+x_skip_transaction_log: false
+
+# The start time of the run in seconds since the Unix epoch
+x_start_time: null
+
+# PID of the process that started the wandb-core process to collect system stats for
+# Default is computed from os.getpid()
+x_stats_pid: null
+
+# Sampling interval for the system monitor in seconds
+x_stats_sampling_interval: 15.0
+
+# Path to the default config file for the neuron-monitor tool
+# This is used to monitor AWS Trainium devices
+x_stats_neuron_monitor_config_path: null
+
+# Endpoint to extract Nvidia DCGM metrics from
+# Options:
+# - Extract DCGM-related metrics from a query to the Prometheus /api/v1/query endpoint.
+#   It is a common practice to aggregate metrics reported by the instances of the DCGM Exporter
+#   running on different nodes in a cluster using Prometheus.
+# - TODO: Parse metrics directly from the /metrics endpoint of the DCGM Exporter.
+# Examples:
+# - http://localhost:9400/api/v1/query?query=DCGM_FI_DEV_GPU_TEMP{node="l1337", cluster="globular"}
+# - TODO: http://192.168.0.1:9400/metrics
+x_stats_dcgm_exporter: null
+
+# OpenMetrics /metrics endpoints to monitor for system metrics
+x_stats_open_metrics_endpoints: null
+
+# Filter to apply to metrics collected from OpenMetrics /metrics endpoints
+# Supports two formats:
+# - {"metric regex pattern, including endpoint name as prefix": {"label": "label value regex pattern"}}
+# - ("metric regex pattern 1", "metric regex pattern 2", ...)
+x_stats_open_metrics_filters: null
+
+# HTTP headers to add to OpenMetrics requests
+x_stats_open_metrics_http_headers: null
+
+# System paths to monitor for disk usage
+x_stats_disk_paths: null
+
+# System CPU count
+# If set, overrides the auto-detected value in the run metadata
+x_stats_cpu_count: null
+
+# Logical CPU count
+# If set, overrides the auto-detected value in the run metadata
+x_stats_cpu_logical_count: null
+
+# GPU device count
+# If set, overrides the auto-detected value in the run metadata
+x_stats_gpu_count: null
+
+# GPU device type
+# If set, overrides the auto-detected value in the run metadata
+x_stats_gpu_type: null
+
+# GPU device indices to monitor
+# If not set, the system monitor captures metrics for all GPUs
+# Assumes 0-based indexing matching CUDA/ROCm device enumeration
+x_stats_gpu_device_ids: null
+
+# Number of system metric samples to buffer in memory in the wandb-core process
+# Can be accessed via run._system_metrics
+x_stats_buffer_size: 0
+
+# The scheme and hostname for contacting the CoreWeave metadata server
+# Only accessible from within a CoreWeave cluster
+x_stats_coreweave_metadata_base_url: "http://169.254.169.254"
+
+# The relative path on the CoreWeave metadata server to which to make requests
+# This must not include the schema and hostname prefix
+# Only accessible from within a CoreWeave cluster
+x_stats_coreweave_metadata_endpoint: "/api/v2/cloud-init/meta-data"
+
+# Monitor the entire process tree for resource usage, starting from x_stats_pid
+# When True, the system monitor aggregates the RSS, CPU%, and thread count
+# from the process with PID x_stats_pid and all of its descendants
+# This can have a performance overhead and is disabled by default
+x_stats_track_process_tree: null
+
+# Flag to indicate whether we are syncing a run from the transaction log
+x_sync: false
+
+# Flag to indicate whether this process can update the run's final state on the server
+# Set to False in distributed training when only the main process should determine the final state
+x_update_finish_state: true

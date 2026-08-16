@@ -1,0 +1,23 @@
+# @package _global_
+
+defaults:
+  - /schema/base_schema@_here_
+  - _self_
+  - stage: default
+  - env: default
+  - override hydra/help: rich_cli
+  - override hydra/job_logging: rich
+  # - override hydra/launcher: submitit_local
+
+save_dir: outputs
+
+# Global debugging
+debug: false
+
+# Hydra output directory configuration
+hydra:
+  job:
+    name: ${env.name}_${stage}
+    chdir: false
+  run:
+    dir: "${save_dir}/${env.name}/${stage}/${now:%Y-%m-%d_%H-%M-%S}"

@@ -1,0 +1,57 @@
+# @package _global_
+# Sokoban continuous alignment model training
+
+defaults:
+  - override /env: sokoban
+  - override /stage: train_alignment_cont
+  - _self_
+
+stage: train_alignment_model
+alignment_model_type: continuous
+end_to_end: true
+freeze_pretrained_models: false
+precompute_targets: true
+
+data_paths:
+  train_data: spar/offline_data/${env.name}/train_9000eps_30steps_with_vars.h5
+  val_data: spar/offline_data/${env.name}/val_1000eps_30steps_with_vars.h5
+  test_data: spar/offline_data/${env.name}/test_100eps_10000steps_with_vars.h5
+
+save_paths:
+  model_dir: spar/saved_models/alignment_models/${env.name}_alignment_model_cont_END2END_2
+
+pretrained_model_paths:
+  encoder_path: null
+  transition_model_path: null
+  decoder_path: null
+
+train:
+  compile:
+    fullgraph: true
+    dynamic: null
+    backend: "inductor"
+    disable: true
+
+  dataloader:
+    batch_size: 100
+    enable_memory_optimization: false
+    variations_to_ignore: null
+    variations_to_use: null
+
+  phases:
+    - max_itrs: 100000
+      lr: 0.001
+    - max_itrs: 140000
+      lr: 0.0001
+    - max_itrs: 180000
+      lr: 0.00001
+    - max_itrs: 200000
+      lr: 0.000001
+
+wandb:
+  mode: disabled
+  job_type: train
+
+hydra:
+  run:
+    dir: outputs/experiments/${env.name}/train_alignment_model_cont_END2END_2/${now:%Y-%m-%d_%H-%M-%S}

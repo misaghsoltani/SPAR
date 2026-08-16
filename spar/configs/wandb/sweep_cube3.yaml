@@ -1,0 +1,35 @@
+# W&B Sweep configuration for Rubik's Cube (3x3)
+
+# Inherit from base sweep configuration
+defaults:
+  - sweep
+
+# Override Cube3 specific settings
+type: "heuristic"
+method: "bayes"
+metric_name: "val_loss"
+metric_goal: "minimize"
+count: 15 # More runs for Cube3 due to complexity
+
+# Cube3-specific hyperparameter search space
+parameters:
+  train.learning_rate:
+    distribution: "log_uniform"
+    min: 5e-5
+    max: 1e-2
+  train.batch_size:
+    values: [128, 256, 512, 1024]
+  train.weight_decay:
+    distribution: "log_uniform"
+    min: 1e-6
+    max: 1e-4
+  model.heuristic.hidden_size:
+    values: [128, 256, 512, 1024]
+  model.heuristic.num_layers:
+    values: [3, 4, 5]
+  model.heuristic.activation:
+    values: ["relu", "leaky_relu", "gelu"]
+  model.heuristic.dropout:
+    distribution: "uniform"
+    min: 0.1
+    max: 0.5

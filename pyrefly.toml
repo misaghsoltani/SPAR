@@ -1,0 +1,103 @@
+# Pyrefly 1.0.0 keeps these command behaviors CLI-only:
+# - check: --check-all -remove-unused-ignores
+# - infer: --containers --return-types --parameter-types --imports
+
+project-includes = ["spar"]
+project-excludes = [
+    "**/.pixi",
+    "**/__pycache__",
+    "**/.pytest_cache",
+    "**/.mypy_cache",
+    "**/.ruff_cache",
+    "**/*.egg-info",
+    "**/build",
+    "**/dist",
+    "**/.git",
+    "**/.venv",
+    "**/node_modules",
+    "**/bower_components",
+    "**/logs",
+    "**/outputs",
+    "**/checkpoints",
+    "**/.cache",
+    "**/.tox",
+    "**/.eggs",
+    "**/docs/_*",
+    "results",
+    "slurm",
+    "docs",
+    "**/outputs/",
+    "**/tests/",
+    "**/build/",
+    "**/docs/",
+    "**/.git/",
+    "**/.github/",
+    "**/__pycache__/",
+]
+disable-project-excludes-heuristics = true
+search-path = ["spar"]
+disable-search-path-heuristics = false
+site-package-path = []
+
+python-platform = "linux"
+python-version = "3.10.0"
+
+replace-imports-with-any = [
+    "matplotlib",
+    "matplotlib.*",
+    "numpy",
+    "numpy.*",
+    "orjson",
+    "torch",
+    "torch.*",
+]
+ignore-missing-imports = []
+ignore-errors-in-generated-code = false
+enabled-ignores = ["type", "pyrefly"]
+disable-type-errors-in-ide = false
+
+infer-with-first-use = false
+check-unannotated-defs = true
+infer-return-types = "checked"
+strict-callable-subtyping = true
+spec-compliant-overloads = false
+# tensor-shapes = true
+use-ignore-files = true
+recursion-depth-limit = 0
+recursion-overflow-handler = "break-with-placeholder"
+
+
+[errors]
+bad-argument-count = "error"
+bad-argument-type = "error"
+bad-index = "error"
+bad-assignment = "error"
+bad-return = "error"
+bad-override = "error"
+deprecated = "warn"
+implicit-any = "error"
+implicit-any-attribute = "error"
+implicit-any-empty-container = "error"
+implicit-any-parameter = "error"
+implicit-any-type-argument = "error"
+implicit-import = "error"
+invalid-annotation = "error"
+missing-argument = "error"
+missing-attribute = "error"
+missing-import = "error"
+missing-module-attribute = "error"
+missing-source = "ignore"
+missing-source-for-stubs = "ignore"
+no-matching-overload = "error"
+redundant-cast = "warn"
+redundant-condition = "warn"
+redefinition = "error"
+unexpected-keyword = "error"
+unannotated-return = "error"
+unbound-name = "error"
+unnecessary-comparison = "warn"
+unreachable = "warn"
+unknown-name = "error"
+untyped-import = "ignore"
+unused-coroutine = "error"
+unused-ignore = "error"

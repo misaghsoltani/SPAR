@@ -1,0 +1,26 @@
+# @package _global_
+# Configuration for generating start/goal search pairs datasets
+
+defaults:
+  - /schema/gen_search_data_schema@_here_
+  - /search_data: default
+  - /wandb: distributed_shared
+  - _self_
+
+stage: gen_search_data
+
+wandb:
+  mode: disabled
+  job_type: gen-search-data
+  save_code: true
+  log_freq: 50
+  log_model: false
+  group: "${env.name}"
+  notes: "SPAR Search Pair Data Generation"
+  id: "${env.name}_${stage}_${now:%Y-%m-%d_%H-%M-%S}"
+
+  tags:
+    - ${env.name}
+    - ${stage}
+    - ${now:%Y-%m-%d}
+    - search_pairs

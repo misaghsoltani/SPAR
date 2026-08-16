@@ -1,0 +1,41 @@
+# @package _global_
+# Greedy Best-First Search stage.
+#
+# GBFS applies the lowest-valued learned action at each step. Every other key
+# below has the same meaning as in `configs/search/default.yaml`.
+
+defaults:
+  - /schema/search_gbfs_schema@_here_
+  - /model: ${env}
+  - /search: default
+  - /wandb: default
+  - _self_
+
+stage: search_gbfs
+
+search:
+  gbfs_search_itrs: 5000
+
+  # Model paths. GBFS needs both a heuristic and a transition model.
+  heuristic_model_path: "spar/saved_models/heuristic_models/cube3_heuristic_disc/model_state_dict.pt"
+  env_model_path: "spar/saved_models/world_models/cube3_world_model_disc/world_model_checkpoint_transition_model.pt"
+  alignment_model_path: "spar/saved_models/alignment_models/cube3_alignment_model_disc_sim2real_9/alignment_model_checkpoint_alignment_model.pt"
+
+  # Single-image input/output paths. Override with `pairs_file` for a dataset.
+  state_path: "outputs/image_processing_cube3/resized_input_matplotlib.png"
+  goal_state_path: "spar/search_test/goal.png"
+  results_dir: "spar/search_test/res"
+  pairs_file: null
+
+  # Neural network batch size (null uses the whole batch in one forward pass).
+  nnet_batch_size: null
+
+  # Percentage of latent elements that must match to treat a state as solved.
+  per_eq_tol: 100.0
+
+  # Index of the first pair to process.
+  start_idx: 0
+  verbose: false
+
+wandb:
+  mode: disabled

@@ -1,0 +1,19 @@
+# Main sweep configuration for hyperparameter optimization
+
+# Base configuration that we'll use for all sweeps
+defaults:
+  - config
+  - wandb: default
+  - _self_
+
+# Set stage to create_sweep
+stage: create_sweep
+
+# Default sweep settings (will be overridden by specific sweep configs)
+sweep:
+  type: "heuristic"
+  method: "bayes"
+  metric_name: "val_loss"
+  metric_goal: "minimize"
+  count: 10
+  create_agent_script: true

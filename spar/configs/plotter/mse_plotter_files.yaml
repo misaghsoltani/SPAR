@@ -1,0 +1,90 @@
+# @package plotter
+# Example MSE plotter configuration for specific file-based model testing visualization
+# This configuration demonstrates how to visualize specific model testing files
+
+defaults:
+  - mse_plotter
+  - _self_
+
+# Input/Output configuration
+input_directory: null # Not used in file mode
+file_pattern: "*.json"
+discrete_file_pattern: null #"*discrete*"
+continuous_file_pattern: null #"*continuous*"
+input_files: # Specific files to compare (three sources)
+  - "outputs/experiments/cube3/test_model_disc/2025-08-08_20-56-33/model_tests/images/discrete/base_evaluation_metrics.json" # Discrete (with latent state)
+  - "outputs/experiments/cube3/test_model_cont_NOT_END2END/2025-08-08_20-55-57/model_tests/images/continuous/base_evaluation_metrics.json" # Continuous (with latent state)
+  - "outputs/experiments/cube3/test_model_cont_next_state/2025-08-08_21-05-00/model_tests/images/continuous_next_state/base_evaluation_metrics.json" # Continuous (predicting next state)
+
+output_directory: "specific_model_plots"
+source_names:
+  - "Discrete (with latent state)"
+  - "Continuous (with latent state)"
+  - "Continuous (predicting next state)"
+
+metric_keys_to_plot:
+  - "reconstruction_mse"
+
+# Plot generation modes
+plot_mode: "files" # Use specific file list
+# For multi-source mean-only plot, disable other plot generations
+create_individual_plots: false
+create_individual_model_plots: false
+create_model_comparison_plots: false
+create_variant_comparison_plots: false
+create_cross_variant_mean_plots: false
+# Figure properties
+style: nature_journal #"aaai_conference"
+figsize: [8, 6]
+dpi: 300
+export_formats: ["png"]
+png_transparent: false
+
+# Simple axis configuration
+x_axis:
+  label: "Step"
+  scale: "linear"
+
+y_axis:
+  label: "Reconstruction MSE"
+  scale: "linear"
+  use_scientific_notation: true
+
+# Minimal styling for individual plots
+legend:
+  show_legend: true
+  position: "best"
+
+grid:
+  show_grid: true
+  alpha: 0.5
+
+statistics_display:
+  statistics_to_show: [] #["min", "max", "mean", "std"] # Options: "min", "max", "mean", "std", "median", "final_value"
+
+# Standard processing
+# Mean-only lines, no smoothing or shaded areas
+smoothing_method: "none"
+uncertainty_method: "std" # ignored because show_uncertainty is false
+
+title_template: "Reconstruction MSE over Steps"
+show_minmax: false
+show_raw_mean: true
+show_smoothed: false
+show_uncertainty: false
+
+# Legend toggles
+legend_show_raw_mean: true
+legend_show_minmax: false
+legend_show_band: false
+
+# Optional legend label templates/naming
+legend_smoothed_label_template: "{source} (smoothed mean)"
+legend_raw_label_template: "{source} (mean)"
+legend_minmax_label: "min / max"
+legend_band_label_quantiles_template: "{percent}% range"
+legend_band_label_std: "±σ range"
+
+# Optional display name overrides
+model_type_labels: null
+variant_label_overrides: null

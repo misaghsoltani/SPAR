@@ -1,0 +1,101 @@
+[environment]
+python-version = "3.10"
+python-platform = "all"
+root = ["."]
+# extra-paths = ["spar"]
+
+[src]
+respect-ignore-files = true
+include = ["spar"]
+exclude = [
+    "spar/**/output",
+    "spar/offline_data",
+    "tests",
+    ".pixi",
+    "__pycache__",
+    "build",
+    "dist",
+    ".git",
+    "results",
+    "slurm",
+    "**/.pixi",
+    "**/__pycache__",
+    "**/.pytest_cache",
+    "**/.mypy_cache",
+    "**/.ruff_cache",
+    "**/*.egg-info",
+    "**/build",
+    "**/dist",
+    "**/.git",
+    "**/.venv",
+    "**/node_modules",
+    "**/bower_components",
+    "**/logs",
+    "**/outputs",
+    "**/checkpoints",
+    "**/.cache",
+    "**/.tox",
+    "**/.eggs",
+    "**/docs/_*",
+]
+
+[rules]
+# Start from the union of mypy/Pyright-requested checks instead of ty's own
+# defaults, so this config does not introduce extra ty-only diagnostics.
+# all = "ignore"
+
+# mypy warn_* options and Pyright warning diagnostics.
+deprecated = "warn"
+missing-type-argument = "warn"
+redundant-cast = "warn"
+unused-ignore-comment = "warn"
+unused-type-ignore-comment = "warn"
+
+# mypy enabled error codes.
+unsupported-bool-conversion = "error"
+unused-awaitable = "error"
+
+# Pyright reportCallIssue = "error".
+call-non-callable = "error"
+call-top-callable = "error"
+missing-argument = "error"
+no-matching-overload = "error"
+parameter-already-assigned = "error"
+too-many-positional-arguments = "error"
+unknown-argument = "error"
+
+# Pyright reportAssignmentType = "error".
+invalid-argument-type = "error"
+invalid-assignment = "error"
+invalid-key = "error"
+invalid-parameter-default = "error"
+missing-typed-dict-key = "error"
+
+# Pyright reportGeneralTypeIssues = "error".
+conflicting-metaclass = "error"
+cyclic-class-definition = "error"
+duplicate-base = "error"
+inconsistent-mro = "error"
+index-out-of-bounds = "error"
+invalid-await = "error"
+invalid-base = "error"
+invalid-context-manager = "error"
+invalid-exception-caught = "error"
+invalid-raise = "error"
+not-iterable = "error"
+
+# Other explicit Pyright error diagnostics and mypy default-code mappings.
+conflicting-declarations = "error"
+invalid-attribute-access = "error"
+invalid-return-type = "error"
+empty-body = "error"
+not-subscriptable = "error"
+possibly-missing-attribute = "error"
+unresolved-attribute = "error"
+unresolved-import = "error"
+unresolved-reference = "error"
+unsupported-operator = "error"
+
+[terminal]
+output-format = "full"
+error-on-warning = false

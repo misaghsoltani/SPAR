@@ -1,0 +1,442 @@
+[workspace]
+platforms = [
+    "osx-arm64",
+    "osx-64",
+    "linux-64",
+    "linux-aarch64",
+    "win-64",
+    { name = "linux-64-cuda12", platform = "linux-64", cuda = "12.0" },
+    { name = "linux-aarch64-cuda12", platform = "linux-aarch64", cuda = "12.0" },
+    { name = "win-64-cuda12", platform = "win-64", cuda = "12.0" },
+    { name = "linux-64-cuda13", platform = "linux-64", cuda = "13.0" },
+    { name = "linux-aarch64-cuda13", platform = "linux-aarch64", cuda = "13.0" },
+    { name = "win-64-cuda13", platform = "win-64", cuda = "13.0" },
+    # { name = "linux-64-glibc217", platform = "linux-64", glibc = "2.17" },
+    # { name = "linux-aarch64-glibc217", platform = "linux-aarch64", glibc = "2.17" },
+    # { name = "win-64-glibc217", platform = "win-64", glibc = "2.17" },
+    # { name = "linux-64-cuda12-glibc217", platform = "linux-64", cuda = "12.0", glibc = "2.17" },
+    # { name = "linux-aarch64-cuda12-glibc217", platform = "linux-aarch64", cuda = "12.0", glibc = "2.17" },
+    # { name = "win-64-cuda12-glibc217", platform = "win-64", cuda = "12.0", glibc = "2.17" },
+]
+name = "spar"
+description = "Stable Planning through Aligned Representations (SPAR) in Model-Based Reinforcement Learning"
+readme = "README.md"
+authors = ["Misagh Soltani <msoltani@email.sc.edu>"]
+license = "MIT"
+license-file = "LICENSE"
+channels = ["conda-forge"]
+preview = ["pixi-build"]
+
+
+[tasks]
+spar = "spar"
+check-ci = "python -c 'import spar; import spar.optuna; import spar.pipeline' && spar --help >/dev/null"
+ci = "pixi run -e ci check-ci && pixi run -e ci test-ci && pixi run -e build buildpy-clean"
+
+[package]
+name = "spar"
+version = "0.1.0"
+
+
+[package.build]
+backend = { name = "pixi-build-python", version = "*", channels = [
+    "https://prefix.dev/pixi-build-backends",
+    "https://prefix.dev/conda-forge",
+] }
+config = { debug-dir = ".build-debug", extra-input-globs = [
+    "*.md",
+    "spar/environments/sokoban_data/**",
+    "spar/environments/puzzlegen/data/**",
+    "spar/**",
+    "spar/py.typed",
+    "README.md",
+], exclude = [
+    "*.py[cod]",
+    "__pycache__/**",
+    ".DS_Store",
+    ".vscode",
+    ".git",
+    ".pixi",
+    "**/.cache/**",
+    "**/.parcel-cache/**",
+    "**/.vite/**",
+    "**/node_modules/**",
+    "spar/offline_data/**",
+    "spar/saved_models/**",
+    "spar/**/*.ckpt",
+    "spar/**/*.h5",
+    "spar/**/*.hdf5",
+    "spar/**/*.npy",
+    "spar/**/*.npz",
+    "spar/**/*.pkl",
+    "spar/**/*.pt",
+    "spar/**/*.pth",
+    "spar/search_test/*.jpeg",
+    "spar/search_test/*.jpg",
+    "spar/search_test/*.png",
+    "spar/search_test/res/**",
+    "spar/search_test/results/**",
+] }
+
+[package.host-dependencies]
+hatchling = "*"
+uv = "*"
+
+[package.build-dependencies]
+python = ">=3.10, <3.15"
+
+[environments]
+default = { solve-group = "default", platforms = [
+    "osx-arm64",
+    "osx-64",
+    "linux-64",
+    "linux-aarch64",
+    "win-64",
+    "linux-64-cuda12",
+    "linux-aarch64-cuda12",
+    "win-64-cuda12",
+    "linux-64-cuda13",
+    "linux-aarch64-cuda13",
+    "win-64-cuda13",
+] }
+dev = { features = [
+    "dev",
+    "datadashboard",
+    "wandblocalserver",
+    "test",
+    "doc",
+    "cuda",
+    # "build",
+], solve-group = "default" }
+doc = { features = ["doc"] }
+test = { features = ["test"], solve-group = "default" }
+ci = { features = ["test"], solve-group = "default" }
+build = { features = ["build"], solve-group = "default" }
+datadashboard = { features = ["datadashboard"], solve-group = "default" }
+wandblocalserver = { features = ["wandblocalserver"], solve-group = "default" }
+cuda = { features = ["cuda"], solve-group = "default" }
+all = { features = [
+    "test",
+    "dev",
+    "cuda",
+    # "build",
+    "datadashboard",
+    "wandblocalserver",
+    "doc",
+], solve-group = "default" }
+# glibc217 = { features = [
+#     "glibc217",
+# ], no-default-feature = true, platforms = [
+#     "linux-64-glibc217",
+#     "linux-aarch64-glibc217",
+#     "win-64-glibc217",
+# ] }
+
+# [feature.glibc217.dependencies]
+
+
+# [tool.build-dependencies]
+# hatchling = "*"
+# python = ">=3.10, <3.15"
+
+[dependencies]
+python = ">=3.10,<3.15"
+ray-default = ">=2.0,<3"
+
+
+[pypi-dependencies]
+spar = { path = ".", editable = true }
+numpy = ">=2.0, <3"
+gymnasium = ">=1.0, <2"
+opencv-python-headless = ">=5.0.0.93, <6"
+wandb = ">=0.28.1, <0.29"
+hydra-core = ">=1.3.4, <2"
+omegaconf = ">=2.3.1, <3"
+matplotlib = ">=3.8, <4"
+scikit-image = ">=0.26.0, <0.27"
+rich = ">=15.0.0, <16"
+networkx = ">=3.6.1, <4"
+psutil = ">=7.2.2, <8"
+gputil = ">=1.4.0, <2"
+distro = ">=1.9.0, <2"
+py-cpuinfo = ">=9.0.0, <10"
+pydantic = ">=2.13.4, <3"
+orjson = ">=3.11.9, <4"
+pygame-ce = ">=2.5.7, <3"
+h5py = ">=3.16.0, <4"
+pillow = ">=12.3.0, <13"
+imageio = ">=2.37.4, <3"
+pillow-heif = ">=1.5.0, <2"
+wandb-osh = ">=1.2.2, <2"
+optuna = ">=4.9.0, <5"
+pandas = ">=3.0.5, <4"
+typing-extensions = "*"
+ray = ">=2.0, <3"
+
+
+[feature.dev.dependencies]
+shellcheck = "*"
+
+[feature.dev.pypi-dependencies]
+mypy = "*"
+ruff = "*"
+pyright = "*"
+yamllint = "*"
+ty = "*"
+pyrefly = "*"
+lxml-stubs = "*"
+pandas-stubs = "*"
+types-pymysql = "*"
+types-defusedxml = "*"
+types-gevent = "*"
+types-grpcio-health-checking = "*"
+types-grpcio-reflection = "*"
+types-grpcio-status = "*"
+types-gunicorn = "*"
+types-paramiko = "*"
+types-pexpect = "*"
+types-psycopg2 = "*"
+types-pytz = "*"
+types-pywin32 = "*"
+types-rfc3339-validator = "*"
+types-simplejson = "*"
+types-tabulate = "*"
+types-tensorflow = "*"
+types-openpyxl = "*"
+types-xlrd = "*"
+types-networkx = "*"
+typing-extensions = "*"
+
+[target.linux-64.dependencies]
+cuda-version = ">=12.0,<14"
+cuda = ">=12.0,<14"
+cuda-toolkit = ">=12.0,<14"
+cudnn = "*"
+
+[target.linux-64.pypi-dependencies]
+torch = ">=2.0, <3"
+torchvision = "*"
+
+[target.linux-aarch64.dependencies]
+cuda-version = ">=12.0,<14"
+cuda = ">=12.0,<14"
+cuda-toolkit = ">=12.0,<14"
+cudnn = "*"
+
+[target.linux-aarch64.pypi-dependencies]
+torch = ">=2.0, <3"
+torchvision = "*"
+
+[target.win-64.dependencies]
+cuda-version = ">=12.0,<14"
+cuda = ">=12.0,<14"
+cuda-toolkit = ">=12.0,<14"
+cudnn = "*"
+
+[target.win-64.pypi-dependencies]
+torch = ">=2.0, <3"
+torchvision = "*"
+
+
+[feature.dev.tasks]
+lint = "ruff check --fix"
+ulint = "ruff check --fix --unsafe-fixes"
+format = "ruff format"
+fix = "ruff check --fix --unsafe-fixes; ruff format"
+format-check = "ruff format --check"
+pyright = "pyright"
+mypy = "mypy spar"
+typecheck = "pyright && mypy spar"
+yamllint = "yamllint ."
+shellcheck = "[ -d scripts ] && find scripts -type f -name '*.sh' -exec shellcheck {} + || true"
+check = "ruff check && ruff format --check && pyright && mypy spar && yamllint . && (test ! -d scripts || ! find scripts -type f -name '*.sh' | grep -q . || find scripts -type f -name '*.sh' | xargs shellcheck)"
+
+[feature.dev.tasks.fmt]
+args = [
+    { "arg" = "dir", "default" = "spar" },
+    { "arg" = "config_file", "default" = "mypy.ini" },
+]
+cmd = "ruff check --fix --unsafe-fixes {{ dir }}; ruff format {{ dir }}; mypy {{ dir }} --config-file={{ config_file }} --cache-fine-grained; pyright {{ dir }}"
+
+[feature.datadashboard.dependencies]
+nodejs = "*"
+pnpm = "*"
+sqlite = "*"
+
+
+[feature.datadashboard.pypi-dependencies]
+spar = { path = ".", editable = true }
+spar-datadash = { path = "datadash", editable = true }
+rich = "*"
+flask = "*"
+
+[feature.datadashboard.tasks]
+spar-datadash = "python -m spar_datadash.react_cli"
+spar-datadash-react = "bash scripts/run_datadash_react.sh"
+spar-datadash-react-install = "cd datadash/spar-datadash-react && pnpm install --frozen-lockfile"
+spar-datadash-react-build = "cd datadash/spar-datadash-react && pnpm install --frozen-lockfile && pnpm build"
+spar-datadash-clean = "python scripts/clean_datadash.py"
+
+
+[feature.test.pypi-dependencies]
+pytest = "*"
+nose2 = "*"
+pytest-cov = "*"
+tox = "*"
+pytest-mock = "*"
+
+[feature.test.tasks]
+test = "pytest"
+test_webapp = "pytest tests/test_dashboard.py --maxfail=3 -v"
+test-coverage = "pytest --cov=spar --cov-report=term-missing --cov-report=xml:coverage.xml"
+test-ci = "pytest -q tests/test_hydra_help_patch.py tests/test_digit_jump.py tests/test_optuna_grid_sampler.py"
+test-performance = "pytest tests/test_iceslider_performance.py -o addopts='' -q"
+test-slowest = "pytest --durations=10 -q"
+tox = "tox -q"
+nose2 = "nose2 -v"
+coverage-html = "pytest --cov=spar --cov-report=html:htmlcov"
+
+
+[feature.wandblocalserver.pypi-dependencies]
+docker = "*"
+
+
+[feature.wandblocalserver.tasks]
+run-wandb = "python -m spar.scripts.run_wandb_offline"
+
+
+[feature.doc.dependencies]
+furo = "*"
+sphinx-copybutton = "*"
+sphinx-autodoc2 = "*"
+sphinx-sitemap = "*"
+myst-parser = "*"
+linkify-it-py = "*"
+sphinx = "*"
+
+[feature.doc.tasks]
+docs = "sphinx-build -b html docs docs/_build/html"
+docs-nitpick = "sphinx-build -nW --keep-going -b html docs docs/_build/html"
+docs-clean = "rm -rf docs/_build docs/apidocs"
+docs-serve = "python -m http.server --bind 127.0.0.1 --directory docs/_build/html 8000"
+docs-run = "rm -rf docs/_build docs/apidocs && sphinx-build -nW --keep-going -b html docs docs/_build/html && python -m http.server --bind 127.0.0.1 --directory docs/_build/html 8000"
+
+
+[feature.build.dependencies]
+hatch = "*"
+
+[feature.build.tasks]
+build = "pixi build -o dist && rm -rf .build-debug dist/linux-64 dist/win-64 dist/osx-64 dist/osx-arm64 dist/linux-aarch64 dist/noarch"
+build-clean = "pixi build --clean -o dist && rm -rf .build-debug dist/linux-64 dist/win-64 dist/osx-64 dist/osx-arm64 dist/linux-aarch64 dist/noarch"
+buildpy = "hatch build -t wheel -t sdist"
+buildpy-clean = "hatch build -t wheel -t sdist --clean"
+build-all = "pixi build -o dist && rm -rf .build-debug dist/linux-64 dist/win-64 dist/osx-64 dist/osx-arm64 dist/linux-aarch64 dist/noarch && hatch build -t wheel -t sdist"
+
+
+[feature.cuda.target.linux-64-cuda12.dependencies]
+cuda-version = ">=12.0,<13"
+cuda = ">=12.0,<13"
+cuda-toolkit = ">=12.0,<13"
+cudnn = "*"
+
+[feature.cuda.target.linux-64-cuda13.dependencies]
+cuda-version = ">=13.0,<14"
+cuda = ">=13.0,<14"
+cuda-toolkit = ">=13.0,<14"
+cudnn = "*"
+
+[target.linux-64-cuda12.pypi-dependencies]
+torch = { version = ">=2.0, <3", index = "https://download.pytorch.org/whl/cu128" }
+torchvision = { version = "*", index = "https://download.pytorch.org/whl/cu128" }
+
+[target.linux-64-cuda12.dependencies]
+cuda-version = ">=12.0,<13"
+cuda = ">=12.0,<13"
+cuda-toolkit = ">=12.0,<13"
+cudnn = "*"
+
+[target.linux-64-cuda13.pypi-dependencies]
+torch = { version = ">=2.0, <3", index = "https://download.pytorch.org/whl/cu132" }
+torchvision = { version = "*", index = "https://download.pytorch.org/whl/cu132" }
+
+[target.linux-64-cuda13.dependencies]
+cuda-version = ">=13.0,<14"
+cuda = ">=13.0,<14"
+cuda-toolkit = ">=13.0,<14"
+cudnn = "*"
+
+
+[feature.cuda.target.linux-aarch64-cuda12.dependencies]
+cuda-version = ">=12.0,<13"
+cuda = ">=12.0,<13"
+cuda-toolkit = ">=12.0,<13"
+cudnn = "*"
+
+[feature.cuda.target.linux-aarch64-cuda13.dependencies]
+cuda-version = ">=13.0,<14"
+cuda = ">=13.0,<14"
+cuda-toolkit = ">=13.0,<14"
+cudnn = "*"
+
+[target.linux-aarch64-cuda12.pypi-dependencies]
+torch = { version = ">=2.0, <3", index = "https://download.pytorch.org/whl/cu128" }
+torchvision = { version = "*", index = "https://download.pytorch.org/whl/cu128" }
+
+[target.linux-aarch64-cuda12.dependencies]
+cuda-version = ">=12.0,<13"
+cuda = ">=12.0,<13"
+cuda-toolkit = ">=12.0,<13"
+cudnn = "*"
+
+[target.linux-aarch64-cuda13.pypi-dependencies]
+torch = { version = ">=2.0, <3", index = "https://download.pytorch.org/whl/cu132" }
+torchvision = { version = "*", index = "https://download.pytorch.org/whl/cu132" }
+
+[target.linux-aarch64-cuda13.dependencies]
+cuda-version = ">=13.0,<14"
+cuda = ">=13.0,<14"
+cuda-toolkit = ">=13.0,<14"
+cudnn = "*"
+
+
+[feature.cuda.target.win-64-cuda12.dependencies]
+cuda-version = ">=12.0,<13"
+cuda = ">=12.0,<13"
+cuda-toolkit = ">=12.0,<13"
+cudnn = "*"
+
+[feature.cuda.target.win-64-cuda13.dependencies]
+cuda-version = ">=13.0,<14"
+cuda = ">=13.0,<14"
+cuda-toolkit = ">=13.0,<14"
+cudnn = "*"
+
+[target.win-64-cuda12.pypi-dependencies]
+torch = { version = ">=2.0, <3", index = "https://download.pytorch.org/whl/cu128" }
+torchvision = { version = "*", index = "https://download.pytorch.org/whl/cu128" }
+
+[target.win-64-cuda12.dependencies]
+cuda-version = ">=12.0,<13"
+cuda = ">=12.0,<13"
+cuda-toolkit = ">=12.0,<13"
+cudnn = "*"
+
+[target.win-64-cuda13.pypi-dependencies]
+torch = { version = ">=2.0, <3", index = "https://download.pytorch.org/whl/cu132" }
+torchvision = { version = "*", index = "https://download.pytorch.org/whl/cu132" }
+
+[target.win-64-cuda13.dependencies]
+cuda-version = ">=13.0,<14"
+cuda = ">=13.0,<14"
+cuda-toolkit = ">=13.0,<14"
+cudnn = "*"
+
+[target.osx-64.dependencies]
+pytorch = ">=2.0,<3"
+torchvision = "*"
+
+[target.osx-arm64.pypi-dependencies]
+torch = ">=2.0, <3"
+torchvision = "*"
+
+[target.osx-arm64.dependencies]

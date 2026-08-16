@@ -1,0 +1,348 @@
+# @package data
+
+# Default data configuration
+save_dir: "spar/offline_data" # Directory for storing data
+
+# Global settings for data generation
+num_cpus: 1 # Number of processes to use
+compression: false # Whether to compress the data
+batch_size: 0 # Batch size for data generation
+batch_size_per_worker: 0 # Controls parallel processing granularity: number of states processed per worker batch
+use_variations: false # Whether to generate image variations
+variations_first_state_only: false # If true, only the first state of each episode will have variations
+variation_sharing_group_size: 1 # States sharing one variation sample. A value of 1 samples each state independently.
+num_eps: 1
+num_steps: 1
+start_seed: 1
+num_seeds: 1
+file_name: 1
+
+# Datasets to generate (should be a dict in experiment configs)
+datasets:
+  - name: train
+    num_eps: 1
+    num_steps: 1
+    start_seed: null
+    num_seeds: null
+    use_variations: false
+    variations_first_state_only: false
+    file_name: "${env.name}_${.name}_${.num_eps}eps_${.num_steps}steps"
+    num_cpus: 1
+    compression: true
+    batch_size_per_worker: 1
+
+# Effects configuration
+effects:
+  # # Lighting effects
+  # ambient_light:
+  #   enabled: true
+  #   alpha: ${range:0.2,0.95}
+  #   color: "#ffd1a4"
+
+  # directional_light:
+  #   enabled: true
+  #   gamma: ${range:0.3,3.0}
+  #   angle: ${range:0,360}
+  #   intensity: ${range:0.1,5.0}
+  #   ambient: ${range:0.0,1.0}
+  #   apply_vignette: true
+  #   vignette_strength: ${range:0.0,1.0}
+
+  # color_temperature:
+  #   enabled: true
+  #   shift: ${range:-0.5,0.5}
+
+  # Color and geometric effects
+  hsv_shift:
+    enabled: true
+    hue_shift: ${range:-0.02,0.02}
+    sat_scale: ${range:0.2,2}
+    val_scale: ${range:0.1,1.4}
+  # contrast_brightness:
+  #   enabled: true
+  #   contrast: ${range:0.6,1.5}
+  #   brightness: ${range:-0.3,0.3}
+  # exposure_variation:
+  #   enabled: true
+  #   gamma: ${range:0.5,1.5}
+  rotate_image:
+    enabled: true
+    angle: ${range:-45,45}
+  # perspective_transform:
+  #   enabled: true
+  #   delta: ${range:0.03,0.2}
+  zoom_effect:
+    enabled: true
+    factor: ${range:0.8,1.2}
+    interpolation: 1 # cv2.INTER_LINEAR
+    border_mode: 4 # cv2.BORDER_REFLECT_101
+  # spatial_perturbation:
+  #   enabled: true
+  #   max_translation: ${range:0.01,0.1}
+  #   max_rotation: ${range:1.0,20.0}
+  #   max_scale: ${range:0.01,0.2}
+  adversarial_noise:
+    enabled: true
+    frequency: ${range:3,28}
+    amplitude: ${range:0.03,0.18}
+  # barrel_distortion:
+  #   enabled: true
+  #   strength: ${range:0.000001,0.0001}
+
+  # Noise effects
+  gaussian_noise:
+    enabled: true
+    noise_level: ${range:0.05,0.4}
+  # salt_pepper_noise:
+  #   enabled: true
+  #   amount: ${range:0.01,0.1}
+  #   salt_vs_pepper: ${range:0.05,0.95}
+  # poisson_noise:
+  #   enabled: true
+  # speckle_noise:
+  #   enabled: true
+  # color_banding:
+  #   enabled: true
+  #   levels: ${choice:[2,4,8,16,32]}
+
+  # Blur effects
+  gaussian_blur:
+    enabled: true
+    sigma: ${range:0.5,4.0}
+  # motion_blur:
+  #   enabled: true
+  #   kernel_size: ${choice:[3,5,7,9,11,13,15]}
+  defocus_blur:
+    enabled: true
+    sigma: ${range:0.2,3.0}
+  radial_blur:
+    enabled: true
+    num_rotations: ${range:2,15}
+    max_angle: ${range:5.0,10.0}
+
+  # # Occlusion and weather effects
+  # random_occluders:
+  #   enabled: true
+  #   num_shapes: ${range:1,7}
+  # edge_cropping:
+  #   enabled: true
+  #   crop_fraction: ${range:0.01,0.1}
+  fog_haze:
+    enabled: true
+    spread: ${range:0.15,1.5}
+    intensity: ${range:0.3,0.85}
+  rain_effect:
+    enabled: true
+    num_streaks: ${range:5,50}
+    thickness: 1
+  # sensor_inaccuracy:
+  #   enabled: true
+  #   noise_level: ${range:0.01,0.1}
+  #   sp_amount: ${range:0.001,0.02}
+  #   sp_ratio: ${range:0.0,1.0}
+
+  # Effect combinations - predefined combinations for specific use cases
+  # Lighting focused combination
+  lighting_only:
+    enabled: true
+    ambient_light:
+      alpha: ${range:0.001,0.95}
+    directional_light:
+      gamma: ${range:0.3,3.0}
+      angle: ${range:0,360}
+      intensity: ${range:0.1,5.0}
+      ambient: ${range:0.0,1.0}
+      apply_vignette: true
+      vignette_strength: ${range:0.0,1.0}
+    color_temperature:
+      shift: ${range:-0.5,0.5}
+
+  # Noise and distortion combination
+  noise_and_distortion:
+    enabled: true
+    gaussian_noise:
+      noise_level: ${range:0.05,0.4}
+    salt_pepper_noise:
+      amount: ${range:0.001,0.008}
+    motion_blur:
+      kernel_size: ${choice:[3,5]}
+    perspective_transform:
+      delta: ${range:0.03,0.05}
+
+  # # Heavy augmentation for stress testing
+  # stress_test:
+  #   enabled: true
+  #   gaussian_noise:
+  #     noise_level: 0.2
+  #   motion_blur:
+  #     kernel_size: 7
+  #   rotate_image:
+  #     angle: ${range:-15,15}
+  #   zoom_effect:
+  #     factor: ${range:1.05,1.3}
+  #   hsv_shift:
+  #     hue_shift: ${range:-0.4,0.5}
+  #     sat_scale: ${range:0.2,2}
+  #     val_scale: ${range:0.1,1.4}
+
+  # Indoor/artificial lighting conditions
+  indoor_lighting:
+    enabled: true
+    ambient_light:
+      alpha: ${range:0.3,0.8}
+      color: "#ffe5cc" # Warm indoor lighting
+    color_temperature:
+      shift: ${range:0.1,0.3} # Warmer bias
+    contrast_brightness:
+      contrast: ${range:0.8,1.2}
+      brightness: ${range:-0.1,0.2}
+    gaussian_noise:
+      noise_level: ${range:0.01,0.05} # Minimal sensor noise
+
+  # Outdoor/natural lighting with weather
+  outdoor:
+    enabled: true
+    directional_light:
+      gamma: ${range:0.3,3.0}
+      angle: ${range:0,360}
+      intensity: ${range:0.1,5.0}
+      ambient: ${range:0.0,1.0}
+      apply_vignette: true
+      vignette_strength: ${range:0.0,1.0}
+    fog_haze:
+      spread: ${range:0.3,1.4}
+      intensity: ${range:0.2,0.5}
+    rain_effect:
+      num_streaks: ${range:8,20}
+      thickness: ${choice:[1]}
+    gaussian_blur:
+      sigma: ${range:0.5,1.8} # Atmospheric blur
+    exposure_variation:
+      gamma: ${range:0.7,1.3}
+
+  # # Low light/night vision simulation
+  # low_light:
+  #   enabled: true
+  #   ambient_light:
+  #     alpha: ${range:0.8,1.0} # Heavy ambient lighting compensation
+  #     color: "#a6b4ff" # Cooler night vision tint
+  #   gaussian_noise:
+  #     noise_level: ${range:0.1,0.25} # High sensor noise in low light
+  #   speckle_noise:
+  #     enabled: true
+  #   sensor_inaccuracy:
+  #     noise_level: ${range:0.05,0.1}
+  #     sp_amount: ${range:0.01,0.02}
+  #   contrast_brightness:
+  #     contrast: ${range:1.1,1.5} # Contrast above 1.0
+  #     brightness: ${range:-0.2,-0.05} # Darker overall
+
+  # Camera shake and motion simulation
+  motion_conditions:
+    enabled: true
+    motion_blur:
+      kernel_size: ${choice:[5,7]}
+    spatial_perturbation:
+      max_translation: ${range:0.05,0.1}
+      max_rotation: ${range:0.5,1.5}
+      max_scale: ${range:0.05,0.2}
+    gaussian_noise:
+      noise_level: ${range:0.02,0.08}
+    perspective_transform:
+      delta: ${range:0.02,0.08}
+
+  # Underwater/aquatic environment simulation
+  # underwater:
+  #   enabled: true
+  #   color_temperature:
+  #     shift: ${range:-0.3,-0.1} # Blue-green tint
+  #   fog_haze:
+  #     spread: ${range:0.5,2.0}
+  #     intensity: ${range:0.3,0.7}
+  #   gaussian_blur:
+  #     sigma: ${range:1.0,2.7} # Water distortion
+  #   hsv_shift:
+  #     hue_shift: ${range:-0.2,0.1} # Blue-green bias
+  #     sat_scale: ${range:0.6,1.2}
+  #     val_scale: ${range:0.5,0.9} # Darker overall
+  # barrel_distortion:
+  #   strength: ${range:0.000001,0.0001} # Water lens effect
+
+  # Surveillance/security camera simulation
+  surveillance:
+    enabled: true
+    gaussian_noise:
+      noise_level: ${range:0.05,0.15} # Typical camera noise
+    salt_pepper_noise:
+      amount: ${range:0.01,0.05}
+      salt_vs_pepper: ${range:0.3,0.7}
+    motion_blur:
+      kernel_size: ${choice:[3,5,7]} # Compression artifacts
+    contrast_brightness:
+      contrast: ${range:0.7,1.1}
+      brightness: ${range:-0.15,0.1}
+    color_banding:
+      levels: ${choice:[8,16,32]} # Compression effects
+    edge_cropping:
+      crop_fraction: ${range:0.02,0.1} # Lens vignetting
+
+  # # Extreme weather conditions
+  # extreme_weather:
+  #   enabled: true
+  #   rain_effect:
+  #     num_streaks: ${range:15,30}
+  #     thickness: ${choice:[2]}
+  #   fog_haze:
+  #     spread: ${range:1.0,2.5}
+  #     intensity: ${range:0.4,0.8}
+  #   directional_light:
+  #     enabled: true
+  #     gamma: ${range:0.3,3.0}
+  #     angle: ${range:0,360}
+  #     intensity: ${range:0.1,5.0}
+  #     ambient: ${range:0.0,1.0}
+  #     apply_vignette: true
+  #     vignette_strength: ${range:0.0,1.0}
+  #   gaussian_blur:
+  #     sigma: ${range:2.0,4.0}
+  #   gaussian_noise:
+  #     noise_level: ${range:0.08,0.2}
+  #   exposure_variation:
+  #     gamma: ${range:0.5,0.8} # Overcast conditions
+
+  # # Vintage/old camera simulation
+  # vintage_camera:
+  #   enabled: true
+  #   color_banding:
+  #     levels: ${choice:[2,4,8,16,20]} # Low bit depth
+  #   # barrel_distortion:
+  #   #   strength: ${range:0.000001,0.00005} # Lens distortion
+  #   gaussian_noise:
+  #     noise_level: ${range:0.1,0.2} # Film grain
+  #   salt_pepper_noise:
+  #     amount: ${range:0.02,0.08} # Dust and scratches
+  #   exposure_variation:
+  #     gamma: ${range:0.6,1.4} # Inconsistent exposure
+  #   color_temperature:
+  #     shift: ${range:-0.2,0.3} # Color cast variations
+  #   edge_cropping:
+  #     crop_fraction: ${range:0.05,0.1} # Vignetting
+
+  # Microscopy/close-up imaging
+  microscopy:
+    enabled: true
+    gaussian_blur:
+      sigma: ${range:0.5,1.5} # Depth of field limitations
+    defocus_blur:
+      sigma: ${range:1.0,2.0}
+    gaussian_noise:
+      noise_level: ${range:0.03,0.12} # Sensor noise at high magnification
+    contrast_brightness:
+      contrast: ${range:1.1,1.4} # Contrast above 1.0 keeps details distinct
+      brightness: ${range:-0.1,0.1}
+    ambient_light:
+      alpha: ${range:0.2,0.6}
+      color: "#ffffff" # Bright illumination
+    adversarial_noise:
+      frequency: ${range:20,40} # High-frequency artifacts
+      amplitude: ${range:0.02,0.08}

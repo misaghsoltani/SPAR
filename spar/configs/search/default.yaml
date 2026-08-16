@@ -1,0 +1,93 @@
+# @package search
+# Default search configuration
+
+## Shared search controls
+max_search_itrs: 5000
+
+## Visualization modes and labels
+# Modes: none | image | gif | both
+vis_recon_mode: "gif"
+vis_env_mode: "gif"
+vis_combined_mode: "gif"
+vis_combined_include_start_goal: true
+vis_env_row_title: "Environment Rendered"
+vis_recon_row_title: "Reconstruction"
+vis_start_title: "Start"
+vis_goal_title: "Goal"
+
+## Visualization sizing
+# Individual visuals (env-only / recon-only): "original" or "custom"
+vis_individual_size_mode: "original"
+vis_individual_height: null
+vis_individual_width: null
+# Combined visuals row target sizes (height/width for each row). Null = auto-fit
+vis_combined_row_height: null
+vis_combined_row_width: null
+
+## Behavior when search is unsolved
+validate_on_unsolved: false
+vis_on_unsolved: false
+log_moves_on_unsolved: false
+
+## Visualization assets
+decoder_model_path: null
+save_vis_fps: 3
+
+## Q* search parameters
+qstar_batch_size: 100
+qstar_weight: 0.6
+qstar_show_running_summary: false
+# TF32 / matmul precision controls (CUDA-only). Leave null/false to keep PyTorch defaults.
+allow_tf32: false
+float32_matmul_precision: null
+
+## Model paths for Q* search
+heuristic_model_path: ""
+env_model_path: ""
+alignment_model_path: ""
+
+## Inputs for Q* search
+# Single image pair mode
+state_path: "outputs/image_processing_cube3/resized_input_matplotlib.png"
+goal_state_path: "spar/search_test/goal.png"
+
+# Folder mode (runs search on all images in a folder)
+state_dir: null
+goal_state_dir: null
+images_glob: "*.png"
+
+# HDF5 pairs dataset (overrides single/folder modes when set)
+pairs_file: null
+# Back-compat single selection (equivalent to include=[...])
+pairs_start_variant: null
+pairs_goal_variant: null
+# Independent include/exclude lists for start/goal side variations
+# Use 'base' to refer to the base images stored under pairs/<side>/images
+pairs_start_include: null # e.g., ["base", "sim2real10"] or null for all
+pairs_start_exclude: null # e.g., ["artifact_edges"]
+pairs_goal_include: null # e.g., ["base"]
+pairs_goal_exclude: null
+
+# Output
+results_dir: "spar/search_test/results"
+
+# Neural network batch size
+nnet_batch_size: null
+
+# Percentage of bits to match to declare equal
+per_eq_tol: 100.0
+
+# Encoder selection policy for encodings
+# - variant_aware: base encoder for 'base' variants, alignment for others
+# - align_only: always use alignment model
+# - encoder_only: always use base encoder (requires encoder_model_path)
+encoder_mode: align_only
+# Optional path to base encoder (required when encoder_mode == encoder_only)
+encoder_model_path: null
+
+# Misc parameters
+start_idx: 0
+verbose: false
+
+## GBFS search parameters
+gbfs_search_itrs: 100

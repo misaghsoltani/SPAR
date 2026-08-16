@@ -1,0 +1,53 @@
+# @package _global_
+# Configuration for generating offline data
+
+defaults:
+  - override /env: ${env}
+  - override /stage: gen_data
+  - _self_
+
+data:
+  num_cpus: 28
+  compression: false
+  use_variations: true
+  batch_size_per_worker: 1
+  variation_sharing_group_size: 1
+  save_dir: "spar/data/offline_data/${env}/variations"
+
+  datasets:
+    - name: train
+      num_eps: 3000
+      num_steps: 30
+      start_seed: null
+      num_seeds: null
+      use_variations: true
+      variations_first_state_only: false
+      file_name: "var_train_${.num_eps}eps_${.num_steps}steps"
+      batch_size_per_worker: 1000
+      variation_sharing_group_size: 3
+
+    - name: val
+      num_eps: 1000
+      num_steps: 30
+      start_seed: null
+      num_seeds: null
+      use_variations: true
+      variations_first_state_only: false
+      file_name: "var_val_${.num_eps}eps_${.num_steps}steps"
+      batch_size_per_worker: 200
+      variation_sharing_group_size: 3
+
+    - name: test
+      num_eps: 100
+      num_steps: 10000
+      start_seed: null
+      num_seeds: null
+      use_variations: true
+      variations_first_state_only: true
+      file_name: "var_test_${.num_eps}eps_${.num_steps}steps"
+      batch_size_per_worker: 400
+      variation_sharing_group_size: 3
+
+hydra:
+  run:
+    dir: outputs/experiments/${env.name}/gen_data/${now:%Y-%m-%d_%H-%M-%S}

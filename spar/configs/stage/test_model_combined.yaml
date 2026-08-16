@@ -1,0 +1,132 @@
+# @package _global_
+# Configuration for combined (discrete + continuous) model testing stage
+
+defaults:
+  - /schema/test_model_schema@_here_
+  - /model: ${env}
+  - /test: alignment_model
+  - /wandb: default
+  - _self_
+
+stage: test_model
+test_model_type: combined
+
+test:
+  tester_mode: combined
+  device: cuda
+  end_to_end: false
+  # Optional per-model overrides for combined mode (fallback to global end_to_end when null)
+  end_to_end_discrete: false
+  end_to_end_continuous: false
+  use_alignment_model: true
+  precompute_targets: false
+  log_interval: 1000
+  save_interval: 1000
+  visualization_format: pdf
+  visualization_episode_index: 0
+  visualization_steps: null # e.g., [1, 100] to add specific steps in addition to periodic ones
+  test_steps: null
+  top_k: 1
+  apply_diff_highlighting: false
+  # Column metric priority for column titles in per-step and summary visuals
+  # First matching metric in this list will be displayed for each model
+  # column_metric_priority: ["eq_bit", "cosine_similarity", "reconstruction_mse"]
+  column_metric_priority: ["reconstruction_mse"]
+  # Per-model metric keys saved to JSON files in combined mode (fallback to metrics_to_save when null)
+  metrics_to_save: ["reconstruction_mse"]
+  metrics_to_save_discrete: ["reconstruction_mse", "eq_bit"]
+  metrics_to_save_continuous: ["reconstruction_mse", "cosine_similarity"]
+
+  # Labels and titles
+  row_labels: ["Discrete Recon", "Continuous Recon", "Ground Truth"]
+  rightmost_col_row_labels: null
+  rightmost_col_row_labels_side: right
+  variant_panel_title: "Noisy starting state"
+
+  # Global suptitle configuration for all visualizations
+  suptitle:
+    # Per-step visualization title template
+    step_template: "Episode {episode}, Step {step} - {variation_display}"
+    # Summary visualization suptitle template
+    summary_template: "{variation_display} {summary_type_label} {metric_name_display} ({metric_value_formatted}) - Episode {episode}"
+    # Optional: customize labels for summary types
+    summary_type_labels:
+      best: "Best"
+      worst: "Worst"
+      selected: "Selected"
+    # Best/Worst step tracker title template (not used in combined yet, reserved)
+    step_tracker_template: "Step {step} | Episode {episode} | {metric_name_display}: {metric_value_formatted}"
+    # Hide suptitle when the resolved text is empty
+    hide_when_empty: true
+    # Vertical gap above column titles for suptitle (figure fraction)
+    gap: 0.15
+    # Style overrides for the suptitle
+    font_family: serif
+    font_serif: ["Times New Roman", "Computer Modern", "DejaVu Serif"]
+    font_size: 10
+    font_weight: bold
+    color: "#2C3E50"
+    bbox_style:
+      boxstyle: "round,pad=0.7"
+      facecolor: "#E8F4FD"
+      edgecolor: "#3498DB"
+      alpha: 0.95
+      linewidth: 1.0
+
+  dataloader:
+    batch_size: 100
+    num_batches_per_epoch: null
+    replacement: true
+    transform: null
+    dtype: float32
+    num_workers: 0
+    enable_memory_optimization: false
+    pin_memory: false
+    persistent_workers: false
+    pin_memory_device: ""
+    use_variation_for_all_states: false
+    infinite: false
+    base_only: true
+    variations_to_use: null # e.g., ["camera_variation"]
+    variations_to_ignore: null
+    # In combined mode, encoded targets are disabled to avoid mismatch
+    use_encoded_targets: false
+    precompute_targets: false
+    specific_variation: null
+
+  compile:
+    fullgraph: true
+    dynamic: false
+    backend: inductor
+    mode: max-autotune
+    options: null
+    disable: true
+
+data_paths:
+  test_data: spar/offline_data/cube3/sim2real/test_100eps_10000steps_with_vars.h5
+  # test_data: spar/offline_data/${env.name}/val_500eps_30steps_with_vars.h5
+
+save_paths:
+  images_dir: ${hydra:runtime.output_dir}/model_tests/images/${test_model_type}
+  plots_dir: ${hydra:runtime.output_dir}/model_tests/plots/${test_model_type}
+  metrics_dir: ${hydra:runtime.output_dir}/model_tests/metrics/${test_model_type}
+
+# Provide pretrained paths for both discrete and continuous models
+pretrained_model_paths_discrete:
+  encoder_path: spar/saved_models/world_models/${env.name}_world_model_disc/world_model_checkpoint_encoder.pt
+  transition_model_path: spar/saved_models/world_models/${env.name}_world_model_disc/world_model_checkpoint_transition_model.pt
+  decoder_path: spar/saved_models/world_models/${env.name}_world_model_disc/world_model_checkpoint_decoder.pt
+  alignment_model_path: spar/saved_models/alignment_models/${env.name}_alignment_model_disc_${now:%Y-%m-%d}/alignment_model_checkpoint_alignment_model.pt
+
+pretrained_model_paths_continuous:
+  encoder_path: spar/saved_models/world_models/${env.name}_world_model_cont_NOT_END2END/world_model_checkpoint_encoder.pt
+  transition_model_path: spar/saved_models/world_models/${env.name}_world_model_cont_NOT_END2END/world_model_checkpoint_transition_model.pt
+  decoder_path: spar/saved_models/world_models/${env.name}_world_model_cont_NOT_END2END/world_model_checkpoint_decoder.pt
+  alignment_model_path: spar/saved_models/alignment_models/${env.name}_alignment_model_cont_${now:%Y-%m-%d}/alignment_model_checkpoint_alignment_model.pt
+
+model:
+  # Both discrete and continuous sub-configs are used in combined mode
+  dqn: null
+
+wandb:
+  mode: disabled # 'online', 'offline', or 'disabled'

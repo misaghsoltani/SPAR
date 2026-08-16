@@ -1,0 +1,12 @@
+# @package wandb
+# Training profile with periodic media and table logging.
+
+profile: training
+media_log_every_n_steps: 500
+table_log_every_n_steps: 500
+histogram_log_every_n_steps: -1
+
+settings_dict:
+  console: "off"
+  disable_git: true
+  disable_code: true

@@ -1,0 +1,8 @@
+# Dependencies whose install or build scripts are approved to run.
+# This setting lets 'pnpm install' compile them non-interactively for CI and build hooks.
+allowBuilds:
+  "@parcel/watcher": true
+  "@swc/core": true
+  esbuild: true
+  lmdb: true
+  msgpackr-extract: true

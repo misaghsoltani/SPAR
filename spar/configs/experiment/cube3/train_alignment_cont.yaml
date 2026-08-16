@@ -1,0 +1,58 @@
+# @package _global_
+# Cube3-specific Configuration for continuous alignment model training stage
+
+defaults:
+  - override /env: cube3
+  - override /stage: train_alignment_cont
+  - _self_
+
+stage: train_alignment_model
+alignment_model_type: continuous
+end_to_end: true
+freeze_pretrained_models: false
+precompute_targets: true
+
+data_paths:
+  train_data: spar/offline_data/cube3/sim2real/train_9000eps_30steps_with_vars.h5
+  val_data: spar/offline_data/cube3/sim2real/val_1000eps_30steps_with_vars.h5
+  test_data: spar/offline_data/cube3/sim2real/test_100eps_10000steps_with_vars.h5
+
+save_paths:
+  model_dir: spar/saved_models/alignment_models/cube3_alignment_model_dcont_sim2real_${now:%Y-%m-%d}
+
+pretrained_model_paths:
+  encoder_path: null # spar/saved_models/world_models/${env.name}_world_model_cont/world_model_checkpoint_encoder.pt
+  transition_model_path: null # spar/saved_models/world_models/${env.name}_world_model_cont/world_model_checkpoint_transition_model.pt
+  decoder_path: null # spar/saved_models/world_models/${env.name}_world_model_cont/world_model_checkpoint_decoder.pt
+
+train:
+  compile:
+    fullgraph: true
+    dynamic: null
+    backend: "inductor"
+    # mode: max-autotune
+    disable: true
+
+  dataloader:
+    batch_size: 100
+    enable_memory_optimization: false
+    variations_to_ignore: null
+    variations_to_use: null
+
+  phases:
+    - max_itrs: 100000
+      lr: 0.001
+    - max_itrs: 120000
+      lr: 0.0001
+    - max_itrs: 150000
+      lr: 0.00001
+    - max_itrs: 180000
+      lr: 0.000001
+
+wandb:
+  mode: disabled
+  job_type: train
+
+hydra:
+  run:
+    dir: outputs/experiments/cube3/train_alignment_model_cont/${now:%Y-%m-%d_%H-%M-%S}

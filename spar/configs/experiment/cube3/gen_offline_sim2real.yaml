@@ -1,0 +1,1367 @@
+# @package _global_
+# Cube3-specific configuration for generating offline data
+
+defaults:
+  - default/gen_offline
+  - override /env: cube3
+  - override /data: null
+  - _self_
+
+data:
+  num_cpus: 110
+  compression: false
+  use_variations: true
+  batch_size_per_worker: 100 # use 0 for auto-calculate
+  variation_sharing_group_size: 1
+  save_dir: "spar/offline_data/cube3/sim2real"
+
+  datasets:
+    - name: train_with_vars
+      num_eps: 9000
+      num_steps: 30
+      start_seed: null
+      num_seeds: null
+      use_variations: true
+      variations_first_state_only: false
+      file_name: "train_${.num_eps}eps_${.num_steps}steps_with_vars"
+      batch_size_per_worker: 100 # use 0 for auto-calculate
+      variation_sharing_group_size: 1
+
+    - name: val_with_vars
+      num_eps: 1000
+      num_steps: 30
+      start_seed: null
+      num_seeds: null
+      use_variations: true
+      variations_first_state_only: false
+      file_name: "val_${.num_eps}eps_${.num_steps}steps_with_vars"
+      batch_size_per_worker: 100 # use 0 for auto-calculate
+      variation_sharing_group_size: 1
+
+    - name: test_with_vars
+      num_eps: 100
+      num_steps: 10000
+      start_seed: null
+      num_seeds: null
+      use_variations: true
+      variations_first_state_only: true
+      file_name: "test_${.num_eps}eps_${.num_steps}steps_with_vars"
+      batch_size_per_worker: 100 # use 0 for auto-calculate
+      variation_sharing_group_size: 1
+
+  effects:
+    camera_and_image:
+      enabled: true
+      cube_texture_scratches:
+        noise_level: ${range:0.0001,0.03}
+      reflections:
+        enabled: false
+        intensity: ${range:0.05,0.3}
+        num_reflections: ${irange:1,3}
+        size_min: ${range:0.05,0.09}
+        size_max: ${range:0.12,0.22}
+        sharpness: ${range:0.4,0.8}
+        elongation: ${range:1.2,2.2}
+        angle: ${range:0,360}
+        color_temperature: ${range:0.3,0.7}
+        surface_gloss: ${range:0.3,0.7}
+        chromatic: ${range:0.05,0.2}
+        source_threshold: ${range:0.72,0.9}
+        source_x: -1.0
+        source_y: -1.0
+        reflection_x: -1.0
+        reflection_y: -1.0
+        position_spread: ${range:0.1,0.25}
+      lens_glare:
+        enabled: false
+        intensity: ${range:0.05,0.25}
+        threshold: ${range:0.72,0.9}
+        bloom_strength: ${range:0.2,0.5}
+        bloom_radius: ${range:0.03,0.08}
+        halo_strength: ${range:0.1,0.35}
+        halo_radius: ${range:0.2,0.5}
+        ghost_strength: ${range:0.05,0.2}
+        num_ghosts: ${irange:1,3}
+        streak_strength: ${range:0.05,0.2}
+        streak_length: ${range:0.5,1.0}
+        streak_width: ${range:0.03,0.05}
+        angle: ${range:0,360}
+        source_x: -1.0
+        source_y: -1.0
+        chromatic: ${range:0.05,0.2}
+        glare_size: ${range:0.7,1.3}
+      resize_degradation:
+        strength: ${range:0.0015,0.45}
+        resize_scale: ${range:0.5,0.85}
+        target_height: 0
+        target_width: 0
+        interpolation: lanczos
+        save_format: jpeg
+        jpeg_quality: 85
+        jpeg_subsampling: ${irange:1,5}
+        png_compress_level: 6
+        roundtrips: ${irange:1,2}
+      cube_zoom:
+        zoom_factor: ${range:0.85,1.05}
+        offset_x: ${range:-0.2,0.2}
+        offset_y: ${range:-0.2,0.2}
+      cube_directional_lighting:
+        ambient_intensity: ${range:0.5,0.8}
+        shadow_intensity: ${range:0.01,0.8}
+        gradient_strength: ${range:0.35,3.5}
+        subsurface_scattering: ${range:0,0.3}
+        azdeg: ${range:0,345}
+        altdeg: ${range:0,90}
+      background_image:
+        alpha: ${range:0.3,1}
+        resize_mode: ${choice:["fill"]}
+      camera_variation:
+        yaw: ${range:-17,17}
+        pitch: ${range:-12,12}
+        roll: ${range:-16,16}
+
+    # background_texture:
+    #   enabled: true
+    #   texture_type: ${choice:[grid,dots,stripes,noise,crosshatch,waves]}
+    #   color: ${choice:[gray, red, blue, green, yellow, black, white, orange, purple]}
+    #   density: ${range:0.1,0.7}
+    #   alpha: ${range:0.3,1.0}
+
+    color_variations:
+      enabled: true
+      cube_texture_scratches:
+        noise_level: ${range:0.0001,0.03}
+      reflections:
+        enabled: false
+        intensity: ${range:0.03,0.25}
+        num_reflections: ${irange:1,3}
+        size_min: ${range:0.05,0.09}
+        size_max: ${range:0.12,0.22}
+        sharpness: ${range:0.4,0.8}
+        elongation: ${range:1.2,2.2}
+        angle: ${range:0,360}
+        color_temperature: ${range:0.15,0.85}
+        surface_gloss: ${range:0.2,0.6}
+        chromatic: ${range:0.06,0.25}
+        source_threshold: ${range:0.72,0.9}
+        source_x: -1.0
+        source_y: -1.0
+        reflection_x: -1.0
+        reflection_y: -1.0
+        position_spread: ${range:0.1,0.25}
+      lens_glare:
+        enabled: false
+        intensity: ${range:0.03,0.2}
+        threshold: ${range:0.75,0.92}
+        bloom_strength: ${range:0.15,0.4}
+        bloom_radius: ${range:0.03,0.08}
+        halo_strength: ${range:0.08,0.3}
+        halo_radius: ${range:0.2,0.5}
+        ghost_strength: ${range:0.04,0.16}
+        num_ghosts: ${irange:1,3}
+        streak_strength: ${range:0.04,0.16}
+        streak_length: ${range:0.5,1.0}
+        streak_width: ${range:0.03,0.05}
+        angle: ${range:0,360}
+        source_x: -1.0
+        source_y: -1.0
+        chromatic: ${range:0.08,0.3}
+        glare_size: ${range:0.7,1.2}
+      resize_degradation:
+        strength: ${range:0.001,0.4}
+        resize_scale: ${range:0.5,0.85}
+        target_height: 0
+        target_width: 0
+        interpolation: lanczos
+        save_format: jpeg
+        jpeg_quality: 85
+        jpeg_subsampling: ${irange:1,5}
+        png_compress_level: 6
+        roundtrips: ${irange:1,2}
+      cube_directional_lighting:
+        ambient_intensity: ${range:0.1,0.8}
+        shadow_intensity: ${range:0.1,0.8}
+        gradient_strength: ${range:0.35,3.5}
+        subsurface_scattering: ${range:0.01,0.3}
+        azdeg: ${range:0,345}
+        altdeg: ${range:0,90}
+      camera_variation:
+        yaw: ${range:-17,17}
+        pitch: ${range:-15,15}
+        roll: ${range:-15,15}
+      background_image:
+        alpha: ${range:0.3,0.9}
+        resize_mode: ${choice:["fill","contain","cover","center"]}
+      cube_zoom:
+        zoom_factor: ${range:0.85,1.05}
+        offset_x: ${range:-0.2,0.2}
+        offset_y: ${range:-0.2,0.2}
+      hsv_shift:
+        hue_shift: ${range:0,0.01}
+        sat_scale: ${range:0.95,1.05}
+        val_scale: ${range:0.95,1.05}
+      cube_color_shift:
+        r: ${range:0,0.08}
+        g: ${range:0,0.08}
+        b: ${range:0,0.08}
+      contrast_brightness:
+        contrast: ${range:0.1,1.2}
+        brightness: ${range:0,0.2}
+
+    minimal:
+      enabled: true
+      cube_texture_scratches:
+        noise_level: ${range:0.0001,0.02}
+      reflections:
+        enabled: false
+        intensity: ${range:0.02,0.15}
+        num_reflections: ${irange:0,2}
+        size_min: ${range:0.04,0.06}
+        size_max: ${range:0.08,0.14}
+        sharpness: ${range:0.5,0.85}
+        elongation: ${range:1.2,1.8}
+        angle: ${range:0,360}
+        color_temperature: ${range:0.35,0.65}
+        surface_gloss: ${range:0.2,0.5}
+        chromatic: ${range:0.02,0.1}
+        source_threshold: ${range:0.78,0.92}
+        source_x: -1.0
+        source_y: -1.0
+        reflection_x: -1.0
+        reflection_y: -1.0
+        position_spread: ${range:0.08,0.18}
+      lens_glare:
+        enabled: false
+        intensity: ${range:0.02,0.12}
+        threshold: ${range:0.8,0.94}
+        bloom_strength: ${range:0.1,0.3}
+        bloom_radius: ${range:0.02,0.05}
+        halo_strength: ${range:0.05,0.2}
+        halo_radius: ${range:0.15,0.35}
+        ghost_strength: ${range:0.02,0.1}
+        num_ghosts: ${irange:0,2}
+        streak_strength: ${range:0.02,0.1}
+        streak_length: ${range:0.4,0.7}
+        streak_width: ${range:0.02,0.035}
+        angle: ${range:0,360}
+        source_x: -1.0
+        source_y: -1.0
+        chromatic: ${range:0.03,0.12}
+        glare_size: ${range:0.6,1.0}
+      resize_degradation:
+        strength: ${range:0.05,0.25}
+        resize_scale: ${range:0.6,0.9}
+        target_height: 0
+        target_width: 0
+        interpolation: lanczos
+        save_format: jpeg
+        jpeg_quality: 85
+        jpeg_subsampling: ${irange:1,5}
+        png_compress_level: 6
+        roundtrips: 1
+      cube_directional_lighting:
+        ambient_intensity: ${range:0.1,0.8}
+        shadow_intensity: ${range:0.01,0.8}
+        gradient_strength: ${range:0.35,3.5}
+        subsurface_scattering: ${range:0.01,0.3}
+        azdeg: ${range:0,345}
+        altdeg: ${range:0,90}
+      cube_zoom:
+        zoom_factor: ${range:0.85,1.05}
+        offset_x: ${range:-0.15,0.15}
+        offset_y: ${range:-0.15,0.15}
+      camera_variation:
+        yaw: ${range:-17,17}
+        pitch: ${range:-12,12}
+        roll: ${range:-16,16}
+      background_image:
+        alpha: ${range:0.2,0.9}
+        resize_mode: ${choice:["fill","contain","cover","center"]}
+      ambient_light:
+        alpha: 0.4
+        color: ${choice:["#ffd1a4","#ffe5cc","#fff5e6","#ffebd6","#ffe0b3","#ffe8cc","#ffecd9","#fff2e6","#ffccb3","#ffd9b3","#e6f7ff","#e6ffe6","#e6f0ff","#d6f5f5","#ccf2ff","#e6fff9","#d9e6ff","#e6f0fa","#f0e6ff","#e6e6ff","#f9f9f9","#faf0e6","#f5f5dc","#f2f2f2","#eae0d5","#f0ebe1","#ece6e2","#f7f0e3","#e6dfd6","#f2ede4","#ffe6f2","#ffccdd","#ffd6e0","#fce1ff","#d4ffea","#fff0b3","#ffffcc","#eaffd6","#cce5ff"]}
+
+    indoor_glossy:
+      enabled: true
+      cube_texture_scratches:
+        noise_level: ${range:0.0001,0.04}
+      reflections:
+        enabled: false
+        intensity: ${range:0.15,0.5}
+        num_reflections: ${irange:1,3}
+        size_min: ${range:0.06,0.1}
+        size_max: ${range:0.14,0.24}
+        sharpness: ${range:0.4,0.8}
+        elongation: ${range:1.2,2.2}
+        angle: ${range:0,360}
+        color_temperature: ${range:0.35,0.65}
+        surface_gloss: ${range:0.55,0.9}
+        chromatic: ${range:0.06,0.22}
+        source_threshold: ${range:0.68,0.88}
+        source_x: -1.0
+        source_y: -1.0
+        reflection_x: -1.0
+        reflection_y: -1.0
+        position_spread: ${range:0.1,0.25}
+      lens_glare:
+        enabled: false
+        intensity: ${range:0.1,0.35}
+        threshold: ${range:0.68,0.86}
+        bloom_strength: ${range:0.25,0.6}
+        bloom_radius: ${range:0.03,0.08}
+        halo_strength: ${range:0.15,0.4}
+        halo_radius: ${range:0.2,0.5}
+        ghost_strength: ${range:0.08,0.25}
+        num_ghosts: ${irange:1,3}
+        streak_strength: ${range:0.06,0.22}
+        streak_length: ${range:0.5,1.0}
+        streak_width: ${range:0.03,0.05}
+        angle: ${range:0,360}
+        source_x: -1.0
+        source_y: -1.0
+        chromatic: ${range:0.06,0.22}
+        glare_size: ${range:0.8,1.4}
+      resize_degradation:
+        strength: ${range:0.001,0.35}
+        resize_scale: ${range:0.55,0.9}
+        target_height: 0
+        target_width: 0
+        interpolation: lanczos
+        save_format: jpeg
+        jpeg_quality: 85
+        jpeg_subsampling: ${irange:1,5}
+        png_compress_level: 6
+        roundtrips: ${irange:1,2}
+      cube_directional_lighting:
+        ambient_intensity: ${range:0.1,0.8}
+        shadow_intensity: ${range:0.01,0.8}
+        gradient_strength: ${range:0.35,3.5}
+        subsurface_scattering: ${range:0.01,0.3}
+        azdeg: ${range:0,345}
+        altdeg: ${range:0,90}
+      camera_variation:
+        yaw: ${range:-17,17}
+        pitch: ${range:-12,12}
+        roll: ${range:-16,16}
+      background_image:
+        alpha: ${range:0.2,0.9}
+        resize_mode: ${choice:["fill","contain","cover","center"]}
+      cube_zoom:
+        zoom_factor: ${range:0.85,1.05}
+        offset_x: ${range:-0.15,0.15}
+        offset_y: ${range:-0.15,0.15}
+      cube_material_finish:
+        finish: "glossy"
+      cube_sticker_imperfections:
+        jitter: ${range:0,0.05}
+      cube_color_calibration:
+        r_scale: ${range:0.86,1.1}
+        g_scale: ${range:0.86,1.1}
+        b_scale: ${range:0.86,1.1}
+      ambient_light:
+        alpha: ${range:0.1,0.7}
+        color: "#ffe5cc"
+      color_temperature:
+        shift: ${range:-0.25,0.25}
+
+    outdoor_lighting:
+      enabled: true
+      cube_texture_scratches:
+        noise_level: ${range:0.0001,0.035}
+      reflections:
+        enabled: false
+        intensity: ${range:0.08,0.3}
+        num_reflections: ${irange:1,3}
+        size_min: ${range:0.05,0.09}
+        size_max: ${range:0.12,0.22}
+        sharpness: ${range:0.4,0.8}
+        elongation: ${range:1.2,2.2}
+        angle: ${range:0,360}
+        color_temperature: ${range:0.15,0.5}
+        surface_gloss: ${range:0.3,0.65}
+        chromatic: ${range:0.08,0.25}
+        source_threshold: ${range:0.7,0.9}
+        source_x: -1.0
+        source_y: -1.0
+        reflection_x: -1.0
+        reflection_y: -1.0
+        position_spread: ${range:0.1,0.25}
+      lens_glare:
+        enabled: false
+        intensity: ${range:0.15,0.5}
+        threshold: ${range:0.6,0.82}
+        bloom_strength: ${range:0.3,0.7}
+        bloom_radius: ${range:0.03,0.08}
+        halo_strength: ${range:0.2,0.5}
+        halo_radius: ${range:0.2,0.5}
+        ghost_strength: ${range:0.1,0.3}
+        num_ghosts: ${irange:2,3}
+        streak_strength: ${range:0.1,0.3}
+        streak_length: ${range:0.5,1.0}
+        streak_width: ${range:0.03,0.05}
+        angle: ${range:0,360}
+        source_x: -1.0
+        source_y: -1.0
+        chromatic: ${range:0.1,0.3}
+        glare_size: ${range:0.9,1.6}
+      resize_degradation:
+        strength: ${range:0.001,0.35}
+        resize_scale: ${range:0.55,0.9}
+        target_height: 0
+        target_width: 0
+        interpolation: lanczos
+        save_format: jpeg
+        jpeg_quality: 85
+        jpeg_subsampling: ${irange:1,5}
+        png_compress_level: 6
+        roundtrips: ${irange:1,2}
+      cube_directional_lighting:
+        ambient_intensity: ${range:0.1,0.8}
+        shadow_intensity: ${range:0.01,0.8}
+        gradient_strength: ${range:0.35,3.5}
+        subsurface_scattering: ${range:0,0.3}
+        azdeg: ${range:0,345}
+        altdeg: ${range:0,90}
+      directional_light:
+        gamma: ${range:0.5,1.45}
+        angle: ${range:0.01,360}
+        intensity: ${range:0.3,1.7}
+        ambient: ${range:0.15,0.7}
+        apply_vignette: true
+        vignette_strength: ${range:0.01,0.6}
+      color_temperature:
+        shift: ${range:-0.1,0.1}
+      gaussian_blur:
+        sigma: ${range:0.0001,0.4}
+      exposure_variation:
+        gamma: ${range:0.8,1.1}
+      cube_color_calibration:
+        r_scale: ${range:0.98,1.03}
+        g_scale: ${range:0.98,1.03}
+        b_scale: ${range:0.98,1.03}
+      camera_variation:
+        yaw: ${range:-18,18}
+        pitch: ${range:-18,18}
+        roll: ${range:-15,15}
+      background_randomization:
+        enabled: true
+      gaussian_noise:
+        noise_level: ${range:0.015,0.04}
+
+    # Cube bright setup
+    bright_lighting:
+      enabled: true
+      cube_texture_scratches:
+        noise_level: ${range:0.0001,0.02}
+      reflections:
+        enabled: false
+        intensity: ${range:0.2,0.55}
+        num_reflections: ${irange:1,3}
+        size_min: ${range:0.06,0.1}
+        size_max: ${range:0.14,0.24}
+        sharpness: ${range:0.4,0.8}
+        elongation: ${range:1.2,2.2}
+        angle: ${range:0,360}
+        color_temperature: ${range:0.4,0.7}
+        surface_gloss: ${range:0.6,0.95}
+        chromatic: ${range:0.05,0.18}
+        source_threshold: ${range:0.65,0.85}
+        source_x: -1.0
+        source_y: -1.0
+        reflection_x: -1.0
+        reflection_y: -1.0
+        position_spread: ${range:0.1,0.25}
+      lens_glare:
+        enabled: false
+        intensity: ${range:0.15,0.45}
+        threshold: ${range:0.65,0.85}
+        bloom_strength: ${range:0.3,0.65}
+        bloom_radius: ${range:0.03,0.08}
+        halo_strength: ${range:0.2,0.45}
+        halo_radius: ${range:0.2,0.5}
+        ghost_strength: ${range:0.1,0.28}
+        num_ghosts: ${irange:1,3}
+        streak_strength: ${range:0.08,0.25}
+        streak_length: ${range:0.5,1.0}
+        streak_width: ${range:0.03,0.05}
+        angle: ${range:0,360}
+        source_x: -1.0
+        source_y: -1.0
+        chromatic: ${range:0.05,0.18}
+        glare_size: ${range:0.9,1.5}
+      resize_degradation:
+        strength: ${range:0.05,0.25}
+        resize_scale: ${range:0.65,0.95}
+        target_height: 0
+        target_width: 0
+        interpolation: lanczos
+        save_format: jpeg
+        jpeg_quality: 85
+        jpeg_subsampling: ${irange:1,5}
+        png_compress_level: 6
+        roundtrips: 1
+      cube_directional_lighting:
+        ambient_intensity: ${range:0.1,0.8}
+        shadow_intensity: ${range:0.01,0.8}
+        gradient_strength: ${range:0.35,3.5}
+        subsurface_scattering: ${range:0.001,0.3}
+        azdeg: ${range:0,345}
+        altdeg: ${range:0,90}
+      camera_variation:
+        yaw: ${range:-17,17}
+        pitch: ${range:-12,12}
+        roll: ${range:-16,16}
+      background_image:
+        alpha: ${range:0.1,1}
+        resize_mode: ${choice:["fill","contain","cover","center"]}
+      cube_zoom:
+        zoom_factor: ${range:0.85,1.05}
+        offset_x: ${range:-0.15,0.15}
+        offset_y: ${range:-0.15,0.15}
+      ambient_light:
+        alpha: ${range:0.4,0.5}
+        color: "#ffffff" # Bright white lighting
+      contrast_brightness:
+        contrast: ${range:1,1.2}
+        brightness: ${range:0,0.1}
+      cube_material_finish:
+        finish: "glossy"
+      cube_color_calibration:
+        r_scale: ${range:1,1.2}
+        g_scale: ${range:1,1.2}
+        b_scale: ${range:1,1.2}
+      gaussian_noise:
+        noise_level: ${range:0.01,0.018}
+
+    # Surveillance/security camera cube detection
+    noisy_camera:
+      enabled: true
+      cube_texture_scratches:
+        noise_level: ${range:0.02,0.08}
+      reflections:
+        enabled: false
+        intensity: ${range:0.05,0.25}
+        num_reflections: ${irange:1,3}
+        size_min: ${range:0.05,0.09}
+        size_max: ${range:0.12,0.22}
+        sharpness: ${range:0.4,0.8}
+        elongation: ${range:1.2,2.2}
+        angle: ${range:0,360}
+        color_temperature: ${range:0.3,0.7}
+        surface_gloss: ${range:0.25,0.6}
+        chromatic: ${range:0.05,0.2}
+        source_threshold: ${range:0.72,0.9}
+        source_x: -1.0
+        source_y: -1.0
+        reflection_x: -1.0
+        reflection_y: -1.0
+        position_spread: ${range:0.1,0.25}
+      lens_glare:
+        enabled: false
+        intensity: ${range:0.1,0.35}
+        threshold: ${range:0.65,0.85}
+        bloom_strength: ${range:0.2,0.5}
+        bloom_radius: ${range:0.03,0.08}
+        halo_strength: ${range:0.1,0.35}
+        halo_radius: ${range:0.2,0.5}
+        ghost_strength: ${range:0.05,0.2}
+        num_ghosts: ${irange:1,3}
+        streak_strength: ${range:0.08,0.25}
+        streak_length: ${range:0.5,1.0}
+        streak_width: ${range:0.03,0.05}
+        angle: ${range:0,360}
+        source_x: -1.0
+        source_y: -1.0
+        chromatic: ${range:0.08,0.25}
+        glare_size: ${range:0.8,1.4}
+      resize_degradation:
+        strength: ${range:0.45,0.85}
+        resize_scale: ${range:0.45,0.65}
+        target_height: 0
+        target_width: 0
+        interpolation: lanczos
+        save_format: jpeg
+        jpeg_quality: 85
+        jpeg_subsampling: ${irange:1,5}
+        png_compress_level: 6
+        roundtrips: ${irange:1,2}
+      cube_directional_lighting:
+        ambient_intensity: ${range:0.2,0.8}
+        shadow_intensity: ${range:0.01,0.8}
+        gradient_strength: ${range:0.35,3.5}
+        subsurface_scattering: ${range:0.01,0.3}
+        azdeg: ${range:0.0,345.0}
+        altdeg: ${range:0.0,90.0}
+      camera_variation:
+        yaw: ${range:-17,17}
+        pitch: ${range:-15,15}
+        roll: ${range:-15,15}
+      background_image:
+        alpha: ${range:0.1,1.0}
+        resize_mode: ${choice:[fill,contain,cover,center]}
+      cube_zoom:
+        zoom_factor: ${range:0.85,1.05}
+        offset_x: ${range:-0.15,0.15}
+        offset_y: ${range:-0.15,0.15}
+      gaussian_noise:
+        noise_level: ${range:0.06,0.09}
+      salt_pepper_noise:
+        amount: ${range:0.008,0.02}
+        salt_vs_pepper: 0.5
+      color_banding:
+        levels: ${choice:[16,18]}
+      contrast_brightness:
+        contrast: ${range:0.8,1.1}
+        brightness: ${range:-0.1,0.05}
+      edge_cropping:
+        crop_fraction: ${range:0.01,0.025}
+      cube_material_finish:
+        finish: ${choice:[matte,glossy]}
+      cube_sticker_imperfections:
+        jitter: ${range:0.0011,0.04}
+
+    studio:
+      enabled: true
+      cube_texture_scratches:
+        noise_level: ${range:0.0001,0.015}
+      reflections:
+        enabled: false
+        intensity: ${range:0.15,0.45}
+        num_reflections: ${irange:1,3}
+        size_min: ${range:0.06,0.1}
+        size_max: ${range:0.14,0.24}
+        sharpness: ${range:0.4,0.8}
+        elongation: ${range:1.2,2.2}
+        angle: ${range:0,360}
+        color_temperature: ${range:0.4,0.6}
+        surface_gloss: ${range:0.65,0.95}
+        chromatic: ${range:0.04,0.15}
+        source_threshold: ${range:0.7,0.88}
+        source_x: -1.0
+        source_y: -1.0
+        reflection_x: -1.0
+        reflection_y: -1.0
+        position_spread: ${range:0.1,0.25}
+      lens_glare:
+        enabled: false
+        intensity: ${range:0.08,0.28}
+        threshold: ${range:0.7,0.88}
+        bloom_strength: ${range:0.2,0.5}
+        bloom_radius: ${range:0.03,0.08}
+        halo_strength: ${range:0.12,0.35}
+        halo_radius: ${range:0.2,0.5}
+        ghost_strength: ${range:0.05,0.18}
+        num_ghosts: ${irange:1,3}
+        streak_strength: ${range:0.04,0.16}
+        streak_length: ${range:0.5,1.0}
+        streak_width: ${range:0.03,0.05}
+        angle: ${range:0,360}
+        source_x: -1.0
+        source_y: -1.0
+        chromatic: ${range:0.04,0.15}
+        glare_size: ${range:0.8,1.3}
+      resize_degradation:
+        strength: ${range:0.03,0.2}
+        resize_scale: ${range:0.7,0.95}
+        target_height: 0
+        target_width: 0
+        interpolation: lanczos
+        save_format: jpeg
+        jpeg_quality: 85
+        jpeg_subsampling: ${irange:1,5}
+        png_compress_level: 6
+        roundtrips: 1
+      cube_directional_lighting:
+        ambient_intensity: ${range:0.2,0.8}
+        shadow_intensity: ${range:0.01,0.8}
+        gradient_strength: ${range:0.35,3.5}
+        subsurface_scattering: ${range:0.01,0.3}
+        azdeg: ${range:0.0,345.0}
+        altdeg: ${range:0.0,90.0}
+      camera_variation:
+        yaw: ${range:-17,17}
+        pitch: ${range:-15,15}
+        roll: ${range:-15,15}
+      background_image:
+        alpha: ${range:0.3,0.9}
+        resize_mode: ${choice:[fill,contain,cover,center]}
+      cube_zoom:
+        zoom_factor: ${range:0.85,1.05}
+        offset_x: ${range:-0.15,0.15}
+        offset_y: ${range:-0.15,0.15}
+      ambient_light:
+        alpha: ${range:0.1,0.2}
+        color: "#ffffff"
+      directional_light:
+        gamma: ${range:0.5,1.5}
+        angle: ${range:0,360}
+        intensity: ${range:0.15,1.5}
+        ambient: ${range:0.0,0.8}
+        apply_vignette: true
+        vignette_strength: ${range:0.0,0.8}
+      cube_material_finish:
+        finish: "glossy"
+      cube_color_calibration:
+        r_scale: ${range:1.02,1.10}
+        g_scale: ${range:1.02,1.10}
+        b_scale: ${range:1.02,1.10}
+      cube_sticker_imperfections:
+        jitter: ${range:0.001,0.02}
+      gaussian_noise:
+        noise_level: ${range:0.01,0.018}
+      contrast_brightness:
+        contrast: ${range:1.05,1.15}
+        brightness: ${range:0.02,0.3}
+
+    camera_image_background:
+      enabled: true
+      cube_texture_scratches:
+        noise_level: ${range:0.0001,0.035}
+      reflections:
+        enabled: false
+        intensity: ${range:0.05,0.3}
+        num_reflections: ${irange:1,3}
+        size_min: ${range:0.05,0.09}
+        size_max: ${range:0.12,0.22}
+        sharpness: ${range:0.4,0.8}
+        elongation: ${range:1.2,2.2}
+        angle: ${range:0,360}
+        color_temperature: ${range:0.3,0.7}
+        surface_gloss: ${range:0.3,0.7}
+        chromatic: ${range:0.05,0.2}
+        source_threshold: ${range:0.72,0.9}
+        source_x: -1.0
+        source_y: -1.0
+        reflection_x: -1.0
+        reflection_y: -1.0
+        position_spread: ${range:0.1,0.25}
+      lens_glare:
+        enabled: false
+        intensity: ${range:0.05,0.25}
+        threshold: ${range:0.72,0.9}
+        bloom_strength: ${range:0.2,0.5}
+        bloom_radius: ${range:0.03,0.08}
+        halo_strength: ${range:0.1,0.35}
+        halo_radius: ${range:0.2,0.5}
+        ghost_strength: ${range:0.05,0.2}
+        num_ghosts: ${irange:1,3}
+        streak_strength: ${range:0.05,0.2}
+        streak_length: ${range:0.5,1.0}
+        streak_width: ${range:0.03,0.05}
+        angle: ${range:0,360}
+        source_x: -1.0
+        source_y: -1.0
+        chromatic: ${range:0.05,0.2}
+        glare_size: ${range:0.7,1.3}
+      resize_degradation:
+        strength: ${range:0.2,0.5}
+        resize_scale: ${range:0.45,0.8}
+        target_height: 0
+        target_width: 0
+        interpolation: lanczos
+        save_format: jpeg
+        jpeg_quality: 85
+        jpeg_subsampling: ${irange:1,5}
+        png_compress_level: 6
+        roundtrips: ${irange:1,2}
+      cube_directional_lighting:
+        ambient_intensity: ${range:0.2,0.8}
+        shadow_intensity: ${range:0.01,0.8}
+        gradient_strength: ${range:0.35,3.5}
+        subsurface_scattering: ${range:0.01,0.3}
+        azdeg: ${range:0.0,345.0}
+        altdeg: ${range:0.0,90.0}
+      camera_variation:
+        yaw: ${range:-17,17}
+        pitch: ${range:-15,15}
+        roll: ${range:-15,15}
+      background_image:
+        alpha: ${range:0.3,0.9}
+        resize_mode: ${choice:[fill,contain,cover,center]}
+      cube_zoom:
+        zoom_factor: ${range:0.85,1.05}
+        offset_x: ${range:-0.15,0.15}
+        offset_y: ${range:-0.15,0.15}
+      gaussian_noise:
+        noise_level: ${range:0.02,0.05}
+
+    camera_bg_light:
+      enabled: true
+      cube_texture_scratches:
+        noise_level: ${range:0.0001,0.035}
+      reflections:
+        enabled: false
+        intensity: ${range:0.1,0.35}
+        num_reflections: ${irange:1,3}
+        size_min: ${range:0.05,0.09}
+        size_max: ${range:0.12,0.22}
+        sharpness: ${range:0.4,0.8}
+        elongation: ${range:1.2,2.2}
+        angle: ${range:0,360}
+        color_temperature: ${range:0.3,0.65}
+        surface_gloss: ${range:0.35,0.75}
+        chromatic: ${range:0.05,0.2}
+        source_threshold: ${range:0.7,0.88}
+        source_x: -1.0
+        source_y: -1.0
+        reflection_x: -1.0
+        reflection_y: -1.0
+        position_spread: ${range:0.1,0.25}
+      lens_glare:
+        enabled: false
+        intensity: ${range:0.1,0.35}
+        threshold: ${range:0.68,0.87}
+        bloom_strength: ${range:0.25,0.55}
+        bloom_radius: ${range:0.03,0.08}
+        halo_strength: ${range:0.15,0.4}
+        halo_radius: ${range:0.2,0.5}
+        ghost_strength: ${range:0.06,0.22}
+        num_ghosts: ${irange:1,3}
+        streak_strength: ${range:0.06,0.22}
+        streak_length: ${range:0.5,1.0}
+        streak_width: ${range:0.03,0.05}
+        angle: ${range:0,360}
+        source_x: -1.0
+        source_y: -1.0
+        chromatic: ${range:0.06,0.22}
+        glare_size: ${range:0.8,1.4}
+      resize_degradation:
+        strength: ${range:0.0015,0.45}
+        resize_scale: ${range:0.5,0.85}
+        target_height: 0
+        target_width: 0
+        interpolation: lanczos
+        save_format: jpeg
+        jpeg_quality: 85
+        jpeg_subsampling: ${irange:1,5}
+        png_compress_level: 6
+        roundtrips: ${irange:1,2}
+      cube_directional_lighting:
+        ambient_intensity: ${range:0.2,0.8}
+        shadow_intensity: ${range:0.01,0.8}
+        gradient_strength: ${range:0.35,3.5}
+        subsurface_scattering: ${range:0.01,0.3}
+        azdeg: ${range:0.0,345.0}
+        altdeg: ${range:0.0,90.0}
+      camera_variation:
+        yaw: ${range:-17,17}
+        pitch: ${range:-15,15}
+        roll: ${range:-15,15}
+      background_image:
+        alpha: ${range:0.3,0.95}
+        resize_mode: ${choice:[fill,contain,cover,center]}
+      cube_zoom:
+        zoom_factor: ${range:0.85,1.05}
+        offset_x: ${range:-0.15,0.15}
+        offset_y: ${range:-0.15,0.15}
+      gaussian_blur:
+        sigma: ${range:0.01,0.8}
+      directional_light:
+        gamma: ${range:0.3,2.5}
+        angle: ${range:0,360}
+        intensity: ${range:0.15,1.5}
+        ambient: ${range:0.0,0.8}
+        apply_vignette: true
+        vignette_strength: ${range:0.0,0.8}
+      gaussian_noise:
+        noise_level: ${range:0.012,0.04}
+
+    camera_bg_ambient:
+      enabled: true
+      cube_texture_scratches:
+        noise_level: ${range:0.0001,0.03}
+      reflections:
+        enabled: false
+        intensity: ${range:0.05,0.28}
+        num_reflections: ${irange:1,3}
+        size_min: ${range:0.05,0.09}
+        size_max: ${range:0.12,0.22}
+        sharpness: ${range:0.4,0.8}
+        elongation: ${range:1.2,2.2}
+        angle: ${range:0,360}
+        color_temperature: ${range:0.25,0.7}
+        surface_gloss: ${range:0.25,0.6}
+        chromatic: ${range:0.05,0.2}
+        source_threshold: ${range:0.75,0.9}
+        source_x: -1.0
+        source_y: -1.0
+        reflection_x: -1.0
+        reflection_y: -1.0
+        position_spread: ${range:0.1,0.25}
+      lens_glare:
+        enabled: false
+        intensity: ${range:0.04,0.22}
+        threshold: ${range:0.75,0.9}
+        bloom_strength: ${range:0.15,0.4}
+        bloom_radius: ${range:0.03,0.08}
+        halo_strength: ${range:0.08,0.3}
+        halo_radius: ${range:0.2,0.5}
+        ghost_strength: ${range:0.04,0.16}
+        num_ghosts: ${irange:1,3}
+        streak_strength: ${range:0.04,0.16}
+        streak_length: ${range:0.5,1.0}
+        streak_width: ${range:0.03,0.05}
+        angle: ${range:0,360}
+        source_x: -1.0
+        source_y: -1.0
+        chromatic: ${range:0.05,0.2}
+        glare_size: ${range:0.7,1.2}
+      resize_degradation:
+        strength: ${range:0.0012,0.25}
+        resize_scale: ${range:0.6,0.85}
+        target_height: 0
+        target_width: 0
+        interpolation: lanczos
+        save_format: jpeg
+        jpeg_quality: 85
+        jpeg_subsampling: ${irange:1,5}
+        png_compress_level: 6
+        roundtrips: ${irange:1,2}
+      cube_directional_lighting:
+        ambient_intensity: ${range:0.2,0.8}
+        shadow_intensity: ${range:0.01,0.8}
+        gradient_strength: ${range:0.35,3.5}
+        subsurface_scattering: ${range:0.01,0.3}
+        azdeg: ${range:0.0,345.0}
+        altdeg: ${range:0.0,90.0}
+      camera_variation:
+        yaw: ${range:-17,17}
+        pitch: ${range:-15,15}
+        roll: ${range:-15,15}
+      background_image:
+        alpha: ${range:0.3,0.9}
+        resize_mode: ${choice:[fill,contain,cover,center]}
+      cube_zoom:
+        zoom_factor: ${range:0.85,1.05}
+        offset_x: ${range:-0.15,0.15}
+        offset_y: ${range:-0.15,0.15}
+      directional_light:
+        gamma: ${range:0.3,1.7}
+        angle: ${range:0,360}
+        intensity: ${range:0.15,1.1}
+        ambient: ${range:0.1,0.8}
+        apply_vignette: true
+        vignette_strength: ${range:0.0,0.6}
+      ambient_light:
+        alpha: ${range:0.0,0.38}
+        color: ${choice:["#ffd1a4","#ffe5cc","#fff5e6","#ffebd6","#ffe0b3","#ffe8cc","#ffecd9","#fff2e6","#ffccb3","#ffd9b3","#e6f7ff","#e6ffe6","#e6f0ff","#d6f5f5","#ccf2ff","#e6fff9","#d9e6ff","#e6f0fa","#f0e6ff","#e6e6ff","#f9f9f9","#faf0e6","#f5f5dc","#f2f2f2","#eae0d5","#f0ebe1","#ece6e2","#f7f0e3","#e6dfd6","#f2ede4","#ffe6f2","#ffccdd","#ffd6e0","#fce1ff","#d4ffea","#fff0b3","#ffffcc","#eaffd6","#cce5ff"]}
+      motion_blur:
+        kernel_size: ${choice:[3]}
+      gaussian_noise:
+        noise_level: ${range:0.02,0.03}
+
+    light_bg_cam:
+      enabled: true
+      cube_texture_scratches:
+        noise_level: ${range:0.0001,0.035}
+      reflections:
+        enabled: false
+        intensity: ${range:0.08,0.3}
+        num_reflections: ${irange:1,3}
+        size_min: ${range:0.05,0.09}
+        size_max: ${range:0.12,0.22}
+        sharpness: ${range:0.4,0.8}
+        elongation: ${range:1.2,2.2}
+        angle: ${range:0,360}
+        color_temperature: ${range:0.3,0.65}
+        surface_gloss: ${range:0.3,0.65}
+        chromatic: ${range:0.05,0.2}
+        source_threshold: ${range:0.7,0.88}
+        source_x: -1.0
+        source_y: -1.0
+        reflection_x: -1.0
+        reflection_y: -1.0
+        position_spread: ${range:0.1,0.25}
+      lens_glare:
+        enabled: false
+        intensity: ${range:0.08,0.3}
+        threshold: ${range:0.7,0.88}
+        bloom_strength: ${range:0.2,0.5}
+        bloom_radius: ${range:0.03,0.08}
+        halo_strength: ${range:0.12,0.35}
+        halo_radius: ${range:0.2,0.5}
+        ghost_strength: ${range:0.05,0.2}
+        num_ghosts: ${irange:1,3}
+        streak_strength: ${range:0.08,0.25}
+        streak_length: ${range:0.5,1.0}
+        streak_width: ${range:0.03,0.05}
+        angle: ${range:0,360}
+        source_x: -1.0
+        source_y: -1.0
+        chromatic: ${range:0.06,0.22}
+        glare_size: ${range:0.8,1.4}
+      resize_degradation:
+        strength: ${range:0.15,0.35}
+        resize_scale: ${range:0.55,0.85}
+        target_height: 0
+        target_width: 0
+        interpolation: lanczos
+        save_format: jpeg
+        jpeg_quality: 85
+        jpeg_subsampling: ${irange:1,5}
+        png_compress_level: 6
+        roundtrips: ${irange:1,2}
+      cube_directional_lighting:
+        ambient_intensity: ${range:0.2,0.8}
+        shadow_intensity: ${range:0.01,0.8}
+        gradient_strength: ${range:0.35,3.5}
+        subsurface_scattering: ${range:0.01,0.3}
+        azdeg: ${range:0.0,345.0}
+        altdeg: ${range:0.0,90.0}
+      camera_variation:
+        yaw: ${range:-17,17}
+        pitch: ${range:-15,15}
+        roll: ${range:-15,15}
+      background_image:
+        alpha: ${range:0.05,0.9}
+        resize_mode: ${choice:[fill,contain,cover,center]}
+      cube_zoom:
+        zoom_factor: ${range:0.85,1.05}
+        offset_x: ${range:-0.15,0.15}
+        offset_y: ${range:-0.15,0.15}
+      motion_blur:
+        kernel_size: ${choice:[3]}
+      directional_light:
+        gamma: ${range:0.3,1.7}
+        angle: ${range:0,360}
+        intensity: ${range:0.15,1.5}
+        ambient: ${range:0.0,0.8}
+        apply_vignette: true
+        vignette_strength: ${range:0.0,0.7}
+      ambient_light:
+        alpha: ${range:0.0,0.3}
+        color: ${choice:["#ffd1a4","#ffe5cc","#fff5e6","#ffebd6","#ffe0b3","#ffe8cc","#ffecd9","#fff2e6","#ffccb3","#ffd9b3","#e6f7ff","#e6ffe6","#e6f0ff","#d6f5f5","#ccf2ff","#e6fff9","#d9e6ff","#e6f0fa","#f0e6ff","#e6e6ff","#f9f9f9","#faf0e6","#f5f5dc","#f2f2f2","#eae0d5","#f0ebe1","#ece6e2","#f7f0e3","#e6dfd6","#f2ede4","#ffe6f2","#ffccdd","#ffd6e0","#fce1ff","#d4ffea","#fff0b3","#ffffcc","#eaffd6","#cce5ff"]}
+      gaussian_noise:
+        noise_level: ${range:0.01,0.03}
+
+    light_radial_cam:
+      enabled: true
+      cube_texture_scratches:
+        noise_level: ${range:0.0001,0.03}
+      reflections:
+        enabled: false
+        intensity: ${range:0.08,0.32}
+        num_reflections: ${irange:1,3}
+        size_min: ${range:0.05,0.09}
+        size_max: ${range:0.12,0.22}
+        sharpness: ${range:0.4,0.8}
+        elongation: ${range:1.2,2.2}
+        angle: ${range:0,360}
+        color_temperature: ${range:0.3,0.65}
+        surface_gloss: ${range:0.3,0.65}
+        chromatic: ${range:0.06,0.22}
+        source_threshold: ${range:0.7,0.88}
+        source_x: -1.0
+        source_y: -1.0
+        reflection_x: -1.0
+        reflection_y: -1.0
+        position_spread: ${range:0.1,0.25}
+      lens_glare:
+        enabled: false
+        intensity: ${range:0.15,0.45}
+        threshold: ${range:0.62,0.84}
+        bloom_strength: ${range:0.3,0.65}
+        bloom_radius: ${range:0.03,0.08}
+        halo_strength: ${range:0.2,0.45}
+        halo_radius: ${range:0.2,0.5}
+        ghost_strength: ${range:0.1,0.28}
+        num_ghosts: ${irange:2,3}
+        streak_strength: ${range:0.15,0.4}
+        streak_length: ${range:0.5,1.0}
+        streak_width: ${range:0.03,0.05}
+        angle: ${range:0,360}
+        source_x: -1.0
+        source_y: -1.0
+        chromatic: ${range:0.08,0.28}
+        glare_size: ${range:0.9,1.6}
+      resize_degradation:
+        strength: ${range:0.2,0.5}
+        resize_scale: ${range:0.45,0.8}
+        target_height: 0
+        target_width: 0
+        interpolation: lanczos
+        save_format: jpeg
+        jpeg_quality: 85
+        jpeg_subsampling: ${irange:1,5}
+        png_compress_level: 6
+        roundtrips: ${irange:1,2}
+      cube_directional_lighting:
+        ambient_intensity: ${range:0.2,0.8}
+        shadow_intensity: ${range:0.01,0.8}
+        gradient_strength: ${range:0.35,3.5}
+        subsurface_scattering: ${range:0.01,0.3}
+        azdeg: ${range:0.0,345.0}
+        altdeg: ${range:0.0,90.0}
+      camera_variation:
+        yaw: ${range:-17,17}
+        pitch: ${range:-15,15}
+        roll: ${range:-15,15}
+      background_image:
+        alpha: ${range:0.05,0.9}
+        resize_mode: fill
+      cube_zoom:
+        zoom_factor: ${range:0.85,1.05}
+        offset_x: ${range:-0.15,0.15}
+        offset_y: ${range:-0.15,0.15}
+      gaussian_blur:
+        sigma: ${range:0.01,0.025}
+      radial_blur:
+        num_rotations: ${irange:1,4}
+        max_angle: ${range:5.0,8.0}
+      ambient_light:
+        alpha: ${range:0.001,0.5}
+        color: ${choice:["#ffd1a4","#ffe5cc","#fff5e6","#ffebd6","#ffe0b3","#ffe8cc","#ffecd9","#fff2e6","#ffccb3","#ffd9b3","#e6f7ff","#e6ffe6","#e6f0ff","#d6f5f5","#ccf2ff","#e6fff9","#d9e6ff","#e6f0fa","#f0e6ff","#e6e6ff","#f9f9f9","#faf0e6","#f5f5dc","#f2f2f2","#eae0d5","#f0ebe1","#ece6e2","#f7f0e3","#e6dfd6","#f2ede4","#ffe6f2","#ffccdd","#ffd6e0","#fce1ff","#d4ffea","#fff0b3","#ffffcc","#eaffd6","#cce5ff"]}
+      gaussian_noise:
+        noise_level: ${range:0.01,0.035}
+      directional_light:
+        gamma: ${range:0.3,1.7}
+        angle: ${range:0,360}
+        intensity: ${range:0.15,1.5}
+        ambient: ${range:0.005,0.8}
+        apply_vignette: true
+        vignette_strength: ${range:0.0001,0.7}
+
+    texture_poisson:
+      enabled: true
+      cube_texture_scratches:
+        noise_level: ${range:0.01,0.06}
+      reflections:
+        enabled: false
+        intensity: ${range:0.05,0.25}
+        num_reflections: ${irange:1,3}
+        size_min: ${range:0.05,0.09}
+        size_max: ${range:0.12,0.22}
+        sharpness: ${range:0.4,0.8}
+        elongation: ${range:1.2,2.2}
+        angle: ${range:0,360}
+        color_temperature: ${range:0.3,0.65}
+        surface_gloss: ${range:0.25,0.6}
+        chromatic: ${range:0.05,0.2}
+        source_threshold: ${range:0.72,0.9}
+        source_x: -1.0
+        source_y: -1.0
+        reflection_x: -1.0
+        reflection_y: -1.0
+        position_spread: ${range:0.1,0.25}
+      lens_glare:
+        enabled: false
+        intensity: ${range:0.05,0.25}
+        threshold: ${range:0.72,0.9}
+        bloom_strength: ${range:0.2,0.5}
+        bloom_radius: ${range:0.03,0.08}
+        halo_strength: ${range:0.1,0.32}
+        halo_radius: ${range:0.2,0.5}
+        ghost_strength: ${range:0.04,0.18}
+        num_ghosts: ${irange:1,3}
+        streak_strength: ${range:0.04,0.18}
+        streak_length: ${range:0.5,1.0}
+        streak_width: ${range:0.03,0.05}
+        angle: ${range:0,360}
+        source_x: -1.0
+        source_y: -1.0
+        chromatic: ${range:0.05,0.2}
+        glare_size: ${range:0.7,1.2}
+      resize_degradation:
+        strength: ${range:0.35,0.7}
+        resize_scale: ${range:0.45,0.65}
+        target_height: 0
+        target_width: 0
+        interpolation: lanczos
+        save_format: jpeg
+        jpeg_quality: 85
+        jpeg_subsampling: ${irange:1,5}
+        png_compress_level: 6
+        roundtrips: ${irange:1,2}
+      cube_directional_lighting:
+        ambient_intensity: ${range:0.2,0.8}
+        shadow_intensity: ${range:0.01,0.8}
+        gradient_strength: ${range:0.35,3.5}
+        subsurface_scattering: ${range:0.01,0.3}
+        azdeg: ${range:0.0,345.0}
+        altdeg: ${range:0.0,90.0}
+      camera_variation:
+        yaw: ${range:-17,17}
+        pitch: ${range:-15,15}
+        roll: ${range:-15,15}
+      background_texture:
+        enabled: true
+        texture_type: ${choice:[grid,dots,stripes,noise,crosshatch,waves]}
+        color: ${choice:["#ffd1a4","#ffe5cc","#fff5e6","#ffebd6","#ffe0b3","#ffe8cc","#ffecd9","#fff2e6","#ffccb3","#ffd9b3","#e6f7ff","#e6ffe6","#e6f0ff","#d6f5f5","#ccf2ff","#e6fff9","#d9e6ff","#e6f0fa","#f0e6ff","#e6e6ff","#f9f9f9","#faf0e6","#f5f5dc","#f2f2f2","#eae0d5","#f0ebe1","#ece6e2","#f7f0e3","#e6dfd6","#f2ede4","#ffe6f2","#ffccdd","#ffd6e0","#fce1ff","#d4ffea","#fff0b3","#ffffcc","#eaffd6","#cce5ff"]}
+        density: ${range:0.2,0.7}
+        alpha: ${range:0.3,1.0}
+      cube_zoom:
+        zoom_factor: ${range:0.85,1.05}
+        offset_x: ${range:-0.15,0.15}
+        offset_y: ${range:-0.15,0.15}
+      gaussian_blur:
+        sigma: ${range:0.01,0.025}
+      radial_blur:
+        num_rotations: ${irange:1,2}
+        max_angle: 2.5
+      ambient_light:
+        alpha: ${range:0.0,0.4}
+        color: ${choice:["#ffd1a4","#ffe5cc","#fff5e6","#ffebd6","#ffe0b3","#ffe8cc","#ffecd9","#fff2e6","#ffccb3","#ffd9b3","#e6f7ff","#e6ffe6","#e6f0ff","#d6f5f5","#ccf2ff","#e6fff9","#d9e6ff","#e6f0fa","#f0e6ff","#e6e6ff","#f9f9f9","#faf0e6","#f5f5dc","#f2f2f2","#eae0d5","#f0ebe1","#ece6e2","#f7f0e3","#e6dfd6","#f2ede4","#ffe6f2","#ffccdd","#ffd6e0","#fce1ff","#d4ffea","#fff0b3","#ffffcc","#eaffd6","#cce5ff"]}
+      poisson_noise:
+        enabled: true
+      directional_light:
+        gamma: ${range:0.3,1.7}
+        angle: ${range:0,360}
+        intensity: ${range:0.15,1.5}
+        ambient: ${range:0.0,0.6}
+        apply_vignette: true
+        vignette_strength: ${range:0.0,0.7}
+
+    occluders:
+      enabled: true
+      cube_texture_scratches:
+        noise_level: ${range:0.0001,0.035}
+      reflections:
+        enabled: false
+        intensity: ${range:0.05,0.3}
+        num_reflections: ${irange:1,3}
+        size_min: ${range:0.05,0.09}
+        size_max: ${range:0.12,0.22}
+        sharpness: ${range:0.4,0.8}
+        elongation: ${range:1.2,2.2}
+        angle: ${range:0,360}
+        color_temperature: ${range:0.3,0.65}
+        surface_gloss: ${range:0.3,0.65}
+        chromatic: ${range:0.05,0.2}
+        source_threshold: ${range:0.7,0.88}
+        source_x: -1.0
+        source_y: -1.0
+        reflection_x: -1.0
+        reflection_y: -1.0
+        position_spread: ${range:0.1,0.25}
+      lens_glare:
+        enabled: false
+        intensity: ${range:0.08,0.3}
+        threshold: ${range:0.68,0.88}
+        bloom_strength: ${range:0.2,0.5}
+        bloom_radius: ${range:0.03,0.08}
+        halo_strength: ${range:0.12,0.35}
+        halo_radius: ${range:0.2,0.5}
+        ghost_strength: ${range:0.06,0.2}
+        num_ghosts: ${irange:1,3}
+        streak_strength: ${range:0.06,0.2}
+        streak_length: ${range:0.5,1.0}
+        streak_width: ${range:0.03,0.05}
+        angle: ${range:0,360}
+        source_x: -1.0
+        source_y: -1.0
+        chromatic: ${range:0.06,0.22}
+        glare_size: ${range:0.8,1.3}
+      resize_degradation:
+        strength: ${range:0.0015,0.45}
+        resize_scale: ${range:0.5,0.85}
+        target_height: 0
+        target_width: 0
+        interpolation: lanczos
+        save_format: jpeg
+        jpeg_quality: 85
+        jpeg_subsampling: ${irange:1,5}
+        png_compress_level: 6
+        roundtrips: ${irange:1,2}
+      cube_directional_lighting:
+        ambient_intensity: ${range:0.2,0.8}
+        shadow_intensity: ${range:0.01,0.8}
+        gradient_strength: ${range:0.35,3.5}
+        subsurface_scattering: ${range:0.01,0.3}
+        azdeg: ${range:0.0,345.0}
+        altdeg: ${range:0.0,90.0}
+      camera_variation:
+        yaw: ${range:-17,17}
+        pitch: ${range:-15,15}
+        roll: ${range:-15,15}
+      background_image:
+        alpha: ${range:0.3,0.9}
+        resize_mode: ${choice:[fill,contain,cover,center]}
+      cube_zoom:
+        zoom_factor: ${range:0.85,1.05}
+        offset_x: ${range:-0.15,0.15}
+        offset_y: ${range:-0.15,0.15}
+      gaussian_noise:
+        noise_level: ${range:0.02,0.05}
+      random_occluders:
+        num_shapes: ${range:1,6}
+        size_fraction: ${range:0.01,0.06}
+      directional_light:
+        gamma: ${range:0.5,1.5}
+        angle: ${range:0,360}
+        intensity: ${range:0.15,1.5}
+        ambient: ${range:0.35,0.9}
+        apply_vignette: true
+        vignette_strength: ${range:0.0,0.5}
+
+    cam_and_light:
+      enabled: true
+      cube_texture_scratches:
+        noise_level: ${range:0.0001,0.03}
+      reflections:
+        enabled: false
+        intensity: ${range:0.05,0.25}
+        num_reflections: ${irange:1,3}
+        size_min: ${range:0.05,0.09}
+        size_max: ${range:0.12,0.22}
+        sharpness: ${range:0.4,0.8}
+        elongation: ${range:1.2,2.2}
+        angle: ${range:0,360}
+        color_temperature: ${range:0.3,0.65}
+        surface_gloss: ${range:0.3,0.65}
+        chromatic: ${range:0.05,0.18}
+        source_threshold: ${range:0.72,0.9}
+        source_x: -1.0
+        source_y: -1.0
+        reflection_x: -1.0
+        reflection_y: -1.0
+        position_spread: ${range:0.1,0.25}
+      lens_glare:
+        enabled: false
+        intensity: ${range:0.05,0.22}
+        threshold: ${range:0.72,0.9}
+        bloom_strength: ${range:0.18,0.45}
+        bloom_radius: ${range:0.03,0.08}
+        halo_strength: ${range:0.1,0.3}
+        halo_radius: ${range:0.2,0.5}
+        ghost_strength: ${range:0.04,0.16}
+        num_ghosts: ${irange:1,3}
+        streak_strength: ${range:0.04,0.16}
+        streak_length: ${range:0.5,1.0}
+        streak_width: ${range:0.03,0.05}
+        angle: ${range:0,360}
+        source_x: -1.0
+        source_y: -1.0
+        chromatic: ${range:0.05,0.18}
+        glare_size: ${range:0.7,1.2}
+      resize_degradation:
+        strength: ${range:0.0015,0.4}
+        resize_scale: ${range:0.5,0.85}
+        target_height: 0
+        target_width: 0
+        interpolation: lanczos
+        save_format: jpeg
+        jpeg_quality: 85
+        jpeg_subsampling: ${irange:1,5}
+        png_compress_level: 6
+        roundtrips: ${irange:1,2}
+      background_image:
+        alpha: ${range:0.3,0.9}
+        resize_mode: ${choice:[fill,contain,cover,center]}
+      cube_directional_lighting:
+        ambient_intensity: ${range:0.2,0.8}
+        shadow_intensity: ${range:0.01,0.8}
+        gradient_strength: ${range:0.35,3.5}
+        subsurface_scattering: ${range:0.01,0.3}
+        azdeg: ${range:0.0,345.0}
+        altdeg: ${range:0.0,90.0}
+      camera_variation:
+        yaw: ${range:-17,17}
+        pitch: ${range:-15,15}
+        roll: ${range:-15,15}
+
+wandb:
+  mode: disabled
+
+hydra:
+  run:
+    dir: outputs/experiments/cube3/gen_offline_sim2real/${now:%Y-%m-%d_%H-%M-%S}

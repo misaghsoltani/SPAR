@@ -1,0 +1,22 @@
+# @package _global_
+
+defaults:
+  - /schema/alignment_encoder_match_report_schema@_here_
+  - /model: ${env}
+  - /wandb: default
+
+stage: alignment_encoder_match_report
+
+pairs_file: spar/offline_data/search_pairs/deepcubeai_cube3_search_test.h5
+alignment_model_path: spar/saved_models/world_models/cube3_world_model_disc_AUG/world_model_checkpoint_encoder.pt
+encoder_model_path: spar/saved_models/world_models/cube3_world_model_disc/world_model_checkpoint_encoder.pt
+
+alignment_model_type: discrete
+batch_size: 1
+vars_to_include: null
+vars_to_ignore: null
+device: cuda
+verbose: false
+
+wandb:
+  mode: disabled

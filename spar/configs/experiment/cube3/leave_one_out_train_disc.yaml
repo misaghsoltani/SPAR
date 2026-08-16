@@ -1,0 +1,130 @@
+# @package _global_
+# Leave-One-Out Cross-Validation Training for Cube3 Alignment Model
+# This sweep configuration trains alignment models with leave-one-out validation
+# After training, run corresponding test sweep with: +experiment=cube3/leave_one_out_test
+# Usage: spar +experiment=cube3/leave_one_out_validation --multirun
+
+defaults:
+  - override /env: cube3
+  - override /stage: train_alignment_disc
+  - override /hydra/sweeper: basic
+  - _self_
+
+stage: train_alignment_model
+alignment_model_type: discrete
+end_to_end: false
+freeze_pretrained_models: true
+precompute_targets: true
+
+# Hydra sweep configuration for leave-one-out training
+hydra:
+  mode: MULTIRUN
+  sweeper:
+    params:
+      train.dataloader.variations_to_ignore: choice(
+        [ambient_light],
+        [directional_light],
+        [color_temperature],
+        [hsv_shift],
+        [contrast_brightness],
+        [rotate_image],
+        [perspective_transform],
+        [zoom_effect],
+        [spatial_perturbation],
+        [adversarial_noise],
+        [barrel_distortion],
+        [gaussian_noise],
+        [salt_pepper_noise],
+        [poisson_noise],
+        [speckle_noise],
+        [color_banding],
+        [gaussian_blur],
+        [motion_blur],
+        [defocus_blur],
+        [radial_blur],
+        [occluders],
+        [edge_cropping],
+        [fog_haze],
+        [rain_effect],
+        [sensor_inaccuracy],
+        [lighting_only],
+        [noise_and_distortion],
+        [indoor_lighting],
+        [outdoor_conditions],
+        [motion_conditions],
+        [underwater],
+        [surveillance],
+        [vintage_camera],
+        [microscopy],
+        [background_image],
+        [background_texture],
+        [background_randomization],
+        [cube_color_shift],
+        [cube_sticker_wear],
+        [camera_variation],
+        [color_variations],
+        [minimal],
+        [indoor_glossy],
+        [vintage_cube],
+        [outdoor_lighting],
+        [bright_lighting],
+        [noisy_camera],
+        [studio_lighting]
+        )
+
+  job:
+    name: cube3_loo_train_${train.dataloader.variations_to_ignore[0]}
+    chdir: false
+  run:
+    dir: ${save_dir}/experiments/cube3/leave_one_out_validation/train/hold_out_${train.dataloader.variations_to_ignore[0]}
+  sweep:
+    dir: ${save_dir}/experiments/cube3/leave_one_out_validation/train
+    subdir: hold_out_${train.dataloader.variations_to_ignore[0]} # ${hydra.job.num}
+
+# Data paths
+data_paths:
+  train_data: spar/offline_data/cube3/train_4000eps_30steps_with_vars.h5
+  val_data: spar/offline_data/cube3/val_1000eps_30steps_with_vars.h5
+  test_data: spar/offline_data/cube3/test_100eps_10000steps_with_vars.h5
+
+# Save paths for trained models
+save_paths:
+  model_dir: spar/saved_models/alignment_models/cube3_alignment_model_disc_loo_${train.dataloader.variations_to_ignore[0]}
+
+# Pretrained model paths
+pretrained_model_paths:
+  encoder_path: spar/saved_models/world_models/cube3_world_model_disc_2/world_model_checkpoint_encoder.pt
+  transition_model_path: spar/saved_models/world_models/cube3_world_model_disc_2/world_model_checkpoint_transition.pt
+  decoder_path: spar/saved_models/world_models/cube3_world_model_disc_2/world_model_checkpoint_decoder.pt
+
+# Training configuration - exclude the holdout variation
+train:
+  dataloader:
+    batch_size: 100
+    # enable_memory_optimization: false
+    # Train on all variations except the holdout one
+    variations_to_use: null # Use all except ignored
+
+# W&B configuration
+wandb:
+  mode: offline
+  job_type: train
+  group: cube3_leave_one_out_train
+  tags:
+    - leave_one_out
+    - cube3
+    - alignment_model
+    - discrete
+    - train
+    - holdout_${train.dataloader.variations_to_ignore[0]}
+  name: loo_train_holdout_${train.dataloader.variations_to_ignore[0]}
+# # Sweep metadata for reference
+# sweep_metadata:
+#   description: "Leave-One-Out Cross-Validation Training for Cube3 Alignment Model"
+#   total_variations: 35
+#   validation_type: "leave_one_out"
+#   stage: "train_alignment_model"
+#   model_type: "discrete"
+#   environment: "cube3"
+#   train.dataloader.variations_to_ignore[0]: "${train.dataloader.variations_to_ignore[0]}"
+#   note: "After training, run corresponding test with: experiment=cube3/leave_one_out_test train.dataloader.variations_to_ignore[0]=${train.dataloader.variations_to_ignore[0]}"

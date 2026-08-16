@@ -1,0 +1,62 @@
+# @package _global_
+# Leave-One-Out Cross-Validation Testing for Sokoban Alignment Model (continuous)
+
+defaults:
+  - override /env: sokoban
+  - override /stage: test_model_cont
+  - override /hydra/sweeper: basic
+  - _self_
+
+hydra:
+  mode: MULTIRUN
+  sweeper:
+    params:
+      test.dataloader.variations_to_use: choice([ambient_light],[color_temperature],[hsv_shift],[contrast_brightness],[zoom_effect],[spatial_perturbation],[gaussian_noise],[salt_pepper_noise],[gaussian_blur],[edge_cropping],[background_randomization],[background_image])
+  job:
+    name: sokoban_loo_test_${test.dataloader.variations_to_use[0]}
+    chdir: false
+  run:
+    dir: ${hydra:runtime.sweep}
+  sweep:
+    dir: ${save_dir}/experiments/${env.name}/leave_one_out_validation/test/${now:%Y-%m-%d_%H-%M-%S}
+    subdir: hold_out_${test.dataloader.variations_to_use[0]}
+
+# Data paths
+
+data_paths:
+  test_data: spar/offline_data/${env.name}/test_100eps_10000steps_with_vars.h5
+
+save_paths:
+  images_dir: ${hydra:runtime.output_dir}/model_tests/images/continuous
+  plots_dir: ${hydra:runtime.output_dir}/model_tests/plots/continuous
+  metrics_dir: ${hydra:runtime.output_dir}/model_tests/metrics/continuous
+
+pretrained_model_paths:
+  encoder_path: spar/saved_models/world_models/${env.name}_world_model_cont/world_model_checkpoint_encoder.pt
+  transition_model_path: spar/saved_models/world_models/${env.name}_world_model_cont/world_model_checkpoint_transition_model.pt
+  decoder_path: spar/saved_models/world_models/${env.name}_world_model_cont/world_model_checkpoint_decoder.pt
+  alignment_model_path: spar/saved_models/alignment_models/${env.name}_alignment_model_cont_loo_${test.dataloader.variations_to_use[0]}/alignment_model_checkpoint_alignment_model.pt
+
+# Testing configuration - test only on the holdout variation
+
+test:
+  end_to_end: true
+  use_alignment_model: true
+  precompute_targets: false
+  use_variation_for_all_states: false
+  log_interval: 1000
+  save_interval: 2000
+  visualization_format: png
+  visualization_episode_index: 0
+  visualization_steps: [1, 5, 30, 100]
+
+  dataloader:
+    batch_size: 100
+    variations_to_ignore: null
+
+wandb:
+  mode: offline
+  job_type: test
+  group: ${env.name}_leave_one_out_test
+  tags: ["leave_one_out","${env.name}","alignment_model","continuous","test","holdout_${test.dataloader.variations_to_use[0]}"]
+  name: loo_test_holdout_${test.dataloader.variations_to_use[0]}

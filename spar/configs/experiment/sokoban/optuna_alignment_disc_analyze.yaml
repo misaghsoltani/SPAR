@@ -1,0 +1,34 @@
+# @package _global_
+# Analyze the Sokoban discrete alignment Optuna study.
+
+defaults:
+  - override /env: sokoban
+  - override /stage: optuna_analyze
+  - _self_
+
+stage: optuna_analyze
+
+optuna:
+  study:
+    study_name: sokoban_alignment_disc_hpo
+    objective:
+      name: val_loss
+      step: train_alignment
+      goal: minimize
+    workflow:
+      - name: train_alignment
+        role: objective
+        stage: train_alignment_disc
+        experiment: sokoban/train_alignment_disc
+
+  storage:
+    kind: journal
+
+  runtime:
+    output_root: outputs/optuna
+
+  analysis:
+    top_k: 8
+    export_csv: true
+    compute_param_importances: true
+    include_failed_trials: true

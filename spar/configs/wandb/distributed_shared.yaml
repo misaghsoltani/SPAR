@@ -1,0 +1,23 @@
+# @package wandb
+# Distributed training configuration - Shared mode (all processes log to one run)
+
+defaults:
+  - default
+
+mode: online # Sync mode: online/offline/disabled
+distributed_logging: shared
+
+# Settings for shared mode logging
+settings_dict:
+  mode: "shared"
+  x_stats_gpu_device_ids: null
+
+# Additional tags for distributed identification
+tags:
+  - ${env.name}
+  - ${stage}
+  - ${now:%Y-%m-%d}
+  - shared
+
+log_freq: 100
+save_code: true

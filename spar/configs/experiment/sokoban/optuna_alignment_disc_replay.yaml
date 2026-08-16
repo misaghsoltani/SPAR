@@ -1,0 +1,50 @@
+# @package _global_
+# Replay the best Sokoban alignment HPO trials with the full training budget.
+
+defaults:
+  - override /env: sokoban
+  - override /stage: optuna_replay
+  - _self_
+
+stage: optuna_replay
+
+optuna:
+  study:
+    study_name: sokoban_alignment_disc_hpo
+    base_overrides:
+      - train.device=cuda
+      - wandb.mode=disabled
+    workflow:
+      - name: train_alignment
+        role: objective
+        stage: train_alignment_disc
+        experiment: sokoban/train_alignment_disc
+        objective:
+          name: val_loss
+          step: train_alignment
+          goal: minimize
+    objective:
+      name: val_loss
+      step: train_alignment
+      goal: minimize
+
+  storage:
+    kind: journal
+
+  runtime:
+    output_root: outputs/optuna
+    device_policy: explicit
+    device: cuda
+    disable_wandb: true
+    copy_resolved_configs: true
+
+  replay:
+    top_k: 1
+    trial_numbers: []
+    overrides:
+      - train.phases.0.max_itrs=100000
+      - train.phases.1.max_itrs=140000
+      - train.phases.2.max_itrs=180000
+      - train.phases.3.max_itrs=200000
+      - train.checkpoint_interval=2000
+    enable_wandb: false

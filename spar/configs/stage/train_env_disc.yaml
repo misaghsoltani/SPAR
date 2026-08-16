@@ -1,0 +1,55 @@
+# @package _global_
+# Configuration for model training stage
+
+defaults:
+  - /schema/train_env_disc_schema@_here_
+  - /model: ${env}
+  - /train: world_model
+  - /wandb: default
+  - _self_
+
+stage: train_world_model
+world_model_type: discrete
+end_to_end: false
+
+data_paths:
+  train_data: spar/offline_data/${env.name}/train_9000eps_30steps_no_vars.h5
+  val_data: spar/offline_data/${env.name}/val_1000eps_30steps_no_vars.h5
+  test_data: spar/offline_data/${env.name}/test_100eps_10000steps_no_vars.h5
+
+save_paths:
+  model_dir: spar/saved_models/world_models/${env.name}_world_model_disc
+
+model:
+  dqn: null
+  continuous: null
+  discrete:
+    alignment_model: null
+
+train:
+  compile:
+    fullgraph: true
+    dynamic: false
+    backend: inductor
+    # mode: max-autotune
+    disable: true
+
+wandb:
+  mode: online
+  job_type: train
+  save_code: true
+  log_freq: 100
+  log_model: true
+  group: "${env.name}"
+  notes: "SPAR Discrete World Model Training Pipeline"
+  id: "${env.name}-train_env_disc_${now:%Y-%m-%d_%H-%M-%S}"
+
+  tags:
+    - ${env.name}
+    - ${stage}
+    - ${now:%Y-%m-%d}
+    - discrete
+
+  settings_dict:
+    run_id: ${..id}
+    x_primary: true

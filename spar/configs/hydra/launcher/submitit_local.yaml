@@ -1,0 +1,26 @@
+# @package launcher
+# This file configures the Submitit launcher for local execution.
+
+_target_: hydra_plugins.hydra_submitit_launcher.submitit_launcher.LocalLauncher
+# Directory where submitit stores job metadata and logs (%j is replaced with job ID)
+submitit_folder: ${hydra.sweep.dir}/.submitit/%j
+
+# ===== BASE QUEUE CONFIGURATION =====
+# Configuration shared by all executors
+
+# Maximum time for the job in minutes
+timeout_min: 0
+# Number of CPUs to use for each task
+cpus_per_task: null
+# Number of GPUs to use on each node
+gpus_per_node: null
+# Number of tasks to spawn on each node
+tasks_per_node: 1
+# Memory to reserve for the job on each node (in GB)
+mem_gb: null
+# Number of nodes to use for the job
+nodes: 1
+# Name of the job
+name: ${hydra.job.name}
+# Redirect stderr to stdout
+stderr_to_stdout: false

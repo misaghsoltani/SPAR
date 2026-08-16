@@ -1,0 +1,115 @@
+{
+  "include": [
+    "spar"
+  ],
+  "exclude": [
+    "**/.*",
+    // "spar/utils/data_utils/webapp/**/*",
+    // "spar/training/dqn_trainer",
+    "spar/**/output",
+    "**/.pixi",
+    // "spar/utils/data_utils/webapp/.pixi",
+    "**/__pycache__",
+    "**/.pytest_cache",
+    "**/.mypy_cache",
+    "**/.ruff_cache",
+    "**/*.egg-info",
+    "**/build",
+    "**/dist",
+    "**/spar/offline_data",
+    "**/.git",
+    "**/.venv",
+    "**/node_modules",
+    "**/bower_components",
+    "**/logs",
+    "**/outputs",
+    "**/checkpoints",
+    "**/.cache",
+    "**/.tox",
+    "**/.eggs",
+    "**/docs/_*",
+    // "spar/search/base_example.py"
+    // "spar/search_test/**"
+  ],
+  "ignore": [
+    "tests/"
+  ],
+  // "defineConstant": {
+  //   "DEBUG": true
+  // },
+  //   "stubPath": "spar/stubs",
+  "reportUnnecessaryTypeIgnoreComment": "warning",
+  "reportUnnecessaryCast": "warning",
+  "reportUnnecessaryComparison": "warning",
+  "reportUnnecessaryContains": "warning",
+  "reportUnnecessaryIsInstance": "warning",
+  "reportUnusedClass": "warning",
+  "reportUnusedExpression": "warning",
+  "reportCallIssue": "error",
+  "reportMissingImports": "error",
+  "reportMissingTypeStubs": false,
+  "typeCheckingMode": "basic",
+  "reportDeprecated": "warning",
+  "reportAssignmentType": "error",
+  "reportUnusedVariable": "warning",
+  "reportUnusedFunction": "warning",
+  "reportAssertAlwaysTrue": "warning",
+  "reportGeneralTypeIssues": "error",
+  "reportImportCycles": "warning",
+  "reportUnreachable": "warning",
+  "reportRedeclaration": "error",
+  "reportAttributeAccessIssue": "error",
+  "reportInconsistentConstructor": "warning",
+  "reportConstantRedefinition": "warning",
+  "reportIndexIssue": "error",
+  "reportMissingTypeArgument": "warning",
+  "reportUndefinedVariable": "error",
+  "reportUnusedImport": "warning",
+  "enableReachabilityAnalysis": true,
+  "deprecateTypingAliases": true,
+  "pythonPlatform": "Linux",
+  "executionEnvironments": [
+    {
+      "root": "spar",
+      "pythonVersion": "3.10",
+      "extraPaths": [
+        ".pixi/envs/dev/lib/python3.10/site-packages"
+      ]
+    },
+    {
+      "root": "spar",
+      "pythonVersion": "3.11",
+      "extraPaths": [
+        ".pixi/envs/dev/lib/python3.11/site-packages"
+      ]
+    },
+    {
+      "root": "spar",
+      "pythonVersion": "3.12",
+      "extraPaths": [
+        ".pixi/envs/dev/lib/python3.12/site-packages"
+      ]
+    },
+    {
+      "root": "spar",
+      "pythonVersion": "3.13",
+      "extraPaths": [
+        ".pixi/envs/dev/lib/python3.13/site-packages"
+      ]
+    },
+    {
+      "root": "spar",
+      "pythonVersion": "3.14",
+      "extraPaths": [
+        ".pixi/envs/dev/lib/python3.14/site-packages"
+      ]
+    },
+    {
+      "root": "spar",
+      "pythonVersion": "3.15",
+      "extraPaths": [
+        ".pixi/envs/dev/lib/python3.15/site-packages"
+      ]
+    }
+  ]
+}

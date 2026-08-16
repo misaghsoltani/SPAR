@@ -1,0 +1,50 @@
+# @package _global_
+# Configuration for discrete alignment model training stage
+
+defaults:
+  - /schema/train_alignment_disc_schema@_here_
+  - /model: ${env}
+  - /train: alignment_model
+  - /wandb: default
+  - _self_
+
+stage: train_alignment_model
+alignment_model_type: discrete
+end_to_end: false
+freeze_pretrained_models: true
+precompute_targets: true
+
+data_paths:
+  train_data: spar/offline_data/cube3/sim2real/train_9000eps_30steps_with_vars.h5
+  val_data: spar/offline_data/cube3/sim2real/val_1000eps_30steps_with_vars.h5
+  test_data: spar/offline_data/cube3/sim2real/test_100eps_10000steps_with_vars.h5
+
+save_paths:
+  model_dir: spar/saved_models/alignment_models/${env.name}_alignment_model_disc_${now:%Y-%m-%d}
+
+pretrained_model_paths:
+  encoder_path: spar/saved_models/world_models/${env.name}_world_model_disc/world_model_checkpoint_encoder.pt
+  transition_model_path: spar/saved_models/world_models/${env.name}_world_model_disc/world_model_checkpoint_transition_model.pt
+  decoder_path: spar/saved_models/world_models/${env.name}_world_model_disc/world_model_checkpoint_decoder.pt
+
+train:
+  compile:
+    fullgraph: true
+    dynamic: null
+    backend: "inductor"
+    mode: max-autotune
+    disable: false
+
+  dataloader:
+    batch_size: 100
+    enable_memory_optimization: false
+    variations_to_ignore: null
+    variations_to_use: null
+
+model:
+  continuous: null
+  dqn: null
+
+wandb:
+  mode: offline # 'online', 'offline', or 'disabled'
+  job_type: train

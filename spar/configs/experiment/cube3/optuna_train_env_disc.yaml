@@ -1,0 +1,30 @@
+# @package _global_
+
+defaults:
+  - override /env: cube3
+  - override /stage: optuna_study
+  - _self_
+
+optuna:
+  study:
+    study_name: cube3_world_model_hpo
+    n_trials: 50
+    workflow:
+      - name: objective
+        role: objective
+        stage: train_env_disc
+        experiment: cube3/train_env_disc
+    objective:
+      name: val_loss
+      step: objective
+      goal: minimize
+  parameters:
+    - path: train.dataloader.batch_size
+      kind: int
+      low: 64
+      high: 256
+    - path: train.phases[0].lr
+      kind: float
+      low: 1.0e-5
+      high: 1.0e-3
+      log: true

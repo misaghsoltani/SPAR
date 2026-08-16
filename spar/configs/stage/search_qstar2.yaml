@@ -1,0 +1,87 @@
+# @package _global_
+# Configuration for Q* Search stage
+
+defaults:
+  - /schema/search_qstar_schema@_here_
+  - /model: ${env}
+  - /search: default
+  - /wandb: default
+
+stage: search_qstar
+
+search:
+  max_search_itrs: 15400
+  vis_recon_mode: none
+  vis_env_mode: none
+  vis_combined_mode: none
+  vis_combined_include_start_goal: true
+  vis_env_row_title: Environment Rendered
+  vis_recon_row_title: Reconstruction
+  vis_start_title: Start
+  vis_goal_title: Goal
+
+  ## Visualization sizing
+  # Individual visuals (env-only / recon-only): "original" or "custom"
+  vis_individual_size_mode: original
+  vis_individual_height: null
+  vis_individual_width: null
+  vis_combined_row_height: null
+  vis_combined_row_width: null
+  ## Behavior when search is unsolved
+  validate_on_unsolved: false
+  vis_on_unsolved: true
+  log_moves_on_unsolved: false
+  save_vis_fps: 3
+
+  # Q* Search parameters
+  qstar_batch_size: 100
+  qstar_weight: 0.8
+  qstar_show_running_summary: false
+
+  # Model paths for Q* search
+  heuristic_model_path: spar/search_test/dqn_state_sokoban_new.pt
+  env_model_path: spar/saved_models/world_models/${env.name}_world_model_disc/world_model_checkpoint_transition_model.pt
+  alignment_model_path: spar/saved_models/alignment_models/${env.name}_alignment_model_disc_3/alignment_model_checkpoint_alignment_model.pt
+  # Base encoder to use when encoder_mode requires it
+  encoder_model_path: spar/saved_models/world_models/${env.name}_world_model_disc/world_model_checkpoint_encoder.pt
+  # Path to decoder checkpoint for visualization reconstructions (required for image/gif)
+  decoder_model_path: spar/saved_models/world_models/${env.name}_world_model_disc/world_model_checkpoint_decoder.pt
+
+  # TF32 preferences for CUDA. Defaults leave PyTorch settings unchanged.
+  # Set allow_tf32 true or float32_matmul_precision to 'highest'|'high'|'medium' to opt in.
+  allow_tf32: false
+  float32_matmul_precision: null # null keeps PyTorch's default (highest)
+
+  # Input/output paths for Q* search
+  # Single image pair mode
+  state_path: null # "outputs/image_processing_cube3/resized_input_matplotlib.png"
+  goal_state_path: null # "spar/search_test/goal.png"
+  # Folder mode (runs search on all images in folder)
+  # Provide only `state_dir` to use a fixed goal image above for all states,
+  # or provide both `state_dir` and `goal_state_dir` to pair by sorted order.
+  state_dir: null
+  goal_state_dir: null
+  images_glob: "*.png"
+  # Use HDF5 pairs dataset (overrides single/folder modes when set)
+  pairs_file: spar/offline_data/search_pairs/deepcubeai_sokoban_search_test.h5 # spar/offline_data/search_pairs/cube3_default_pairs_100pairs.h5
+  # Back-compat single selection (equivalent to include=[...])
+  pairs_start_variant: null # e.g., "base" or variation name
+  pairs_goal_variant: base # e.g., "base" or variation name
+  # Independent include/exclude lists for start/goal side variations
+  # Use 'base' to refer to the base images stored under pairs/<side>/images
+  pairs_start_include: null # e.g., ["base", "sim2real10"] or null for all
+  pairs_start_exclude: null # e.g., ["artifact_edges"]
+  pairs_goal_include: null # e.g., ["base"]
+  pairs_goal_exclude: null
+  results_dir: ${hydra:runtime.output_dir}/search_qstar/${env.name}_results
+
+  # Neural network batch size
+  nnet_batch_size: null
+  per_eq_tol: 100
+  encoder_mode: align_only
+
+  start_idx: 0
+  verbose: false
+
+wandb:
+  mode: disabled

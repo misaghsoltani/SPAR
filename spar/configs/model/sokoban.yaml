@@ -1,0 +1,223 @@
+# @package model
+
+defaults:
+  - default
+
+chan_in: ${env.dim.channels}
+chan_out: ${model.chan_in}
+enc_dim: 1600
+enc_h: 10
+enc_w: 10
+chan_enc: 16
+
+continuous:
+  encoder:
+    architecture: &encoder_architecture
+      - _target_: spar.utils.pytorch_utils.pytorch_models.Conv2dModel
+        chan_in: ${model.chan_in}
+        channel_sizes:
+          - ${model.chan_enc}
+          - ${model.chan_enc}
+        kernel_sizes:
+          - 2
+          - 2
+        paddings:
+          - 0
+          - 0
+        layer_batch_norms:
+          - true
+          - false
+        layer_acts:
+          - RELU
+          - SIGMOID
+        strides:
+          - 2
+          - 2
+      - _target_: torch.nn.Flatten
+
+  env_model:
+    architecture: &env_model_architecture
+      - _target_: spar.utils.pytorch_utils.pytorch_models.Conv2dModel
+        chan_in: ${add:${env.num_actions_max},${model.chan_enc}}
+        channel_sizes:
+          - 32
+          - 32
+          - ${model.chan_enc}
+        kernel_sizes:
+          - 3
+          - 3
+          - 3
+        paddings:
+          - 1
+          - 1
+          - 1
+        layer_batch_norms:
+          - true
+          - true
+          - false
+        layer_acts:
+          - RELU
+          - RELU
+          - SIGMOID
+        strides:
+          - 1
+          - 1
+          - 1
+      - _target_: torch.nn.Flatten
+
+  decoder:
+    architecture: &decoder_architecture
+      - _target_: spar.utils.pytorch_utils.pytorch_models.Conv2dModel
+        transpose: true
+        chan_in: ${model.chan_enc}
+        channel_sizes:
+          - ${model.chan_enc}
+          - ${model.chan_enc}
+        kernel_sizes:
+          - 2
+          - 2
+        paddings:
+          - 0
+          - 0
+        layer_batch_norms:
+          - true
+          - false
+        layer_acts:
+          - RELU
+          - SIGMOID
+        strides:
+          - 2
+          - 2
+      - _target_: spar.utils.pytorch_utils.pytorch_models.Conv2dModel
+        chan_in: ${model.chan_enc}
+        channel_sizes:
+          - ${model.chan_in}
+        kernel_sizes:
+          - 1
+        paddings:
+          - 0
+        layer_batch_norms:
+          - false
+        layer_acts:
+          - LINEAR
+        strides:
+          - 1
+
+  alignment_model: &alignment_model
+    chan_in: 3
+    resnet_chan: 64
+    num_resnet_blocks: 8
+    architecture:
+      # - _target_: torch.nn.GroupNorm
+      #   num_groups: ${...chan_in}
+      #   num_channels: ${...chan_in}
+
+      # - _target_: torch.nn.BatchNorm2d
+      #   num_features: 3
+      - _target_: spar.utils.pytorch_utils.pytorch_models.Conv2dModel
+        chan_in: ${...chan_in}
+        channel_sizes:
+          - 64
+          - ${....resnet_chan}
+        kernel_sizes:
+          - 2
+          - 2
+        paddings:
+          - 0
+          - 0
+        layer_batch_norms:
+          - true
+          - true
+        layer_acts:
+          - RELU
+          - RELU
+        strides:
+          - 2
+          - 2
+        group_norms:
+          - 0
+          - 0
+        use_bias_with_norm: true
+      - _target_: spar.utils.pytorch_utils.pytorch_models.ResnetConv2dModel
+        in_channels: ${...resnet_chan}
+        resnet_channels: ${...resnet_chan}
+        out_channels: ${...resnet_chan}
+        kernel_size: 3
+        padding: 1
+        num_resnet_blocks: ${...num_resnet_blocks}
+        batch_norm: true
+        act: RELU
+        group_norm: 0
+        use_bias_with_norm: true
+      - _target_: spar.utils.pytorch_utils.pytorch_models.Conv2dModel
+        chan_in: ${...resnet_chan}
+        channel_sizes:
+          - ${model.chan_enc}
+        kernel_sizes:
+          - 1
+        paddings:
+          - 0
+        strides:
+          - 1
+        layer_batch_norms:
+          - false
+        layer_acts:
+          - SIGMOID
+      - _target_: torch.nn.Flatten
+
+discrete:
+  encoder:
+    architecture:
+      - _target_: spar.utils.pytorch_utils.pytorch_models.Conv2dModel
+        chan_in: ${model.chan_in}
+        channel_sizes:
+          - ${model.chan_enc}
+          - ${model.chan_enc}
+        kernel_sizes:
+          - 2
+          - 2
+        paddings:
+          - 0
+          - 0
+        layer_batch_norms:
+          - true
+          - false
+        layer_acts:
+          - RELU
+          - SIGMOID
+        strides:
+          - 2
+          - 2
+      - _target_: torch.nn.Flatten
+      - _target_: spar.utils.pytorch_utils.pytorch_models.STEThresh
+        threshold: 0.5
+
+  env_model:
+    architecture: *env_model_architecture
+
+  decoder:
+    architecture: *decoder_architecture
+
+  alignment_model:
+    <<: *alignment_model
+
+dqn:
+  architecture:
+    - _target_: spar.utils.pytorch_utils.pytorch_models.FullyConnectedModel
+      input_dim: ${mul:${model.enc_dim},2}
+      layer_dims:
+        - 5000
+        - 1000
+      layer_batch_norms:
+        - true
+        - true
+      layer_acts:
+        - RELU
+        - RELU
+    - _target_: spar.utils.pytorch_utils.pytorch_models.ResnetModel
+      resnet_dim: 1000
+      num_resnet_blocks: 4
+      out_dim: ${env.num_actions_max}
+      batch_norm: true
+      act: RELU
+      use_bias_with_norm: true

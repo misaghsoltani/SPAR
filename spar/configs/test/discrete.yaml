@@ -1,0 +1,68 @@
+# @package test
+# Test configuration for discrete models
+
+device: cuda
+end_to_end: false
+use_alignment_model: false
+precompute_targets: false
+log_interval: 10
+save_interval: 50
+visualization_format: png
+visualization_episode_index: 0
+visualization_steps: null
+test_steps: null
+top_k: 0
+apply_diff_highlighting: false
+metrics_to_save: [
+    "reconstruction_mse",
+    "percent_on",
+    "eq",
+    "eq_bit",
+    "eq_bit_min",
+  ] # Discrete model metrics
+# Prefer eq_bit in column titles, then reconstruction_mse
+column_metric_priority: ["eq_bit", "reconstruction_mse"]
+# Optional visualization row labels
+# row_labels: ["Reconstruction", "Ground Truth"]
+# rightmost_col_row_labels: ["Prediction", "Ground Truth"]
+
+# Global suptitle configuration (can be set to empty string to hide)
+suptitle:
+  step_template: "Episode {episode}, Step {step} - {variation_display}"
+  summary_template: "{variation_display} {summary_type_label} {metric_name_display} ({metric_value_formatted}) - Episode {episode}"
+  step_tracker_template: "Step {step} | Episode {episode} | {metric_name_display}: {metric_value_formatted}"
+  gap: 0.15
+  font_family: serif
+  font_serif: ["Times New Roman", "Computer Modern", "DejaVu Serif"]
+  font_size: 10
+  font_weight: bold
+  color: "#2C3E50"
+  bbox_style:
+    boxstyle: "round,pad=0.7"
+    facecolor: "#E8F4FD"
+    edgecolor: "#3498DB"
+    alpha: 0.95
+    linewidth: 1.0
+
+dataloader:
+  batch_size: 100
+  transform: null
+  dtype: float32
+  num_workers: 0
+  pin_memory: false
+  persistent_workers: false
+  pin_memory_device: ""
+  use_encoded_targets: true
+  precompute_targets: true
+  specific_variation: null
+  use_variation_for_all_states: false
+  variations_to_use: null
+  variations_to_ignore: null
+
+compile:
+  fullgraph: false
+  dynamic: null
+  backend: "inductor"
+  mode: null
+  options: null
+  disable: false

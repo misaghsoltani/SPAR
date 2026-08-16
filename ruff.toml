@@ -1,0 +1,197 @@
+target-version = "py310" # Lint against Python 3.10 rules
+line-length = 120
+indent-width = 4
+preview = true
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+    ".pixi/",
+    ".shared_inductor_cache",
+    "tests/",
+    # "spar/utils/data_utils/webapp/",
+    # "spar/training/dqn_trainer/",
+    "spar/search/base_example.py"
+]
+extend-exclude = ["job_run_outputs", "job_submissions", "images", "training_samples", "tests", "_depricated*", "examples", "**/spar/offline_data/", "*BACKUP*.py"]
+fix = true # Auto-fix fixable lint errors
+
+[lint]
+fixable = ["ALL"] # Allow fix for all enabled rules (when '--fix') is provided.
+unfixable = []
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$" # Allow unused variables when underscore-prefixed.
+select = [
+    "E",   # pycodestyle errors
+    "F",   # pyflakes
+    "I",   # isort
+    "UP",  # pyupgrade
+    "B",   # bugbear
+    "D",   # pydocstyle
+    "N",   # pep8-naming
+    "C4",  # comprehensions
+    "SIM", # flake8-simplify
+    "TID", # tidy imports
+    "PL",  # pylint
+    "AIR", # Airflow
+    "ERA", # eradicate
+    "FAST", # FastAPI
+    "YTT", # flake8-2020
+    "ANN", # flake8-annotations
+    "ASYNC", # flake8-async
+    "S", # flake8-bandit
+    "BLE", # flake8-blind-except
+    "FBT", # flake8-boolean-trap
+    "B", # flake8-bugbear
+    "A", # flake8-builtins
+    "COM", # flake8-commas
+    "C4", # flake8-comprehensions
+    "CPY", # flake8-copyright
+    "DTZ", # flake8-datetimez
+    "T10", # flake8-debugger
+    "DJ", # flake8-django
+    "EM", # flake8-errmsg
+    "EXE", # flake8-executable
+    "FIX", # flake8-fixme
+    "FA", # flake8-future-annotations
+    "INT", # flake8-gettext
+    "ISC", # flake8-implicit-str-concat
+    "ICN",  # flake8-import-conventions
+    "LOG",  # flake8-logging
+    "G",  # flake8-logging-format
+    "INP",  # flake8-no-pep420
+    "PIE",  # flake8-pie
+    "T20",  # flake8-print
+    "PYI",  # flake8-pyi
+    "PT",  # flake8-pytest-style
+    "Q",  # flake8-quotes
+    "RSE",  # flake8-raise
+    "RET",  # flake8-return
+    "SLF",  # flake8-self
+    "SIM",  # flake8-simplify
+    "SLOT",  # flake8-slots
+    "TID",  # flake8-tidy-imports
+    "TD",  # flake8-todos
+    "TC",  # flake8-type-checking
+    "ARG",  # flake8-unused-arguments
+    "PTH",  # flake8-use-pathlib
+    "FLY",  # flynt
+    "I",  # isort
+    "C90",  # mccabe
+    "NPY",  # NumPy-specific rules
+    "PD",  # pandas-vet
+    "N",  # pep8-naming
+    "PERF",  # Perflint
+    "E", # pycodestyle
+    "W",  # pycodestyle
+    "W",  # Warning
+    "DOC",  # pydoclint
+    "D",  # pydocstyle
+    "F",  # Pyflakes
+    "PGH",  # pygrep-hooks
+    "PL",  # Pylint
+    "PLC",  # Convention
+    "PLE",  # Error
+    "PLR",  # Refactor
+    "PLW",  # Warning
+    "UP",  # pyupgrade
+    "FURB",  # refurb
+    "RUF",  # Ruff-specific rules
+    "TRY",  # tryceratops
+]
+ignore = [
+    "undocumented-public-module", # Missing docstring in public module
+    "undocumented-public-package", # Missing docstring in public package
+    "undocumented-public-init", # Missing docstring in __init__
+    "too-many-public-methods", # too many public methods
+    "too-many-arguments", # too many arguments
+    "too-many-return-statements", # too many return statements
+    "too-many-statements", # too many statements
+    "too-many-branches", # too many branches
+    "lowercase-imported-as-non-lowercase", # lowercase package imoprted as non-lowercase
+    "magic-value-comparison", # Magic value used in comparison
+    "too-many-locals", # too many local variables
+    "too-many-nested-blocks", # too many nested blocks
+    "camelcase-imported-as-acronym", # CamelCase imported as UPPER_CASE
+    "any-type", # Dynamic type
+    "too-many-boolean-expressions", # Too many boolean expressions
+    "missing-trailing-comma",
+    "subprocess-without-shell-equals-true",
+    "suspicious-subprocess-import",
+    "missing-copyright-notice",
+    "pytest-incorrect-pytest-import",
+    "docstring-missing-returns",
+    "commented-out-code",
+    "docstring-missing-exception",
+    "complex-structure",
+    "hardcoded-password-string",
+    "print",
+    "raw-string-in-exception",
+    "f-string-in-exception",
+    "raise-vanilla-args",
+    "redundant-numeric-union",
+    "suspicious-pickle-usage",
+    "suspicious-pickle-import",
+    "shebang-missing-executable-file",
+    "boolean-type-hint-positional-argument",
+    "boolean-default-value-positional-argument",
+    "boolean-positional-value-in-call",
+    "no-self-use",
+    "missing-todo-author",
+    "missing-todo-link",
+    "call-datetime-now-without-tzinfo",
+    "assert",
+    "suspicious-non-cryptographic-random-usage",
+    "logging-f-string",
+    "numpy-legacy-random",
+    "try-except-pass",
+    "blind-except",
+    "builtin-argument-shadowing",
+    "non-empty-init-module",
+    "line-contains-todo",
+    "logging-f-string",
+    "too-many-statements-in-try-clause",
+]
+
+[lint.isort]
+known-first-party = ["spar"]
+known-third-party = ["wandb", "omegaconf", "torch", "numpy", "matplotlib", "ray", "h5py", "gymnasium", "cv2", "flask"]
+combine-as-imports = true
+force-sort-within-sections = true
+split-on-trailing-comma=false # if true, split imports with trailing commas into multiple lines
+
+[format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = true # if false, retain trailing commas when appropriate
+line-ending = "auto"  # Use OS-native line endings
+docstring-code-format = true
+docstring-code-line-length = "dynamic" # This only has an effect when the 'docstring-code-format' setting is enabled.
+
+[lint.pydocstyle]
+convention = "google"
+
+[lint.pylint]
+max-positional-args = 10

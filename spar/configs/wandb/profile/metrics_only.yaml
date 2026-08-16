@@ -1,0 +1,13 @@
+# @package wandb
+# Metrics-only profile with optional capture disabled.
+
+profile: metrics-only
+media_log_every_n_steps: -1
+table_log_every_n_steps: -1
+histogram_log_every_n_steps: -1
+
+settings_dict:
+  console: "off"
+  disable_git: true
+  disable_code: true
+  x_disable_stats: true

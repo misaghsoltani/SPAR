@@ -1,0 +1,22 @@
+# @package _global_
+# Configuration for creating W&B sweeps.
+
+defaults:
+  - /schema/create_sweep_schema@_here_
+  - /wandb: default
+  - _self_
+
+stage: create_sweep
+
+sweep:
+  type: heuristic
+  method: bayes
+  metric_name: val_loss
+  metric_goal: minimize
+  count: 10
+  create_agent_script: true
+
+wandb:
+  mode: online
+  job_type: create-sweep
+  profile: debug

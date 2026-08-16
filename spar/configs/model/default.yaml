@@ -1,0 +1,34 @@
+# @package model
+
+chan_in: ${env.dim.channels}
+chan_out: ${model.chan_in}
+enc_dim: 400
+
+discrete:
+  encoder:
+    architecture: null
+
+  env_model:
+    architecture: null
+
+  decoder:
+    architecture: null
+
+  alignment_model:
+    architecture: null
+
+continuous:
+  encoder:
+    architecture: null
+
+  env_model:
+    architecture: null
+
+  decoder:
+    architecture: null
+
+  alignment_model:
+    architecture: null
+
+dqn:
+  architecture: null

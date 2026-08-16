@@ -1,0 +1,73 @@
+# @package test
+# Default testing configuration
+
+device: cuda
+
+end_to_end: false
+use_alignment_model: false
+precompute_targets: false
+log_interval: 10
+save_interval: 50
+visualization_format: png # Format for saving visualizations (e.g., "png", "jpg", "pdf")
+visualization_episode_index: 0 # Index of episode in batch to use for visualization (default: first episode)
+visualization_steps: null # Additional specific steps to visualize (in addition to save_interval)
+test_steps: null
+top_k: 0 # Number of top episodes to visualize (default: 0, no top episodes)
+apply_diff_highlighting: false # Whether to apply highlighting for differences in visualizations
+metrics_to_save: ["reconstruction_mse"] # List of metrics to save in JSON format
+row_labels: ["Reconstruction", "Ground Truth"]
+rightmost_col_row_labels: ["Prediction", "Base"]
+# Column metric priority (first present key is shown on column titles)
+column_metric_priority: ["reconstruction_mse", "eq_bit", "cosine_similarity"]
+
+# Global suptitle configuration for all visualizations
+# Set any template to "" to disable the suptitle for that view.
+suptitle:
+  # Per-step visualization title template
+  step_template: "Episode {episode}, Step {step} - {variation_display}"
+  # Summary visualization suptitle template
+  summary_template: "{variation_display} {summary_type_label} {metric_name_display} ({metric_value_formatted}) - Episode {episode}"
+  # Best/Worst step tracker title template
+  step_tracker_template: "Step {step} | Episode {episode} | {metric_name_display}: {metric_value_formatted}"
+  # Vertical gap above column titles for suptitle (figure fraction)
+  gap: 0.15
+  # Style overrides for the suptitle
+  font_family: serif
+  font_serif: ["Times New Roman", "Computer Modern", "DejaVu Serif"]
+  font_size: 10
+  font_weight: bold
+  color: "#2C3E50"
+  bbox_style:
+    boxstyle: "round,pad=0.7"
+    facecolor: "#E8F4FD"
+    edgecolor: "#3498DB"
+    alpha: 0.95
+    linewidth: 1.0
+  # Optional: rename labels used in summary titles
+  # summary_type_labels:
+  #   best: "Best"
+  #   worst: "Worst"
+  #   selected: "Selected"
+
+dataloader:
+  batch_size: 100
+  transform: null
+  dtype: float32
+  num_workers: 0
+  pin_memory: false
+  persistent_workers: false
+  pin_memory_device: ""
+  use_encoded_targets: true
+  precompute_targets: true
+  specific_variation: null
+  use_variation_for_all_states: false
+  variations_to_use: null
+  variations_to_ignore: null
+
+compile:
+  fullgraph: false # If false, torch.compile captures supported regions. If true, it requires the entire function.
+  dynamic: null # (None | bool) Possible: None (auto-detect dynamism), True (allow dynamic-shape kernels), False (always specialize to fixed shapes). Controls whether to produce kernels that handle variable input shapes.
+  backend: "inductor" # (str | callable) Possible built-in strings:, "inductor" (default, uses TorchInductor), "cudagraphs" (CUDA Graphs + AOTAutograd), "ipex" (Intel Extension for PyTorch), "onnxrt" (ONNX Runtime), "tensorrt" (Torch-TensorRT, inference only), "tvm" (Apache TVM, inference only), "openvino" (OpenVINO, inference only). Or any custom callable registered via torch.compiler.list_backends().
+  mode: null # (None | str) Possible: None / "default" (balanced performance vs. overhead), "reduce-overhead" (use CUDA graphs to minimize Python overhead, may increase memory), "max-autotune" (enable Triton/template autotuning + CUDA graphs), "max-autotune-no-cudagraphs" (like max-autotune but without CUDA graphs)
+  options: null # (None | dict[str, str|int|bool]) Possible keys include: "epilogue_fusion" (fuse pointwise ops into templates), "max_autotune" (profile best matmul configurations), "fallback_random" (randomized fallback for debugging), "shape_padding" (pad matrix shapes for better GPU alignment), "triton.cudagraphs" (enable CUDA graphs), "trace.enabled" (emit debug traces), "trace.graph_diagram" (visualize fused graphs), and other backend-specific flags visible via torch._inductor.list_options().
+  disable: false

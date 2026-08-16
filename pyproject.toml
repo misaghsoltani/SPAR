@@ -1,0 +1,256 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "spar"
+dynamic = ["version"]
+description = "Stable Planning through Aligned Representations (SPAR) in Model-Based Reinforcement Learning"
+authors = [{ name = "Misagh Soltani", email = "msoltani@email.sc.edu" }]
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Typing :: Typed",
+]
+keywords = [
+    "SPAR",
+    "deep learning",
+    "reinforcement learning",
+    "deep reinforcement learning",
+    "search",
+    "heuristic search",
+    "pathfinding",
+    "planning",
+    "Rubik's Cube",
+    "Sokoban",
+    "Q*",
+    "model-based reinforcement learning",
+    "discrete world model",
+    "deep q-learning",
+    "deep q-network",
+    "Q* search",
+]
+dependencies = [
+    "numpy",
+    "gymnasium",
+    "opencv-python-headless",
+    "wandb",
+    "hydra-core",
+    "omegaconf",
+    "matplotlib",
+    "scikit-image",
+    "rich",
+    "networkx",
+    "psutil",
+    "gputil",
+    "distro",
+    "py-cpuinfo",
+    "pydantic",
+    "typing-extensions",
+    "orjson",
+    "pygame-ce",
+    "h5py",
+    "torch",
+    "pillow",
+    "imageio",
+    "pillow-heif",
+    "optuna",
+    "pandas",
+]
+
+[project.optional-dependencies]
+# The dashboard ships as its own distribution ('spar-datadash') so its Node-built frontend
+# and Flask backend stay out of the core wheel. 'pip install spar[datadash]' pulls it in.
+datadash = ["spar-datadash"]
+offline-tracking = ["wandb-osh"]
+wandb-local-server = ["docker"]
+
+[project.urls]
+GitHub = "https://github.com/misaghsoltani/SPAR/"
+# Documentation = "https://misaghsoltani.github.io/SPAR/"
+
+[project.scripts]
+spar = "spar.pipeline:run"                      # Create a 'spar' CLI command
+inspect-data = "spar.scripts.inspect_data:main" # Add CLI for data inspection
+spar-experiments = "spar.scripts.list_experiments:main"  # Help utility to list experiments for an env
+# run-wandb-offline = "spar.scripts.run_wandb_offline:main" # CLI to run W&B in offline mode
+
+
+# [tool.hatchling.packages.find]
+# include = ["spar*"] # Only consider package names starting with spar (e.g. spar, spar.submodule, etc.) when auto-discovering packages
+# namespaces = false # Don't treat directories without an __init__.py as namespace packages, only folders with __init__.py count
+
+[tool.hatchling]
+include-package-data = true
+
+# [tool.hatch.metadata]
+# allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["spar"]
+include = [
+    "spar/**",
+    "spar/py.typed",
+    "README.md",
+    # "spar/environments/sokoban_data/**",
+]
+exclude = [
+    "*.py[cod]",
+    "__pycache__/**",
+    ".DS_Store",
+    ".vscode",
+    ".git",
+    ".pixi",
+    "**/.cache/**",
+    "**/.parcel-cache/**",
+    "**/.vite/**",
+    "**/node_modules/**",
+    "spar/offline_data/**",
+    "spar/saved_models/**",
+    "spar/**/*.ckpt",
+    "spar/**/*.h5",
+    "spar/**/*.hdf5",
+    "spar/**/*.npy",
+    "spar/**/*.npz",
+    "spar/**/*.pkl",
+    "spar/**/*.pt",
+    "spar/**/*.pth",
+    "spar/search_test/*.jpeg",
+    "spar/search_test/**/*.jpg",
+    "spar/search_test/**/output.txt",
+    "spar/search_test/*.png",
+    "spar/search_test/res/**",
+    "spar/search_test/results/**",
+]
+
+[tool.hatch.build.targets.sdist]
+packages = ["spar"]
+include = [
+    "spar/**",
+    "spar/py.typed",
+    "README.md",
+    # "spar/environments/sokoban_data/**",
+]
+exclude = [
+    "*.py[cod]",
+    "__pycache__/**",
+    ".DS_Store",
+    ".vscode",
+    ".git",
+    ".pixi",
+    "**/.cache/**",
+    "**/.parcel-cache/**",
+    "**/.vite/**",
+    "**/node_modules/**",
+    "spar/offline_data/**",
+    "spar/saved_models/**",
+    "spar/**/*.ckpt",
+    "spar/**/*.h5",
+    "spar/**/*.hdf5",
+    "spar/**/*.npy",
+    "spar/**/*.npz",
+    "spar/**/*.pkl",
+    "spar/**/*.pt",
+    "spar/**/*.pth",
+    "spar/search_test/*.jpeg",
+    "spar/search_test/**/*.jpg",
+    "spar/search_test/**/output.txt",
+    "spar/search_test/*.png",
+    "spar/search_test/res/**",
+    "spar/search_test/results/**",
+]
+
+[tool.hatch.build]
+skip-excluded-dirs = true
+reproducible = true
+include = [
+    "spar/**",
+    "spar/py.typed",
+    "README.md",
+    # "spar/environments/sokoban_data/**",
+]
+exclude = [
+    "*.py[cod]",
+    "__pycache__/**",
+    ".DS_Store",
+    ".vscode",
+    ".git",
+    ".pixi",
+    "**/.cache/**",
+    "**/.parcel-cache/**",
+    "**/.vite/**",
+    "**/node_modules/**",
+    "spar/offline_data/**",
+    "spar/saved_models/**",
+    "spar/**/*.ckpt",
+    "spar/**/*.h5",
+    "spar/**/*.hdf5",
+    "spar/**/*.npy",
+    "spar/**/*.npz",
+    "spar/**/*.pkl",
+    "spar/**/*.pt",
+    "spar/**/*.pth",
+    "spar/search_test/*.jpeg",
+    "spar/search_test/*.jpg",
+    "spar/search_test/*.png",
+    "spar/search_test/res/**",
+    "spar/search_test/results/**",
+]
+
+[tool.hatch.version]
+path = "spar/__init__.py"
+
+
+[tool.pytest.ini_options]
+addopts = "--maxfail=1 -q"
+testpaths = ["tests"]
+
+
+[dependency-groups]
+default = ["spar"]
+# dev = [
+#     { include-group = "default" },
+#     { include-group = "dev" },
+#     { include-group = "datadashboard" },
+#     { include-group = "wandblocalserver" },
+#     { include-group = "test" },
+#     { include-group = "doc" },
+#     # { include-group = "build" },
+# ]
+# doc = [{ include-group = "doc" }, { include-group = "default" }]
+# test = [{ include-group = "test" }, { include-group = "default" }]
+# build = [
+#     { include-group = "build" },
+#     { include-group = "datadashboard" },
+#     { include-group = "wandblocalserver" },
+#     { include-group = "default" },
+# ]
+datadashboard = [
+    "spar-datadash",
+    { include-group = "default" },
+]
+# wandblocalserver = [
+#     { include-group = "wandblocalserver" },
+#     { include-group = "default" },
+# ]
+# all = [
+#     { include-group = "test" },
+#     { include-group = "dev" },
+#     # { include-group = "build" },
+#     { include-group = "datadashboard" },
+#     { include-group = "wandblocalserver" },
+#     { include-group = "doc" },
+#     { include-group = "default" },
+# ]

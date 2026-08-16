@@ -1,0 +1,60 @@
+# @package train
+# Default training configuration
+
+device: cuda
+
+dataloader:
+  batch_size: 100
+  num_batches_per_epoch: null
+  replacement: true
+  transform: null
+  dtype: float32
+  num_workers: 0
+  pin_memory: false
+  persistent_workers: false
+  pin_memory_device: ""
+  infinite: true
+  base_only: true
+  variations_to_use: null
+  variations_to_ignore: null
+
+compile:
+  fullgraph: false # If false, torch.compile captures supported regions. If true, it requires the entire function.
+  dynamic: null # (None | bool) Possible: None (auto-detect dynamism), True (allow dynamic-shape kernels), False (always specialize to fixed shapes). Controls whether to produce kernels that handle variable input shapes.
+  backend: "inductor" # (str | callable) Possible built-in strings:, "inductor" (default, uses TorchInductor), "cudagraphs" (CUDA Graphs + AOTAutograd), "ipex" (Intel Extension for PyTorch), "onnxrt" (ONNX Runtime), "tensorrt" (Torch-TensorRT, inference only), "tvm" (Apache TVM, inference only), "openvino" (OpenVINO, inference only). Or any custom callable registered via torch.compiler.list_backends().
+  mode: null # (None | str) Possible: None / "default" (balanced performance vs. overhead), "reduce-overhead" (use CUDA graphs to minimize Python overhead, may increase memory), "max-autotune" (enable Triton/template autotuning + CUDA graphs), "max-autotune-no-cudagraphs" (like max-autotune but without CUDA graphs)
+  options: null # (None | dict[str, str|int|bool]) Possible keys include: "epilogue_fusion" (fuse pointwise ops into templates), "max_autotune" (profile best matmul configurations), "fallback_random" (randomized fallback for debugging), "shape_padding" (pad matrix shapes for better GPU alignment), "triton.cudagraphs" (enable CUDA graphs), "trace.enabled" (emit debug traces), "trace.graph_diagram" (visualize fused graphs), and other backend-specific flags visible via torch._inductor.list_options().
+  disable: true
+
+ddp:
+  enabled: false
+  world_size: 1 # Total number of processes to run
+  num_nodes: 1 # Number of nodes to use
+  args:
+    device_ids: null # (None | list[int] | list[torch.device]) Possible: None (auto-select all available devices), [0,1,...] or [torch.device("cuda:0"),...] to specify per-process GPUs
+    output_device: null # (None | int | torch.device) Possible: None (uses device_ids[0] if set), An integer index or torch.device where outputs live
+    dim: 0 # (int) Possible: 0,1,... Dimension along which to scatter the input batch across devices
+    broadcast_buffers: true # (bool) Possible: true, false. Whether to broadcast non-parameter buffers (e.g., BatchNorm stats) each forward
+    init_sync: true # (bool) Possible: true, false. Whether to broadcast parameters at construction time
+    process_group: null # (None | ProcessGroup) Possible: None (use default world group), A custom torch.distributed.ProcessGroup
+    bucket_cap_mb: null # (None | int) Possible: None (use default bucket size), An integer specifying bucket size in MiB for gradient reduction
+    find_unused_parameters: false # (bool) Possible: true, false. Whether to detect and only reduce gradients for used parameters
+    check_reduction: false # (bool) Possible: true, false. Whether to validate that every parameter has a corresponding reduction call
+    gradient_as_bucket_view: false # (bool) Possible: true, false. Represent parameter gradients as views into the reduction bucket
+    static_graph: false # (bool) Possible: true, false. Disallow adding/removing parameters or buffers after construction
+    delay_all_reduce_named_params: null # (None | dict[str, callable]) Delay all-reduce for specified named parameters via custom hooks
+    param_to_hook_all_reduce: null # (None | dict[str, callable]) Register custom all-reduce hooks per parameter name
+    mixed_precision: null # (None | MixedPrecisionConfig) Mixed-precision settings for gradient all-reduce
+    device_mesh: null # (None | DeviceMesh) Device mesh for tensor-parallel training
+
+print_interval: 100
+eval_interval: 100
+checkpoint_interval: 100
+optimizer: adam
+
+scheduler:
+  type: ExponentialLR
+  params:
+    gamma: 0.99999993
+
+phases: null

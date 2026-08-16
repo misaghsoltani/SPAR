@@ -1,0 +1,41 @@
+# @package _global_
+# Stage configuration for visualize_unsolved_qstar
+
+defaults:
+  - /schema/visualize_unsolved_qstar_schema@_here_
+  - /model: ${env}
+  - /wandb: default
+
+stage: visualize_unsolved_qstar
+
+results: outputs/${env.name}/search_qstar/2025-09-03_04-37-20/search_qstar/results/results.json
+pairs_file: spar/offline_data/search_pairs/deepcubeai_${env.name}_search_test.h5
+state_dir: null
+goal_dir: null
+single_state: null
+single_goal: null
+outdir: ${hydra:runtime.output_dir}/visualize_unsolved_qstar
+max: 10
+dpi: 150
+figsize: "10x6"
+output_format: pdf
+overlay_moves: false
+font_scale: 1.75
+image_border: 0
+image_border_padding: 6.0
+
+# Optional model checkpoint paths for visualization
+alignment_model_path: spar/saved_models/alignment_models/${env.name}_alignment_model_disc_sim2real/alignment_model_checkpoint_alignment_model.pt
+decoder_model_path: spar/saved_models/world_models/${env.name}_world_model_disc/world_model_checkpoint_decoder.pt
+encoder_model_path: spar/saved_models/world_models/${env.name}_world_model_disc/world_model_checkpoint_encoder.pt
+device: cuda
+verbose: false
+alignment_model_type: discrete
+
+model:
+  continuous: null
+  dqn: null
+
+wandb:
+  name: visualize_unsolved_qstar
+  mode: disabled

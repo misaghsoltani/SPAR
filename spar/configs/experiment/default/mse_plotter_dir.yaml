@@ -1,0 +1,138 @@
+# @package _global_
+
+defaults:
+  - override /env: ${env}
+  - override /stage: mse_plotter
+  - _self_
+
+plotter:
+  # Input/Output configuration
+  # Set one directory containing both model types, or set
+  # separate directories per model type. When per-model directories are provided
+  # they take precedence over 'input_directory'.
+  input_directory: "outputs/model_tests/all_variants" # Directory containing all model test results
+  discrete_input_directory: outputs/${env.name}/test_model/discrete/
+  continuous_input_directory: outputs/experiments/${env.name}/test_model/continuous/
+  extra_input_directory: outputs/experiments/${env.name}/test_model_END2END/continuous/
+  file_pattern: "*_evaluation_metrics.json" # More specific pattern for evaluation files
+  discrete_file_pattern: "*.json" # Files containing discrete model results
+  continuous_file_pattern: "*json" # Files containing continuous model results
+  extra_file_pattern: "*.json" # use file_pattern for the extra source
+
+  output_directory: "model_comparison_plots/${env.name}/mse_plots"
+  source_names:
+    - "Discrete (with latent state)"
+    - "Continuous (with latent state)"
+  extra_source_name: "Continuous (predicting next state)"
+
+  metric_keys_to_plot:
+    - "reconstruction_mse"
+    # - "prediction_accuracy"
+    # - "latent_similarity"
+
+  plot_mode: "directory"
+  # For mean-only 3-source comparison, let the script produce a single multi-source plot when extra_input_directory is set
+  create_individual_model_plots: false
+  create_model_comparison_plots: true
+  create_variant_comparison_plots: true
+  create_cross_variant_mean_plots: false
+
+  style: "none"
+  figsize: [6, 4] # Adjusted for better comparison plots
+  dpi: 300
+  export_formats: ["pdf"] # Both raster and vector formats
+  png_transparent: false
+
+  # Axis settings for MSE data
+  x_axis:
+    label: "Step"
+    scale: "linear"
+    tick_count: 10
+    decimal_places: 0
+
+  y_axis:
+    label: "Reconstruction MSE"
+    scale: "linear"
+    tick_count: 10
+    use_scientific_notation: true
+    decimal_places: 3
+
+  # Legend configuration for multiple series
+  legend:
+    show_legend: true
+    position: "best"
+    framealpha: 0.95
+    fontsize: 1 #"small"
+    border_width: 0.8
+
+  # Grid for better readability
+  grid:
+    show_grid: true
+    which: "major"
+    alpha: 0.6
+    linewidth: 0.6
+
+  # Three colors used to distinguish model types
+  colors:
+    variant_colors:
+      ["#feb55a", "#57bec8", "#175c86", "#1f77b4", "#ff7f0e", "#2ca02c"]
+    line_alpha: 1.0
+    smoothed_alpha: 0.8
+    uncertainty_alpha: 0.3
+
+  # Statistics display for quantitative comparison - DISABLED
+  statistics_display:
+    show_statistics: false
+    position: "best"
+    statistics_to_show: ["min", "max", "mean", "final_value"]
+    background_alpha: 0.9
+    fontsize: 9
+
+  # Processing parameters that disable smoothing and retain only the raw mean
+  smoothing_method: "none"
+  smoothing_window_ratio: 0.02 # ignored when smoothing_method is none
+  uncertainty_method: "quantiles"
+  quantiles: [0.1, 0.9]
+
+  # Content configuration - ONLY RAW MEAN, NO SMOOTHED OR UNCERTAINTY
+  show_minmax: false # Keep comparison plots clean
+  show_raw_mean: true
+  show_smoothed: false
+  show_uncertainty: false
+
+  # Legend detail toggles
+  legend_show_raw_mean: true
+  legend_show_minmax: false
+  legend_show_band: false # disable the generic "range" legend entry
+
+  # Optional legend label templates/naming
+  legend_smoothed_label_template: "{source} (smoothed mean)"
+  legend_raw_label_template: "{source} (mean)"
+  legend_minmax_label: "min / max"
+  legend_band_label_quantiles_template: "{percent}% range"
+  legend_band_label_std: "±σ range"
+
+  # Optional display name overrides
+  model_type_labels: null
+  variant_label_overrides:
+    base: "Base"
+    bright_lighting: "Bright Lighting"
+    cam_and_light: "Camera + Lighting"
+    camera_and_image: "Camera + Image Settings"
+    camera_bg_ambient: "Ambient Background + Camera"
+    camera_bg_light: "Background Lighting + Camera"
+    camera_image_background: "Image Background"
+    color_variations: "Color Variations"
+    indoor_glossy: "Indoor-like"
+    outdoor_lighting: "Outdoor-like"
+    noisy_camera: "Noisy Camera"
+    light_bg_cam: "Light Background + Camera"
+    light_radial_cam: "Radial Motion + Lighting"
+    minimal: "Minimal Augmentations"
+    occluders: "Occlusions"
+    studio: "Studio-like"
+    texture_poisson: "Textured Background + Poisson Noise"
+
+  # Custom titles
+  title_template: "{variant} - {model_type} Model Performance"
+  comparison_title: "Sources Comparison"

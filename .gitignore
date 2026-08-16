@@ -1,0 +1,121 @@
+# ------------------------------
+# OS & Editor junk
+# (Consider moving these to your global ignore: ~/.gitignore)
+# ------------------------------
+**/*.DS_Store
+._*
+
+# ------------------------------
+# Python: bytecode, builds, virtualenvs, tooling
+# ------------------------------
+**/__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.build-debug/
+.cache/
+
+# Packaging / build artifacts
+.Python
+build/
+dist/
+.eggs/
+wheels/
+share/python-wheels/
+sdist/
+var/
+*.egg-info/
+*.egg
+
+# Virtual environments / Conda
+.venv/
+venv/
+env/
+ENV/
+.conda/
+*.conda
+
+# Testing & coverage
+.pytest_cache/
+.coverage*
+coverage.xml
+htmlcov/
+.hypothesis/
+
+# Type checkers / linters / caches
+.mypy_cache/
+.dmypy.json
+.ruff_cache/
+.pyre/
+.pytype/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# PyInstaller
+*.spec
+
+# Misc caches
+.shared_inductor_cache/
+**/torch_compile_debug/
+
+# ------------------------------
+# Project data, models, and large outputs
+# ------------------------------
+results/
+outputs/
+multirun/
+wandb/
+!spar/configs/wandb/
+!spar/configs/wandb/profile/
+!spar/configs/wandb/profile/*.yaml
+model_comparison_plots/
+failures/
+
+# Project-specific paths
+spar/old_data_model/
+spar/extra/data/
+spar/data/offline_data/
+spar/outputs/
+spar/test_outputs/
+/spar/saved_models/world_models/*
+!/spar/saved_models/world_models/sokoban_world_model_disc/
+!/spar/saved_models/world_models/sokoban_world_model_disc/**
+spar/saved_models/alignment_models/
+spar/offline_data/
+spar/search_test/res/*.pkl
+spar/utils/env_utils/sokoban_data/goal_states.pkl
+
+data/cifar10/
+data/offline_data/
+
+# ------------------------------
+# Pixi environments (keep only the tracked config)
+# ------------------------------
+.pixi/*
+!.pixi/config.toml
+datadash/.pixi/*
+!datadash/.pixi/config.toml
+
+# Compiled dashboard frontend (rebuilt by the Vite build / hatchling build hook)
+datadash/spar_datadash/_frontend/
+
+# ------------------------------
+# Keep these specific directories/files despite broader ignores
+# ------------------------------
+!spar/utils/env_utils/puzzlegen/data/
+!spar/utils/env_utils/sokoban_data/surface/
+!spar/utils/env_utils/sokoban_data/goal_states.zip
+
+# ------------------------------
+# Misc
+# ------------------------------
+*.log
+*.out
+*.err
+*.prof
+*.pdf
+*.sh
+*.tex
+test.*
+tst.*

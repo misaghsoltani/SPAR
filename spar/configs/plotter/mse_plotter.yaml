@@ -1,0 +1,191 @@
+# @package plotter
+# MSE plotter configuration for model testing results
+
+# Input/Output configuration
+# OPTION 1: Directory-based auto-discovery (recommended for model testing)
+# EITHER provide one 'input_directory' that contains both model types,
+# OR provide 'discrete_input_directory' and/or 'continuous_input_directory' to search separately.
+input_directory: "outputs/model_tests" # Directory containing JSON files from model testing
+discrete_input_directory: null # Optional: directory containing only discrete model results
+continuous_input_directory: null # Optional: directory containing only continuous model results
+file_pattern: "*_evaluation_metrics.json" # Pattern to match evaluation result files
+discrete_file_pattern: "*discrete*" # Pattern to identify discrete model files
+continuous_file_pattern: "*continuous*" # Pattern to identify continuous model files
+
+# OPTION 2: Specific file list (alternative to directory mode)
+input_files: [] # Leave empty to use directory mode
+  # Example files:
+  # - "outputs/experiments/cube3/test_model_disc/2025-08-07_17-43-45/model_tests/images/discrete/ambient_light_evaluation_metrics.json"
+
+output_directory: "mse_plots"
+source_names:
+  - "Model Testing Results"
+
+metric_keys_to_plot:
+  - "reconstruction_mse"
+
+# Plot generation modes and options
+plot_mode: "directory" # Options: "directory" (auto-discover files), "files" (use input_files)
+create_individual_plots: true # Create individual episode plots (mean, best, worst)
+create_individual_model_plots: true # Create separate plots for discrete and continuous models
+create_model_comparison_plots: true # Create comparison plots between discrete and continuous models for each variant
+create_variant_comparison_plots: true # Create comparison plots between variants within same model type
+create_cross_variant_mean_plots: true # Create aggregated mean across variants (per model type and D vs C)
+
+# Figure properties
+style: "nature_journal" # One of the 15 styles from mse_plotter
+figsize: [10, 8]
+dpi: 300
+export_formats: ["png"]
+png_transparent: false
+
+# Axis configuration
+x_axis:
+  label: "Step"
+  min_value: null
+  max_value: null
+  tick_spacing: "auto" # Options: "auto", "linear", "log", "custom"
+  tick_count: 8
+  custom_ticks: null
+  use_scientific_notation: false
+  scientific_notation_threshold: 1000.0
+  decimal_places: 0
+  scale: "linear" # Options: "linear", "log", "symlog"
+  symlog_threshold: 1.0
+
+y_axis:
+  label: "Reconstruction MSE"
+  min_value: null
+  max_value: null
+  tick_spacing: "auto"
+  tick_count: 6
+  custom_ticks: null
+  use_scientific_notation: true
+  scientific_notation_threshold: 1000.0
+  decimal_places: 3
+  scale: "linear" # Options: "linear", "log", "symlog"
+  symlog_threshold: 1.0
+
+# Legend configuration
+legend:
+  show_legend: true
+  position: "best" # Options: "best", "upper_right", "upper_left", etc.
+  framealpha: 0.9
+  fontsize: 1 #"small"
+  border_width: 0.5
+  shadow: false
+
+# Grid configuration
+grid:
+  show_grid: true
+  which: "major" # Options: "major", "minor", "both"
+  alpha: 0.3
+  linewidth: 0.5
+  linestyle: "-"
+  color: "gray"
+
+# Color scheme configuration
+colors:
+  variant_colors:
+    [
+      "#feb55a",
+      "#57bec8",
+      "#175c86",
+      "#1f77b4",
+      "#ff7f0e",
+      "#2ca02c",
+      "#d62728",
+      "#9467bd",
+      "#8c564b",
+    ]
+  best_episode_color: "#2e7d32" # Green for best performance
+  worst_episode_color: "#d32f2f" # Red for worst performance
+  line_alpha: 0.4
+  fill_alpha: 0.5
+  smoothed_alpha: 0.8
+  uncertainty_alpha: 0.4
+  uncertainty_colors: ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728"]
+
+# Statistics display configuration
+statistics_display:
+  show_statistics: true
+  position: "top_left" # Options: "top_left", "top_right", "bottom_left", "bottom_right", "outside"
+  statistics_to_show: ["min", "max", "mean"] # Options: "min", "max", "mean", "std", "median", "final_value"
+  background_alpha: 0.8
+  background_color: "lightblue"
+  text_color: "black"
+  fontsize: 8
+
+# Annotation configuration
+annotations:
+  vertical_lines: [] # Format: [{x: float, label: str, color: str, style: str}]
+  horizontal_lines: [] # Format: [{y: float, label: str, color: str, style: str}]
+  text_annotations: [] # Format: [{x: float, y: float, text: str, fontsize: int}]
+  default_line_color: "red"
+  default_line_style: "--"
+  default_line_alpha: 0.7
+  default_text_fontsize: 9
+
+# Statistical processing parameters
+smoothing_method: "exponential" # Options: "exponential", "savgol", "none"
+smoothing_window_ratio: 0.01 # Fraction of time_steps for smoothing window
+uncertainty_method: "quantiles" # Options: "std", "quantiles", "minmax"
+quantiles: [0.1, 0.9] # Lower and upper quantiles for uncertainty bands
+
+# Large-input processing
+max_points_before_decimation: 10000
+streaming_threshold: 1000000 # Use streaming computation for very large datasets
+
+# Plot content configuration
+show_minmax: true
+show_raw_mean: true
+show_smoothed: true
+show_uncertainty: true
+
+# Legend detail toggles (optional)
+# When omitted, sensible defaults are used. Set to true/false to force behavior.
+legend_show_raw_mean: null # options: true | false | null (auto)
+legend_show_minmax: null # options: true | false | null (auto)
+legend_show_band: null # options: true | false | null (auto)
+
+# Legend label templates and naming (optional)
+# Use {source} for the series or variant name and {percent} for the quantile-band percentage.
+legend_smoothed_label_template: "{source} (smoothed mean)"
+legend_raw_label_template: "{source} (mean)"
+legend_minmax_label: "min / max"
+legend_band_label_quantiles_template: "{percent}% range"
+legend_band_label_std: "±σ range"
+
+# Optional display name overrides
+# model_type_labels: { Discrete: "D", Continuous: "C" }
+# variant_label_overrides: { base: "Baseline", noisy: "Noisy" }
+model_type_labels: null
+variant_label_overrides: null
+
+# Title customization
+title_template: null # Template like "MSE Results - {variant}" (null for auto-generated)
+comparison_title: null # Custom title for comparison plot (null for default)
+
+
+# Example configurations for different scenarios:
+#
+# SCENARIO 1: Directory with discrete and continuous model files
+# input_directory: "outputs/model_tests/all_variants"
+# plot_mode: "directory"
+# create_individual_plots: true
+# create_individual_model_plots: true
+# create_model_comparison_plots: true
+# This will auto-discover files, create individual episode plots for each variant,
+# individual plots for each model type and variant, and comparison plots between discrete/continuous.
+#
+# SCENARIO 2: Compare variants within same model type
+# input_directory: "outputs/model_tests/discrete_only"
+# plot_mode: "directory"
+# create_variant_comparison_plots: true
+# This will create comparison plots between different variants for the same model type.
+#
+# SCENARIO 3: Specific file-based plotting
+# plot_mode: "files"
+# input_files: ["file1.json", "file2.json"]
+# create_individual_plots: true
+# This will process only the specified files and create individual episode plots.

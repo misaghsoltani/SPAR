@@ -1,0 +1,23 @@
+# @package _global_
+
+defaults:
+  - /schema/bitwise_eq_report_schema@_here_
+  - /model: ${env}
+  - /wandb: default
+
+stage: bitwise_eq_report
+
+results: outputs/sokoban/search_qstar/2025-10-31_02-52-18/search_qstar_3/sokoban_results/results.json
+pairs_file: spar/offline_data/search_pairs/deepcubeai_cube3_search_test.h5
+alignment_model_path: spar/saved_models/alignment_models_rebut/cube3_alignment_model_disc_sim2real_2/alignment_model_checkpoint_alignment_model.pt
+encoder_model_path: spar/saved_models/world_models/cube3_world_model_disc/world_model_checkpoint_encoder.pt
+
+alignment_model_type: discrete
+batch_size: 1
+vars_to_include: ["bright_lighting"]
+vars_to_ignore: null
+device: cuda
+verbose: false
+
+wandb:
+  mode: disabled

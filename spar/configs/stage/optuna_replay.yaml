@@ -1,0 +1,14 @@
+# @package _global_
+# Optuna trial replay/verification stage
+
+defaults:
+  - /schema/optuna_replay_schema@_here_
+  - /optuna: default
+  - /wandb: default
+  - _self_
+
+stage: optuna_replay
+
+wandb:
+  mode: disabled
+  job_type: optuna_replay
