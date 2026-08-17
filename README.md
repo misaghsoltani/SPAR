@@ -10,21 +10,43 @@
 
 This repository contains the official implementation of the paper [Stable Planning through Aligned Representations in Model-Based Reinforcement Learning](https://rlj.cs.umass.edu/2026/papers/Paper20.html), accepted to **The third Reinforcement Learning Conference (RLC 2026)**.
 
-SPAR trains a discrete world model and a goal-conditioned heuristic from clean observations. It then trains an alignment model that maps transformed observations into the clean discrete latent representation. Then, the alignment is used, alogn with the fixed world model and heuristic model, for planning
+<br/>
+
+<p align="center">
+  <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/misaghsoltani/NumberLink/master/images/alignment_dark.svg">
+      <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/misaghsoltani/NumberLink/master/images/alignment_light.svg">
+      <img alt="SPAR Alignment" src="https://raw.githubusercontent.com/misaghsoltani/NumberLink/master/images/alignment_dark.svg" style="width:50%;height:auto;">
+  </picture>
+</p>
+
+<br/>
+
+SPAR trains a discrete world model and a goal-conditioned heuristic from clean observations. It then trains an alignment model that maps transformed observations into the clean discrete latent representation. Then, the alignment model is used, along with the fixed world model and heuristic model, for planning.
+
+<p align="center">
+  <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/misaghsoltani/NumberLink/master/images/planner_dark.svg">
+      <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/misaghsoltani/NumberLink/master/images/planner_light.svg">
+      <img alt="SPAR Planning" src="https://raw.githubusercontent.com/misaghsoltani/NumberLink/master/images/planner_dark.svg" style="width:60%;height:auto;">
+  </picture>
+</p>
+
+<br/>
 
 ## Contents
 
-  - [Quick Start](#quick-start)
-    - [Installation](#installation)
-    - [Running the CLI](#running-the-cli)
-    - [Reproducing Paper's Results](#reproducing-papers-results)
-  - [Running Stages](#running-stages)
-  - [Environments](#environments)
-  - [Configuration](#configuration)
-  - [Development](#development)
-  - [Citation](#citation)
-  - [License](#license)
-  - [Contact](#contact)
+- [Quick Start](#quick-start)
+  - [Installation](#installation)
+  - [Running the CLI](#running-the-cli)
+  - [Reproducing Paper's Results](#reproducing-papers-results)
+- [Running Stages](#running-stages)
+- [Environments](#environments)
+- [Configuration](#configuration)
+- [Development](#development)
+- [Citation](#citation)
+- [License](#license)
+- [Contact](#contact)
 
 ## Quick Start
 
@@ -33,89 +55,102 @@ SPAR trains a discrete world model and a goal-conditioned heuristic from clean o
 SPAR uses [Pixi](https://pixi.sh) for package and environment management.
 
 ```bash
-git clone https://github.com/misaghsoltani/SPAR_Release.git
-cd SPAR_Release
-pixi install -e dev
-pixi run -e dev python -c "import spar"
-pixi run -e dev spar --help
-pixi run -e dev spar-experiments env=cube3
+git clone https://github.com/misaghsoltani/SPAR.git
+cd SPAR
+pixi install
+pixi run spar --help
+pixi run spar-experiments env=cube3
 ```
 
-The `dev` environment includes the CLI and the repository quality tools. If the environment is active with `pixi shell -e dev`, run the same commands without the `pixi run -e dev` prefix.
+The `dev` environment includes the CLI and the repository quality tools. If the environment is active with `pixi shell -e dev`, run the same commands.
 
 ### Running the CLI
 
-SPAR accepts Hydra-style configuration overrides. A direct stage command selects an environment and a stage:
+SPAR accepts [Hydra](https://hydra.cc) configuration overrides. See the following examples.
+
+First, you can activate the pixi environment using:
 
 ```bash
-pixi run -e dev spar env=cube3 stage=gen_data data.num_cpus=4
+pixi shell
+```
+
+Then, you can use the `spar` command:
+
+```bash
+spar env=cube3 stage=gen_data data.num_cpus=4  # or `pixi run spar env=cube3 ...` without environment activation
 ```
 
 An experiment preset selects the environment, stage, and related configuration together:
 
 ```bash
-pixi run -e dev spar +experiment=cube3/train_alignment_disc
+spar +experiment=cube3/train_alignment_disc
 ```
 
 Append `--cfg job --resolve` to inspect a resolved configuration without running the stage:
 
 ```bash
-pixi run -e dev spar +experiment=cube3/train_alignment_disc --cfg job --resolve
+spar +experiment=cube3/train_alignment_disc --cfg job --resolve
 ```
 
 ### Reproducing Paper's Results
 
 The following Cube3 sequence follows the data and model dependencies used by the paper. The experiment presets are stored in [`spar/configs/experiment`](spar/configs/experiment).
 
-1. Generate the clean offline datasets.
+1. First, activate the default pixi environment.
 
    ```bash
-   pixi run -e dev spar +experiment=cube3/gen_offline
+   pixi shell  # same as `pixi shell -e default`
    ```
 
-2. Train the discrete world model.
+2. Generate the clean offline datasets.
 
    ```bash
-   pixi run -e dev spar +experiment=cube3/train_env_disc
+   spar +experiment=cube3/gen_offline
    ```
 
-3. Train the goal-conditioned heuristic using the clean world-model data.
+3. Train the discrete world model.
 
    ```bash
-   pixi run -e dev spar env=cube3 stage=train_heuristic
+   spar +experiment=cube3/train_env_disc
    ```
 
-4. Generate the transformed offline datasets.
+4. Train the goal-conditioned heuristic using the clean world-model data.
 
    ```bash
-   pixi run -e dev spar +experiment=cube3/gen_offline_sim2real
+   spar env=cube3 stage=train_heuristic
    ```
 
-5. Train the discrete alignment model.
+5. Generate the transformed offline datasets.
 
    ```bash
-   pixi run -e dev spar +experiment=cube3/train_alignment_disc
+   spar +experiment=cube3/gen_offline_sim2real
    ```
 
-6. Test the discrete world model and alignment model.
+6. Train the discrete alignment model.
 
    ```bash
-   pixi run -e dev spar +experiment=cube3/test_model_disc
+   spar +experiment=cube3/train_alignment_disc
    ```
 
-7. Generate start and goal pairs for search.
+7. Test the discrete world model and alignment model.
 
    ```bash
-   pixi run -e dev spar env=cube3 stage=gen_search_data
+   spar +experiment=cube3/test_model_disc
    ```
 
-8. Run one of the search stages after setting its model and pair-data paths.
+8. Generate start and goal pairs for search.
 
    ```bash
-   pixi run -e dev spar env=cube3 stage=search_qstar
+   spar env=cube3 stage=gen_search_data
    ```
 
-The commands above start their stages. To inspect any step first, append `--cfg job --resolve`. Search stages accept dotted overrides such as `search.pairs_file=...`, `search.heuristic_model_path=...`, `search.env_model_path=...`, and `search.alignment_model_path=...`.
+9. Run one of the search stages after setting its model and pair-data paths.
+
+   ```bash
+   spar env=cube3 stage=search_qstar
+   ```
+
+The commands above start their stages. To inspect any step first, append `--cfg job --resolve`.
 
 ## Running Stages
 
@@ -123,18 +158,17 @@ The direct stage form is useful when changing paths, dataset sizes, or training 
 
 ```bash
 # Generate data with a custom worker count.
-pixi run -e dev spar env=cube3 stage=gen_data data.num_cpus=4
+spar env=cube3 stage=gen_data data.num_cpus=4
 
 # Train the world model from the selected environment configuration.
-pixi run -e dev spar env=cube3 stage=train_env_disc
+spar env=cube3 stage=train_env_disc
 
 # Train the heuristic.
-pixi run -e dev spar env=cube3 stage=train_heuristic
+spar env=cube3 stage=train_heuristic
 
-# Run the three search algorithms.
-pixi run -e dev spar env=cube3 stage=search_qstar
-pixi run -e dev spar env=cube3 stage=search_gbfs
-pixi run -e dev spar env=cube3 stage=search_ucs
+# Run search algorithms.
+spar env=cube3 stage=search_qstar
+spar env=cube3 stage=search_gbfs
 ```
 
 Use `spar-experiments env=<name>` to list the experiment presets available for an environment. Use `spar --help` to list stage groups and common Hydra flags.
@@ -152,11 +186,11 @@ Select an environment with `env=<name>`. Environment implementations are in [`sp
 
 ## Configuration
 
+Configuraiton files can be found in [spar/configs](spar/configs). Some of the main config groups are:
+
 - [`spar/configs/experiment`](spar/configs/experiment): environment-specific experiment presets.
 - [`spar/configs/stage`](spar/configs/stage): direct stage configurations.
 - [`spar/configs/env`](spar/configs/env): environment definitions.
-- [`spar/configs/search`](spar/configs/search): shared search settings.
-- [`spar/search`](spar/search): Q*, GBFS, and UCS implementations.
 
 The two main command forms are:
 
@@ -183,12 +217,12 @@ If you use SPAR in your research, please cite:
 
 ```bibtex
 @article{soltani2026stable,
-    title={Stable Planning through Aligned Representations in Model-Based Reinforcement Learning},
-    author={Misagh Soltani and Forest Agostinelli},
-    journal={Reinforcement Learning Journal},
-    volume={7},
-    pages={},
-    year={2026}
+  title   = {Stable Planning through Aligned Representations in Model-Based Reinforcement Learning},
+  author  = {Misagh Soltani and Forest Agostinelli},
+  journal = {Reinforcement Learning Journal},
+  volume  = {7},
+  pages   = {},
+  year    = {2026}
 }
 ```
 
