@@ -14,9 +14,9 @@ This repository contains the official implementation of the paper [Stable Planni
 
 <p align="center">
   <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/misaghsoltani/NumberLink/master/images/alignment_dark.svg">
-      <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/misaghsoltani/NumberLink/master/images/alignment_light.svg">
-      <img alt="SPAR Alignment" src="https://raw.githubusercontent.com/misaghsoltani/NumberLink/master/images/alignment_dark.svg" style="width:50%;height:auto;">
+      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/misaghsoltani/SPAR/master/images/alignment_dark.svg">
+      <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/misaghsoltani/SPAR/master/images/alignment_light.svg">
+      <img alt="SPAR Alignment" src="https://raw.githubusercontent.com/misaghsoltani/SPAR/master/images/alignment_dark.svg" style="width:50%;height:auto;">
   </picture>
 </p>
 
@@ -26,9 +26,9 @@ SPAR trains a discrete world model and a goal-conditioned heuristic from clean o
 
 <p align="center">
   <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/misaghsoltani/NumberLink/master/images/planner_dark.svg">
-      <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/misaghsoltani/NumberLink/master/images/planner_light.svg">
-      <img alt="SPAR Planning" src="https://raw.githubusercontent.com/misaghsoltani/NumberLink/master/images/planner_dark.svg" style="width:60%;height:auto;">
+      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/misaghsoltani/SPAR/master/images/planner_dark.svg">
+      <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/misaghsoltani/SPAR/master/images/planner_light.svg">
+      <img alt="SPAR Planning" src="https://raw.githubusercontent.com/misaghsoltani/SPAR/master/images/planner_dark.svg" style="width:60%;height:auto;">
   </picture>
 </p>
 
